@@ -1,0 +1,1 @@
+START_URL = "https://www.kayak.com/explore/WAW-anywhere"
