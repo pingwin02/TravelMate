@@ -117,13 +117,33 @@ def scrape_destinations():
                 )
         back_button.click()
     
-def scrape_flights(destinations_file:str, airports_file:str=None):
+def scrape_flights(destinations_file:str, airports_file:str=None, airlines_file:str=None, planes_file:str=None):
     with open(destinations_file, "r", encoding="utf-8") as f:
-        destinations = json.load(f)
+        try:
+            destinations = json.load(f)
+        except json.JSONDecodeError:
+            destinations = []
     
     if airports_file:
         with open(airports_file, "r", encoding="utf-8") as f:
-            airports = json.load(f)
+            try:
+                airports = json.load(f)
+            except json.JSONDecodeError:
+                airports = []
+
+    if airlines_file:
+        with open(airlines_file, "r", encoding="utf-8") as f:
+            try:
+                airlines = json.load(f)
+            except json.JSONDecodeError:
+                airlines = []
+
+    if planes_file:
+        with open(planes_file, "r", encoding="utf-8") as f:
+            try:
+                planes = json.load(f)
+            except json.JSONDecodeError:
+                planes = []
 
     links = [destination["link"] for destination in destinations if "link" in destination]
 
@@ -142,101 +162,133 @@ def scrape_flights(destinations_file:str, airports_file:str=None):
         cookie_button.click()
         sleep(2) 
 
-        flights = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.nrc6-main")))
-        print(f"Found {len(flights)} flights")
+        try:
+            flights = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.nrc6-main")))
+            print(f"Found {len(flights)} flights")
+        except:
+            driver.quit()
+            continue
+
+
+        
         results = []
         processed = 0
         max = len(flights)
         while processed < max:
-            flights = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.nrc6-main")))
-            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", flights[processed])
-            flights[processed].click()
-            sleep(2)
+            try:
+                flights = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.nrc6-main")))
+                driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", flights[processed])
+                flights[processed].click()
+                sleep(1)
 
-            flight_numbers = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.nAz5-carrier-text")))
-            print(len(flight_numbers))
-            dep_flight_number, arr_flight_number = flight_numbers[0].text, flight_numbers[1].text
+                flight_numbers = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.nAz5-carrier-text")))
+                print(len(flight_numbers))
+                dep_flight_number, arr_flight_number = flight_numbers[0].text, flight_numbers[1].text
 
-            plane_types = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".z6uD.z6uD-mod-theme-neutral.z6uD-mod-variant-outline.z6uD-mod-layout-inline.z6uD-mod-text-align-center.z6uD-mod-size-large.z6uD-mod-padding-x-xsmall"
-            )))
-            dep_plane_type, arr_plane_type = plane_types[0].text, plane_types[1].text
+                plane_types = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".z6uD.z6uD-mod-theme-neutral.z6uD-mod-variant-outline.z6uD-mod-layout-inline.z6uD-mod-text-align-center.z6uD-mod-size-large.z6uD-mod-padding-x-xsmall"
+                )))
+                dep_plane_type, arr_plane_type = plane_types[0].text, plane_types[1].text
 
-            carrier_icon = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".nAz5-carrier-icon img")))
+                carrier_icons = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".nAz5-carrier-icon img")))
 
-            dep_carrier_icon_url, arr_carrier_icon_url = carrier_icon[0].get_attribute("src"), carrier_icon[1].get_attribute("src")
-            dep_carrier_lane_name, arr_carrier_lane_name = carrier_icon[0].get_attribute("alt"), carrier_icon[1].get_attribute("alt")
+                dep_carrier_icon_url, arr_carrier_icon_url = carrier_icons[0].get_attribute("src"), carrier_icons[1].get_attribute("src")
+                dep_carrier_lane_name, arr_carrier_lane_name = carrier_icons[0].get_attribute("alt"), carrier_icons[1].get_attribute("alt")
 
-            flight_time = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".X3K_-leg-duration")))
-            dep_flight_duration, arr_flight_duration = flight_time[0].text, flight_time[1].text
+                flight_time = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".X3K_-leg-duration")))
+                dep_flight_duration, arr_flight_duration = flight_time[0].text, flight_time[1].text
 
-            print(f"Departure flight number: {dep_flight_number}")
-            print(f"Departure plane type: {dep_plane_type}")
-            print(f"Arrival flight number: {arr_flight_number}")
-            print(f"Arrival plane type: {arr_plane_type}")
-            print(f"Departure carrier icon url: {dep_carrier_icon_url}")
-            print(f"Arrival carrier icon url: {arr_carrier_icon_url}")
-            print(f"Departure carrier name: {dep_carrier_lane_name}")
-            print(f"Arrival carrier name: {arr_carrier_lane_name}")
-            print(f"Departure flight duration: {dep_flight_duration}")
-            print(f"Arrival flight duration: {arr_flight_duration}")
+                print(f"Departure flight number: {dep_flight_number}")
+                print(f"Departure plane type: {dep_plane_type}")
+                print(f"Arrival flight number: {arr_flight_number}")
+                print(f"Arrival plane type: {arr_plane_type}")
+                print(f"Departure carrier icon url: {dep_carrier_icon_url}")
+                print(f"Arrival carrier icon url: {arr_carrier_icon_url}")
+                print(f"Departure carrier name: {dep_carrier_lane_name}")
+                print(f"Arrival carrier name: {arr_carrier_lane_name}")
+                print(f"Departure flight duration: {dep_flight_duration}")
+                print(f"Arrival flight duration: {arr_flight_duration}")
 
-            if airports_file:
-                airport_names = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".g16k-station")))
-                for airport_name in airport_names:
-                    match = re.search(r"\((.*?)\)", airport_name.text)
-                    if not match:
-                        continue
-                    code = match.group(1)
+
+                if planes_file:
+                    for plane_type in plane_types:
+                        if plane_type.text not in [plane["name"] for plane in planes]:
+                            planes.append({"name": plane_type.text})
+                    with open(planes_file, "w", encoding="utf-8") as f:
+                        json.dump(planes, f, indent=4, ensure_ascii=False)
+
+                if airlines_file:
+                    for carrier_icon in carrier_icons:
+                        airline_found = False
+                        for airline in airlines:
+                            if airline["name"] == carrier_icon.get_attribute("alt"):
+                                airline["icon_url"] = carrier_icon.get_attribute("src")
+                                airline_found = True
+                        if not airline_found:
+                            airlines.append({
+                                "name": carrier_icon.get_attribute("alt"),
+                                "icon_url": carrier_icon.get_attribute("src")
+                            })
                     
-                    for airport in airports:
-                        if airport["code"] == code:
-                            airport["city"] = airport_name.text.partition(" ")[0]
-                            airport["name"] = airport_name.text
-                            airport_found = True
+                    with open(airlines_file, "w", encoding="utf-8") as f:
+                        json.dump(airlines, f, indent=4, ensure_ascii=False)
+                        
+                if airports_file:
+                    airport_names = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".g16k-station")))
+                    for airport_name in airport_names:
+                        match = re.search(r"\((.*?)\)", airport_name.text)
+                        if not match:
+                            continue
+                        code = match.group(1)
+                        
+                        for airport in airports:
+                            if airport["code"] == code:
+                                airport["city"] = airport_name.text.partition(" ")[0]
+                                airport["name"] = airport_name.text
+                                airport_found = True
 
-                    if not airport_found:
-                        airports.append({
-                            "code": code,
-                            "city": airport_name.partition(" ")[0],
-                            "name": airport_name.text
+                        if not airport_found:
+                            airports.append({
+                                "code": code,
+                                "city": airport_name.partition(" ")[0],
+                                "name": airport_name.text
+                            })
+                    
+                    results.append({
+                        "dep_code": destination["from_city_code"],
+                        "arr_code": destination["to_city_code"],
+                        "flight_number": dep_flight_number,
+                        "flight_duration": dep_flight_duration,
+                        "plane_type": dep_plane_type,
                         })
-                
-                results.append({
-                    "dep_code": destination["from_city_code"],
-                    "arr_code": destination["to_city_code"],
-                    "flight_number": dep_flight_number,
-                    "plane_type": dep_plane_type,
-                    "carrier_icon_url": dep_carrier_icon_url,
-                    "carrier_lane_name": dep_carrier_lane_name,
-                    "flight_duration": dep_flight_duration,
+                    
+                    results.append({
+                        "dep_code": destination["to_city_code"],
+                        "arr_code": destination["from_city_code"],
+                        "flight_number": arr_flight_number,
+                        "flight_duration": arr_flight_duration,
+                        "plane_type": arr_plane_type,
                     })
-                
-                results.append({
-                    "dep_code": destination["to_city_code"],
-                    "arr_code": destination["from_city_code"],
-                    "flight_number": arr_flight_number,
-                    "plane_type": arr_plane_type,
-                    "carrier_icon_url": arr_carrier_icon_url,
-                    "carrier_lane_name": arr_carrier_lane_name,
-                    "flight_duration": arr_flight_duration,
-                })
 
 
 
 
-            with open(airports_file, "w", encoding="utf-8") as f:
-                json.dump(airports, f, indent=4, ensure_ascii=False)
+                with open(airports_file, "w", encoding="utf-8") as f:
+                    json.dump(airports, f, indent=4, ensure_ascii=False)
 
-            with open(const.FLIGHTS_PATH, "w", encoding="utf-8") as f:
-                json.dump(results, f, indent=4, ensure_ascii=False)
-
-
-            flights[processed].click()
-            processed+=1
+                with open(const.FLIGHTS_PATH, "w", encoding="utf-8") as f:
+                    json.dump(results, f, indent=4, ensure_ascii=False)
 
 
+                flights[processed].click()
+                processed+=1
+            except:
+                print("Error processing flight")
+                processed+=1
+                continue
 
-            sleep(5)
+
+
+            sleep(1)
             
 
             
@@ -254,4 +306,4 @@ if __name__ == "__main__":
  
 
     #scrape_destinations()
-    scrape_flights(destinations_file=const.DESTINATION_PATH, airports_file=const.AIRPORTS_PATH)
+    scrape_flights(destinations_file=const.DESTINATION_PATH, airports_file=const.AIRPORTS_PATH, airlines_file=const.AIRLINES_PATH, planes_file=const.PLANES_PATH)
