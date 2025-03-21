@@ -1,1 +1,48 @@
-<p>offers-view works!</p>
+<div class="container mt-4">
+  <h2 class="mb-4">Offers</h2>
+
+  <!-- filtering -->
+  <div class="row mb-4">
+<!--    TODO: change to selection list -->
+    <div class="col-md-3">
+      <input type="text" class="form-control" placeholder="Airline" [(ngModel)]="filter.airline"  (ngModelChange)="onFilterChange()">
+    </div>
+    <div class="col-md-3">
+      <input type="text" class="form-control" placeholder="Departure" [(ngModel)]="filter.departure"  (ngModelChange)="onFilterChange()">
+    </div>
+    <div class="col-md-3">
+      <input type="text" class="form-control" placeholder="Destination" [(ngModel)]="filter.destination" (ngModelChange)="onFilterChange()">
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <label>From:</label>
+      <input type="date" class="form-control" [(ngModel)]="filter.departure_date" (ngModelChange)="onFilterChange()">
+    </div>
+    <div class="col-md-6">
+      <label>To:</label>
+      <input type="date" class="form-control" [(ngModel)]="filter.arrival_date" (ngModelChange)="onFilterChange()">
+    </div>
+  </div>
+
+  <!-- offers -->
+  <div>
+    <div class="col-12" *ngFor="let offer of filteredOffers | paginate: { itemsPerPage: 10, currentPage: page }">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">{{ offer.flight_number }} - {{ offer.airline }}</h5>
+          <p class="card-text">
+            <strong>From:</strong> {{ offer.departure }}<br>
+            <strong>To:</strong> {{ offer.destination }}<br>
+            <strong>Departure:</strong> {{ offer.departure_date | date:'short' }}<br>
+            <strong>Arrival:</strong> {{ offer.arrival_date | date:'short' }}<br>
+            <strong>Price:</strong> {{ offer.base_price }} PLN
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- pagination -->
+  <pagination-controls (pageChange)="page = $event"></pagination-controls>
+</div>
