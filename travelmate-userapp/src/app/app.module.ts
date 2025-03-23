@@ -6,11 +6,15 @@ import { AppComponent } from './app.component';
 import {HttpClientModule} from "@angular/common/http";
 import { OffersViewComponent } from './offers/view/offers-view/offers-view.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { OfferViewComponent } from './offers/view/offer-view/offer-view.component';
+import { LoginViewComponent } from './users/view/login-view/login-view.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    OffersViewComponent
+    OffersViewComponent,
+    OfferViewComponent,
+    LoginViewComponent
   ],
   imports: [
     BrowserModule,

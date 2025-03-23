@@ -1,11 +1,21 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {OffersViewComponent} from "./offers/view/offers-view/offers-view.component";
+import {OfferViewComponent} from "./offers/view/offer-view/offer-view.component";
+import {LoginViewComponent} from "./users/view/login-view/login-view.component";
 
 const routes: Routes = [
   {
     path: 'offers',
     component: OffersViewComponent
+  },
+  {
+    path: 'offer/:id',
+    component: OfferViewComponent
+  },
+  {
+    path: 'login',
+    component: LoginViewComponent
   }
 ];
 

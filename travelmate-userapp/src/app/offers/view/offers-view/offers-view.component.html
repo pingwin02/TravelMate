@@ -38,6 +38,7 @@
             <strong>Arrival:</strong> {{ offer.arrival_date | date:'short' }}<br>
             <strong>Price:</strong> {{ offer.base_price }} PLN
           </p>
+          <button class="btn btn-primary" [routerLink]="['/offer', offer.offer_id]">More Info</button>
         </div>
       </div>
     </div>
