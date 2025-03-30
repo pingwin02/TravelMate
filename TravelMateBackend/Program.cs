@@ -11,7 +11,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultDbConnection"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultDbConnection"))));
+        ServerVersion.Parse("11.7.2-mariadb")));
 
 builder.Services.AddScoped<IOfferRepository, OfferRepository>();
 builder.Services.AddScoped<IOfferService, OfferService>();
