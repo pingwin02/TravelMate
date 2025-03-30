@@ -129,6 +129,23 @@ export class BookingViewComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  goToPayment() {
+    if (this.timerTimeout) {
+      clearTimeout(this.timerTimeout);
+    }
+
+    document.removeEventListener('click', this.boundHandleNavLinkClick, true);
+
+    sessionStorage.removeItem('timeLeft');
+    sessionStorage.removeItem('pageInitialized');
+    sessionStorage.removeItem('wasRefreshed');
+
+    window.history.replaceState(null, '', window.location.pathname);
+
+    const success = Math.random() < 0.8;
+    this.router.navigate(['/payment', { success } ]);
+  }
+
   ngOnDestroy() {
     document.removeEventListener('click', this.boundHandleNavLinkClick, true);
 

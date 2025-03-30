@@ -38,7 +38,7 @@
           </select>
         </div>
 
-        <button type="submit" class="btn btn-primary" [disabled]="reservationForm.invalid">Go to payment</button>
+        <button type="submit" class="btn btn-primary" [disabled]="reservationForm.invalid" (click)="goToPayment()">Go to payment</button>
       </form>
     </div>
   </div>

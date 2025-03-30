@@ -1,0 +1,19 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-body">
+      <div *ngIf="success; else failure" class="alert alert-success" role="alert">
+        <h1>Payment processed succesfully</h1>
+        <p>Your reservation has been confirmed.</p>
+      </div>
+
+      <ng-template #failure>
+        <div class="alert alert-danger" role="alert">
+          <h1>Payment was unsuccessful </h1>
+          <p>We apologize for the inconvenience. Please try again later.</p>
+        </div>
+      </ng-template>
+
+      <button type="submit" class="btn btn-primary" (click)="goToOffers()">Go back to offers</button>
+    </div>
+  </div>
+</div>
