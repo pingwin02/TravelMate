@@ -27,6 +27,13 @@ def scrape_destinations():
     print("Clicking cookie acceptance button...")
     cookie_button.click()
     sleep(2)  
+
+    #zoom out map to load more destinations
+    zoomout_btn = wait.until(EC.element_to_be_clickable((By.ID, "cWLz-zoomControl-minusButton")))
+    for i in range(2):
+        sleep(3)
+        zoomout_btn.click()
+        sleep(3)
     
     
     more_destinations_button = driver.find_element(By.XPATH, "//button[contains(@id, 'showMoreButton')]")
@@ -196,6 +203,8 @@ def scrape_flights(destinations_file:str, airports_file:str=None, airlines_file:
 
                 flight_time = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".X3K_-leg-duration")))
                 dep_flight_duration, arr_flight_duration = flight_time[0].text, flight_time[1].text
+                flight_price = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".f8F1-price-text"))).text
+                print(f"Flight price: {flight_price}")
 
                 print(f"Departure flight number: {dep_flight_number}")
                 print(f"Departure plane type: {dep_plane_type}")
@@ -259,6 +268,7 @@ def scrape_flights(destinations_file:str, airports_file:str=None, airlines_file:
                         "flight_number": dep_flight_number,
                         "flight_duration": dep_flight_duration,
                         "plane_type": dep_plane_type,
+                        "base_price": flight_price,
                         })
                     
                     results.append({
@@ -267,6 +277,7 @@ def scrape_flights(destinations_file:str, airports_file:str=None, airlines_file:
                         "flight_number": arr_flight_number,
                         "flight_duration": arr_flight_duration,
                         "plane_type": arr_plane_type,
+                        "base_price": flight_price,
                     })
 
 
