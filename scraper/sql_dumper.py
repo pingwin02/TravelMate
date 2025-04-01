@@ -135,32 +135,31 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 """
 
 planes_query = """
-INSERT INTO airplanes (`Id`, `Name`, `AvailableEconomySeats`, `AvailableBusinessSeats`, `AvailableFirstClassSeats`)
-VALUES(%s,%s,%s,%s,%s)
+INSERT INTO airplanes (`Name`, `AvailableEconomySeats`, `AvailableBusinessSeats`, `AvailableFirstClassSeats`)
+VALUES(%s,%s,%s,%s)
 """
 
 
-def import_json_to_mysql(json_file, query, data):
+def import_json_to_mysql(json_file, query, fields):
     conn = mysql.connector.connect(
         host=os.getenv("DB_HOST", "localhost"),
         user=os.getenv("DB_USER", "root"),
         password=os.getenv("DB_PASSWORD", "root"),
-        database=os.getenv("DB_NAME", "db")
+        database=os.getenv("DB_NAME", "travelmatedb")
     )
     cursor = conn.cursor()
     """Import JSON data into MySQL table"""
     with open(json_file, 'r') as file:
         data = json.load(file)
 
-    # Assuming the JSON data is a list of dictionaries
     for item in data:
-        values = [str(uuid.uuid4())] + [item[field] for field in data]
+        values = [item[field] for field in fields]
 
         cursor.execute(query, tuple(values))
 
     conn.commit()
 
-import_json_to_mysql("./results/planes.json", "airplanes",["name","available_economy_seats","available_business_seats","available_first_class_seats"])
+import_json_to_mysql("./results/planes.json", planes_query,["name","available_economy_seats","available_business_seats","available_first_class_seats"])
 import_json_to_mysql("./results/airlines.json", airlines_query, ["name","icon_url"])
 import_json_to_mysql("./results/airports.json", airports_query, ["code","city","country","name"])
 
