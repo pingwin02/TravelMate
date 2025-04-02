@@ -57,10 +57,13 @@ def process_flight_data(flights_file, planes_file, airlines_file):
     offers = []
     
     for flight in flights:
-        airline_name = flight['flight_number'].split()[0]
-        matching_airline = next((a for a in airlines if a['name'] == airline_name), None)
+        flight_number = flight['flight_number']
+        last_space_index = flight_number.rfind(' ')
+        airline_name = flight_number[:last_space_index] if last_space_index != -1 else flight_number
         
-        matching_plane = next((p for p in planes if p['name'] == flight['plane_type']), None)
+        matching_airline = next((a for a in airlines if a['name'].upper() == airline_name.upper()), None)
+    
+        matching_plane = next((p for p in planes if p['name'].upper() == flight['plane_type'].upper()), None)
         
         if not matching_airline or not matching_plane:
             print(f"Warning: Could not find matching airline or plane for flight {flight['flight_number']}")
@@ -75,7 +78,7 @@ def process_flight_data(flights_file, planes_file, airlines_file):
         
         offer = {
             'Id': str(uuid.uuid4()),
-            'AirplaneId': matching_plane['name'],  
+            'AirplaneId': matching_plane['id'],  
             'AirlineName': matching_airline['name'],
             'DepartureAirportCode': flight['dep_code'],
             'ArrivalAirportCode': flight['arr_code'],
@@ -125,7 +128,7 @@ VALUES (%s, %s)
 """
 
 offers_query = """
-INSERT INTO flights (
+INSERT INTO offers (
     `Id`, `AirplaneId`, `AirlineName`, `DepartureAirportCode`, 
     `ArrivalAirportCode`, `FlightNumber`, `DepartureTime`, 
     `ArrivalTime`, `BasePrice`, `AvailableEconomySeats`, 
@@ -135,8 +138,8 @@ VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 """
 
 planes_query = """
-INSERT INTO airplanes (`Name`, `AvailableEconomySeats`, `AvailableBusinessSeats`, `AvailableFirstClassSeats`)
-VALUES(%s,%s,%s,%s)
+INSERT INTO airplanes (`Id`,`Name`, `AvailableEconomySeats`, `AvailableBusinessSeats`, `AvailableFirstClassSeats`)
+VALUES(%s,%s,%s,%s,%s)
 """
 
 
@@ -159,9 +162,9 @@ def import_json_to_mysql(json_file, query, fields):
 
     conn.commit()
 
-import_json_to_mysql("./results/planes.json", planes_query,["name","available_economy_seats","available_business_seats","available_first_class_seats"])
-import_json_to_mysql("./results/airlines.json", airlines_query, ["name","icon_url"])
-import_json_to_mysql("./results/airports.json", airports_query, ["code","city","country","name"])
+#import_json_to_mysql("./results/planes.json", planes_query,["id","name","available_economy_seats","available_business_seats","available_first_class_seats"])
+#import_json_to_mysql("./results/airlines.json", airlines_query, ["name","icon_url"])
+#import_json_to_mysql("./results/airports.json", airports_query, ["code","city","country","name"])
 
 generate_offers_from_flights()
 import_json_to_mysql("./results/parsed_flights.json", offers_query, [
