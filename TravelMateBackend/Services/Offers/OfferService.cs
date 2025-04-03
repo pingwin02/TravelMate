@@ -1,4 +1,6 @@
-﻿using TravelMateBackend.Models.Entities;
+﻿using Mapster;
+using Models.Entities.Offers;
+using TravelMateBackend.Models.Entities.Offers.DTO;
 using TravelMateBackend.Repositories.Offers;
 namespace TravelMateBackend.Services.Offers
 {
@@ -27,9 +29,17 @@ namespace TravelMateBackend.Services.Offers
             return await _offerRepository.GetOffer(id);
         }
 
-        public async Task<IEnumerable<Offer>> GetOffers()
+        public async Task<IEnumerable<OfferListDto>> GetOffers()
         {
-            return await _offerRepository.GetOffers();
+            var offers = await _offerRepository.GetOffers();
+
+            var config = new TypeAdapterConfig();
+            config.NewConfig<Offer, OfferListDto>()
+                .Map(dest => dest.AirlineName, src => src.Airline.Name)
+                .Map(dest => dest.DepartureAirport, src => src.DepartureAirport.Code)
+                .Map(dest => dest.ArrivalAirport, src => src.ArrivalAirport.Code);
+
+            return offers.Adapt<IEnumerable<OfferListDto>>(config);
         }
 
         public async Task<Offer> UpdateOffer(Offer offer)

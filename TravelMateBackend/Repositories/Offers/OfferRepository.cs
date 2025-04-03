@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Models.Entities.Offers;
 using TravelMateBackend.Data;
-using TravelMateBackend.Models.Entities;
 
 namespace TravelMateBackend.Repositories.Offers
 {

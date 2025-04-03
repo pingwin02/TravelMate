@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using TravelMateBackend.Models.Entities;
 
-namespace TravelMateBackend.Models.Entities
+namespace Models.Entities.Offers
 {
     public class Offer
     {
@@ -15,7 +16,7 @@ namespace TravelMateBackend.Models.Entities
         public string FlightNumber { get; set; }
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
-        public decimal BasePrice  { get; set; }
+        public decimal BasePrice { get; set; }
         public int AvailableEconomySeats { get; set; }
         public int AvailableBusinessSeats { get; set; }
         public int AvailableFirstClassSeats { get; set; }

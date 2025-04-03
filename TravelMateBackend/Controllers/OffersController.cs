@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TravelMateBackend.Models.Entities;
+using Models.Entities.Offers;
 using TravelMateBackend.Services.Offers;
 
 namespace TravelMateBackend.Controllers

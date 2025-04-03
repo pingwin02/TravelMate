@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Models.Entities.Offers;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TravelMateBackend.Models.Entities
 {

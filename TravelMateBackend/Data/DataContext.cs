@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Models.Entities.Offers;
 using TravelMateBackend.Models.Entities;
 
 namespace TravelMateBackend.Data

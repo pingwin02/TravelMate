@@ -1,4 +1,5 @@
-﻿using TravelMateBackend.Models.Entities;
+﻿using Models.Entities.Offers;
+
 namespace TravelMateBackend.Repositories.Offers
 {
     public interface IOfferRepository
