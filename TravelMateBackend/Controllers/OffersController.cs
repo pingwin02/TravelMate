@@ -5,8 +5,8 @@ using TravelMateBackend.Services.Offers;
 
 namespace TravelMateBackend.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class OffersController : ControllerBase
     {
         private readonly IOfferService _offerService;

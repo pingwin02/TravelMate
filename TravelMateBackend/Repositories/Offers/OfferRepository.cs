@@ -30,11 +30,20 @@ namespace TravelMateBackend.Repositories.Offers
 
         public async Task<Offer> GetOffer(Guid id)
         {
+
             return await _context.Offers.FindAsync(id);
         }
 
         public async Task<IEnumerable<Offer>> GetOffers()
         {
+            var offers = await _context.Offers.Include(x=>x.Airplane)
+                                              .Include(x=>x.Airline)
+                                              .Include(x=>x.ArrivalAirport)
+                                              .Include(x => x.DepartureAirport)
+                                              .ToListAsync();
+            Console.WriteLine(offers.Count);
+
+
             return await _context.Offers.ToListAsync();
         }
 
