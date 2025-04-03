@@ -9,6 +9,8 @@ from time import sleep
 import os
 import json
 import re
+import uuid
+import random
 def scrape_destinations():
 
     destination_results = []
@@ -239,7 +241,16 @@ def scrape_flights(destinations_file:str, airports_file:str=None, airlines_file:
                     if planes_file:
                         for plane_type in plane_types:
                             if plane_type.text not in [plane["name"] for plane in planes]:
-                                planes.append({"name": plane_type.text})
+
+                                seats = generate_seats_number()
+
+                                planes.append({
+                                    "id": str(uuid.uuid4()),
+                                    "name": plane_type.text,
+                                    "available_economy_seats": seats[0],
+                                    "available_business_seats": seats[1],
+                                    "available_first_class_seats": seats[2],
+                                })
                         with open(planes_file, "w", encoding="utf-8") as f:
                             json.dump(planes, f, indent=4, ensure_ascii=False)
 
@@ -331,7 +342,16 @@ def scrape_flights(destinations_file:str, airports_file:str=None, airlines_file:
             print("Error processing destination")
             continue
 
-    
+def generate_seats_number()->list[int]:
+    seats = random.randint(70, 220)
+    if seats < 100:
+        business_seats = random.randint(0, 20)
+        first_class_seats = random.randint(0, 10)
+    else:
+        business_seats = random.randint(20, 40)
+        first_class_seats = random.randint(5, 20)
+
+    return [seats, business_seats, first_class_seats]
 
     
 
@@ -339,5 +359,5 @@ if __name__ == "__main__":
  
 
     init()
-    #scrape_destinations()
+    scrape_destinations()
     scrape_flights(destinations_file=const.DESTINATION_PATH, airports_file=const.AIRPORTS_PATH, airlines_file=const.AIRLINES_PATH, planes_file=const.PLANES_PATH)

@@ -156,15 +156,17 @@ def import_json_to_mysql(json_file, query, fields):
         data = json.load(file)
 
     for item in data:
-        values = [item[field] for field in fields]
+        try:
+            values = [item[field] for field in fields]
 
-        cursor.execute(query, tuple(values))
-
+            cursor.execute(query, tuple(values))
+        except:
+            continue
     conn.commit()
 
-#import_json_to_mysql("./results/planes.json", planes_query,["id","name","available_economy_seats","available_business_seats","available_first_class_seats"])
-#import_json_to_mysql("./results/airlines.json", airlines_query, ["name","icon_url"])
-#import_json_to_mysql("./results/airports.json", airports_query, ["code","city","country","name"])
+import_json_to_mysql("./results/planes.json", planes_query,["id","name","available_economy_seats","available_business_seats","available_first_class_seats"])
+import_json_to_mysql("./results/airlines.json", airlines_query, ["name","icon_url"])
+import_json_to_mysql("./results/airports.json", airports_query, ["code","city","country","name"])
 
 generate_offers_from_flights()
 import_json_to_mysql("./results/parsed_flights.json", offers_query, [

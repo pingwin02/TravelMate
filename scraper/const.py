@@ -1,6 +1,6 @@
-FROM = "WAW"
-FROM_FULL = "Warsaw"
-FROM_COUNTRY = "Poland"
+FROM = "ROM"
+FROM_FULL = "Rome"
+FROM_COUNTRY = "Italy"
 TO = "anywhere"
 STOPS = 0
 
