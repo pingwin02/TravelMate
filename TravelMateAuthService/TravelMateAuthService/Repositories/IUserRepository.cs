@@ -1,0 +1,9 @@
+﻿using TravelMateAuthService.Controllers;
+
+namespace TravelMateAuthService.Repositories
+{
+    public interface IUserRepository
+    {
+        public Task<bool> CheckLoginCredentials(Credentials credentials);
+    }
+}
