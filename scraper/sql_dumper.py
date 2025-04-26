@@ -148,7 +148,7 @@ def import_json_to_mysql(json_file, query, fields):
         host=os.getenv("DB_HOST", "localhost"),
         user=os.getenv("DB_USER", "root"),
         password=os.getenv("DB_PASSWORD", "root"),
-        database=os.getenv("DB_NAME", "travelmatedb")
+        database=os.getenv("DB_NAME", "travelmatedb2")
     )
     cursor = conn.cursor()
     """Import JSON data into MySQL table"""
@@ -157,10 +157,11 @@ def import_json_to_mysql(json_file, query, fields):
 
     for item in data:
         try:
-            values = [item[field] for field in fields]
+            values = [item.get(field) for field in fields]
 
             cursor.execute(query, tuple(values))
-        except:
+        except Exception as e:
+            print(e)
             continue
     conn.commit()
 
