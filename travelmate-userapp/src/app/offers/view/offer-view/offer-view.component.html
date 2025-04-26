@@ -1,20 +1,20 @@
 <div class="container mt-4" *ngIf="offer">
-  <h2>{{ offer.flight_number }} - {{ offer.airline }}</h2>
+  <h2>{{ offer.flightNumber }}</h2>
 
   <div class="card">
     <div class="card-body">
-      <p><strong>From:</strong> {{ offer.departure }}</p>
-      <p><strong>To:</strong> {{ offer.destination }}</p>
-      <p><strong>Departure:</strong> {{ offer.departure_date | date:'short' }}</p>
-      <p><strong>Arrival:</strong> {{ offer.arrival_date | date:'short' }}</p>
-      <p><strong>Plane:</strong> {{ offer.plane }}</p>
-      <p><strong>Base Price:</strong> {{ offer.base_price }} PLN</p>
+      <p><strong>Departure:</strong> {{ offer.departureTime | date:'short' }}</p>
+      <p><strong>Arrival:</strong> {{ offer.arrivalTime | date:'short' }}</p>
+
+      <p><strong>Base Price:</strong> {{ offer.basePrice }} PLN</p>
+
       <p><strong>Available Seats:</strong></p>
       <ul>
-        <li>Economy: {{ offer.available_economy_seats }}</li>
-        <li>Business: {{ offer.available_business_seats }}</li>
-        <li>First Class: {{ offer.available_first_class_seats }}</li>
+        <li>Economy: {{ offer.availableEconomySeats }}</li>
+        <li>Business: {{ offer.availableBusinessSeats }}</li>
+        <li>First Class: {{ offer.availableFirstClassSeats }}</li>
       </ul>
+
       <a class="btn btn-secondary me-2" routerLink="/offers">Back to Offers</a>
       <a class="btn btn-success" routerLink="/booking">Book</a>
     </div>

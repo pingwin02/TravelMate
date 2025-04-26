@@ -1,14 +1,19 @@
-export interface Offer{
-  offer_id : number;
-  flight_number: string;
-  plane: string;
-  departure: string
-  destination: string;
-  departure_date : string;
-  arrival_date: string;
-  base_price: number;
-  airline: string;
-  available_economy_seats: number;
-  available_business_seats: number;
-  available_first_class_seats: number;
+import {Airplane} from "../../models/Airplane";
+import {Airline} from "../../models/Airline";
+import {Airport} from "../../models/Airport";
+
+export interface Offer {
+  id: string;
+  airplane: Airplane;
+  airline: Airline;
+  departureAirport: Airport;
+  arrivalAirport: Airport;
+  flightNumber: string;
+  departureTime: string;
+  arrivalTime: string;
+  basePrice: number;
+  availableEconomySeats: number;
+  availableBusinessSeats: number;
+  availableFirstClassSeats: number;
+  createdAt: string;
 }

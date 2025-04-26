@@ -11,7 +11,7 @@
       <input type="text" class="form-control" placeholder="Departure" [(ngModel)]="filter.departure"  (ngModelChange)="onFilterChange()">
     </div>
     <div class="col-md-3">
-      <input type="text" class="form-control" placeholder="Destination" [(ngModel)]="filter.destination" (ngModelChange)="onFilterChange()">
+      <input type="text" class="form-control" placeholder="Destination" [(ngModel)]="filter.arrival" (ngModelChange)="onFilterChange()">
     </div>
   </div>
   <div class="row mb-4">
@@ -30,15 +30,15 @@
     <div class="col-12" *ngFor="let offer of filteredOffers | paginate: { itemsPerPage: 10, currentPage: page }">
       <div class="card mb-3">
         <div class="card-body">
-          <h5 class="card-title">{{ offer.flight_number }} - {{ offer.airline }}</h5>
+          <h5 class="card-title">{{ offer.flightNumber }} [{{ offer.departureAirport }} - {{ offer.arrivalAirport }}] </h5>
           <p class="card-text">
-            <strong>From:</strong> {{ offer.departure }}<br>
-            <strong>To:</strong> {{ offer.destination }}<br>
-            <strong>Departure:</strong> {{ offer.departure_date | date:'short' }}<br>
-            <strong>Arrival:</strong> {{ offer.arrival_date | date:'short' }}<br>
-            <strong>Price:</strong> {{ offer.base_price }} PLN
+            <strong>From:</strong> {{ offer.departureAirport }}<br>
+            <strong>To:</strong> {{ offer.arrivalAirport }}<br>
+            <strong>Departure:</strong> {{ offer.departureTime | date:'short' }}<br>
+            <strong>Arrival:</strong> {{ offer.arrivalTime| date:'short' }}<br>
+            <strong>Price:</strong> {{ offer.basePrice }} PLN
           </p>
-          <button class="btn btn-primary" [routerLink]="['/offer', offer.offer_id]">More Info</button>
+          <button class="btn btn-primary" [routerLink]="['/offer', offer.id]">More Info</button>
         </div>
       </div>
     </div>

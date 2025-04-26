@@ -14,7 +14,11 @@ export class OfferViewComponent implements OnInit {
   constructor(private route: ActivatedRoute, private offersService: OffersService) {}
 
   ngOnInit() {
-    const offerId = Number(this.route.snapshot.paramMap.get('id'));
-    this.offer = this.offersService.getOfferById(offerId);
+    //const offerId = Number(this.route.snapshot.paramMap.get('id'));
+    this.route.params.subscribe(params => {
+      this.offersService.getOfferById(params['id']).subscribe((offer : Offer) => {
+        this.offer =offer;
+      })
+    });
   }
 }
