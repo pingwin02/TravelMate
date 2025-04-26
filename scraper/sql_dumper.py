@@ -157,10 +157,11 @@ def import_json_to_mysql(json_file, query, fields):
 
     for item in data:
         try:
-            values = [item[field] for field in fields]
+            values = [item.get(field) for field in fields]
 
             cursor.execute(query, tuple(values))
-        except:
+        except Exception as e:
+            print(e)
             continue
     conn.commit()
 
