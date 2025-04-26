@@ -12,12 +12,15 @@ namespace TravelMateAuthService.Repositories
             _context = context;
         }
 
-        public async Task<bool> CheckLoginCredentials(Credentials credentials)
+        public async Task<Guid?> CheckLoginCredentials(Credentials credentials)
         {
-            if(await _context.Users.FirstOrDefaultAsync(x=>x.Username == credentials.Username && x.Password == credentials.Password) != null)
-                return true;
+            var user = await _context.Users
+                .Where(u => u.Username == credentials.Username && u.Password == credentials.Password)
+                .FirstOrDefaultAsync();
+            if (user != null)
+                return user.Guid;
 
-            return false;
+            return null;
         }
     }
 }

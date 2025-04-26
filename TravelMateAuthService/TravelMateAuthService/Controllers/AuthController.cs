@@ -10,7 +10,7 @@ using TravelMateAuthService.Services;
 namespace TravelMateAuthService.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _config;
@@ -21,25 +21,26 @@ namespace TravelMateAuthService.Controllers
             _userService = userService;
         }
 
-        [HttpPost("/login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] Credentials credentials)
         {
-            if (!await _userService.CheckLoginCredentials(credentials))
+            var guid = await _userService.CheckLoginCredentials(credentials);
+            if (guid == null)
             {
                 return Unauthorized();
             }
 
-            var token = GenerateJwtToken(credentials.Username);
+            var token = GenerateJwtToken(credentials.Username, (Guid)guid);
 
             return Ok(new { token });
         }
 
-        private string GenerateJwtToken(string username)
+        private string GenerateJwtToken(string username, Guid guid)
         {
             var claims = new[]
             {
             new Claim(ClaimTypes.Name, username),
-            new Claim(ClaimTypes.NameIdentifier, username)
+            new Claim(ClaimTypes.NameIdentifier, guid.ToString())
         };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));

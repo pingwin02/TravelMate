@@ -10,7 +10,7 @@ namespace TravelMateAuthService.Services
         _userRepository = userRepository;
         }
 
-        public async Task<bool> CheckLoginCredentials(Credentials credentials)
+        public async Task<Guid?> CheckLoginCredentials(Credentials credentials)
         {
             return await _userRepository.CheckLoginCredentials(credentials);
         }

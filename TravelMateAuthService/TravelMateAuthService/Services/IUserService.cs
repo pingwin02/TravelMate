@@ -4,6 +4,6 @@ namespace TravelMateAuthService.Services
 {
     public interface IUserService
     {
-        public Task<bool> CheckLoginCredentials(Credentials credentials);
+        public Task<Guid?> CheckLoginCredentials(Credentials credentials);
     }
 }
