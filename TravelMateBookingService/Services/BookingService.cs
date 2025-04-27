@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MassTransit;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System.Runtime;
 using TravelMateBookingService.Models.Bookings;
 using TravelMateBookingService.Models.Bookings.DTO;
+using TravelMate.Models.Messages;
 using TravelMateBookingService.Models.Settings;
 using TravelMateBookingService.Repositories;
 
@@ -12,16 +14,27 @@ namespace TravelMateBookingService.Services
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IOptions<BookingsSettings> _settings;
+        private readonly IRequestClient<CheckSeatAvailabilityRequest> _seatAvailabilityClient;
 
 
-        public BookingService(IBookingRepository bookingRepository, IOptions<BookingsSettings> settings)
+        public BookingService(IBookingRepository bookingRepository, IOptions<BookingsSettings> settings, IRequestClient<CheckSeatAvailabilityRequest> seatAvailabilityRequest)
         {
             _bookingRepository = bookingRepository;
             _settings = settings;
+            _seatAvailabilityClient = seatAvailabilityRequest;
         }
 
         public async Task<Booking> CreateBooking(BookingRequestDto bookingRequestDto)
         {
+            var isSeatAvailableResponse = await _seatAvailabilityClient.GetResponse<CheckSeatAvailabilityResponse>(
+            new CheckSeatAvailabilityRequest
+            {
+                OfferId = bookingRequestDto.OfferId,
+                SeatType = bookingRequestDto.SeatType
+            });
+            Console.WriteLine("Received seat availability response: " + isSeatAvailableResponse.Message.IsAvailable);
+            if (!isSeatAvailableResponse.Message.IsAvailable) return null;
+
             var booking = new Booking
             {
                 UserId = bookingRequestDto.UserId,
@@ -31,11 +44,11 @@ namespace TravelMateBookingService.Services
                 SeatType = bookingRequestDto.SeatType,
                 PassengerName = bookingRequestDto.PassengerName,
                 PassengerType = bookingRequestDto.PassengerType,
-                CreatedAt = DateTime.UtcNow,
-                ReservedUntil = DateTime.UtcNow.AddSeconds(_settings.Value.BookingExpirationTime)
+                CreatedAt = DateTime.Now,
+                ReservedUntil = DateTime.Now.AddSeconds(_settings.Value.BookingExpirationTime)
             };
             var savedBooking = await _bookingRepository.CreateBooking(booking);
-            BookingExpirationService.AddBookingCancelationToQueue(savedBooking.Id, savedBooking.ReservedUntil.Value);
+            BookingExpirationService.AddBookingCancelationToQueue(savedBooking);
             return booking;
         }
 

@@ -1,5 +1,6 @@
 ﻿using Models.Entities.Offers;
 using TravelMateBackend.Models.Entities.Offers.DTO;
+using TravelMate.Models.Messages;
 
 namespace TravelMateBackend.Services.Offers
 {
@@ -10,5 +11,7 @@ namespace TravelMateBackend.Services.Offers
         Task<Offer> AddOffer(Offer offer);
         Task<Offer> UpdateOffer(Offer offer);
         Task<Offer> DeleteOffer(int id);
+        Task<bool> CheckSeatAvailability(CheckSeatAvailabilityRequest request);
+        Task CancelSeatReservation(CancelReservationRequest request);
     }
 }

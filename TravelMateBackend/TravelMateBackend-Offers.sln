@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateBackend-Offers", "TravelMateBackend-Offers.csproj", "{559589CB-EAF4-4CA0-936C-66A3214D1754}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateBackend", "TravelMateBackend.csproj", "{559589CB-EAF4-4CA0-936C-66A3214D1754}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

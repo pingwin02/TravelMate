@@ -2,6 +2,6 @@
 {
     public class BookingsSettings
     {
-        public int BookingExpirationTime;
+        public int BookingExpirationTime { get; set; }
     }
 }
