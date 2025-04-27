@@ -65,8 +65,8 @@
 1. Create venv 
     
    ```bash
-        cd ./scraper
-        python -m venv venv
+   cd ./scraper
+   python -m venv venv
    ```
 2. Activate venv
     ```bash
