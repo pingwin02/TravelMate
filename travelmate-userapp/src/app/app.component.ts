@@ -1,23 +1,25 @@
-import { Component } from '@angular/core';
-import {User} from "./users/model/User";
-import {UserService} from "./users/service/users.service";
+import {Component, OnInit} from '@angular/core';
+import {User} from "./auth/model/User";
+import {AuthService} from "./auth/service/auth.service";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'travelmate-userapp';
   currentUser: User | null = null;
 
-  constructor(private userService: UserService) {
-    this.userService.currentUser$.subscribe(user => {
+  constructor(private authService: AuthService) {}
+
+  ngOnInit() {
+    this.authService.getCurrentUser().subscribe(user => {
       this.currentUser = user;
     });
   }
 
   logout() {
-    this.userService.logout();
+    this.authService.logout();
   }
 }
