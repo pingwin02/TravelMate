@@ -64,10 +64,10 @@
 ## Scraper
 1. Create venv 
     
-        ```bash
+   ```bash
         cd ./scraper
         python -m venv venv
-        ```
+   ```
 2. Activate venv
     ```bash
     source venv/bin/activate
