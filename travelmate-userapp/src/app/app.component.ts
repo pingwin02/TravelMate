@@ -9,13 +9,19 @@ import {AuthService} from "./auth/service/auth.service";
 })
 export class AppComponent implements OnInit{
   title = 'travelmate-userapp';
-  currentUser: User | null = null;
+  username: string | null = null;
+  isLoggedIn: boolean = false;
 
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    this.authService.getCurrentUser().subscribe(user => {
-      this.currentUser = user;
+    this.authService.isLoggedIn().subscribe((loggedIn: boolean) => {
+      this.isLoggedIn = loggedIn;
+      if (loggedIn) {
+        this.username = this.authService.getUsername();
+      } else {
+        this.username = null;
+      }
     });
   }
 
