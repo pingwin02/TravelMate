@@ -6,8 +6,8 @@
 **/__pycache__
 **/.vscode
 **/results
+**/dumps
 **/appsettings.Production.json
 **/appsettings.Development.json
 **/appsettings.json
 **/Migrations
-dumps
