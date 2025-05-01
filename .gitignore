@@ -1,5 +1,6 @@
 **/venv
 **/.vs
+**/.idea
 **/bin
 **/obj
 **/__pycache__
@@ -9,4 +10,4 @@
 **/appsettings.Development.json
 **/appsettings.json
 **/Migrations
-**/*.json
+dumps
