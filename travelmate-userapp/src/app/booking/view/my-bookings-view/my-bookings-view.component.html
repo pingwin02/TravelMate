@@ -1,0 +1,27 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Bookings</h2>
+
+  <div *ngIf="bookings?.length === 0" class="text-muted text-center mt-5">
+    <p class="fs-5">No bookings available.</p>
+  </div>
+
+  <div *ngIf="bookings?.length > 0">>
+    <div class="col-12" *ngFor="let booking of bookings | paginate: { itemsPerPage: 10, currentPage: page }">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">{{ booking.OfferId }} </h5>
+          <p class="card-text">
+<!--            TODO: proste informacje o ofercie wyswietlic-->
+            <strong>Seat Number:</strong> {{ booking.SeatNumber }}<br>
+            <strong>Seat Type:</strong> {{ booking.SeatType }}<br>
+            <strong>Passenger Name:</strong> {{ booking.PassengerName }}<br>
+            <strong>Passenger Type:</strong> {{ booking.PassengerType }}<br>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- pagination -->
+  <pagination-controls (pageChange)="page = $event"></pagination-controls>
+</div>
