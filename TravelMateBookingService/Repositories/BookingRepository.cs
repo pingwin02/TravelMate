@@ -26,11 +26,17 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
         return true;
     }
 
-    public async Task<Booking> GetBookingById(Guid bookingId)
+    public Task<bool> CheckIfCancelled(Guid bookingId)
+    {
+        var booking = dataContext.Bookings.Find(bookingId);
+        return booking == null ? Task.FromResult(false) : Task.FromResult(booking.Status == BookingStatus.Canceled);
+    }
+
+    public async Task<Booking> GetBookingById(Guid userId, Guid bookingId)
     {
         var booking = await dataContext.Bookings.FindAsync(bookingId);
 
-        if (booking == null)
+        if (booking == null || booking.UserId != userId)
             throw new KeyNotFoundException($"Booking with id {bookingId} not found");
 
         return booking;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TravelMateOfferService.Models;
+using TravelMateOfferService.Models.DTO;
 using TravelMateOfferService.Services;
 
 namespace TravelMateOfferService.Controllers;
@@ -31,12 +32,12 @@ public class OfferController(IOfferService offerService) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddOffer([FromBody] Offer offer)
+    public async Task<IActionResult> AddOffer([FromBody] OfferRequestDto offer)
     {
         try
         {
             var result = await offerService.AddOffer(offer);
-            return Created($"/api/offers/{result}", result);
+            return Created($"/api/offer/{result}", result);
         }
         catch (DbUpdateException ex)
         {

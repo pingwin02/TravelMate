@@ -26,9 +26,31 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
         return offers.Adapt<IEnumerable<OfferListDto>>(config);
     }
 
-    public async Task<Guid> AddOffer(Offer offer)
+    public async Task<Guid> AddOffer(OfferRequestDto newOffer)
     {
-        return await offerRepository.AddOffer(offer);
+        var airplane = await offerRepository.GetAirplaneById(newOffer.AirplaneId);
+        var airline = await offerRepository.GetAirlineByName(newOffer.AirlineName);
+        var departureAirport = await offerRepository.GetAirportByCode(newOffer.DepartureAirportCode);
+        var arrivalAirport = await offerRepository.GetAirportByCode(newOffer.ArrivalAirportCode);
+
+        var offer = new Offer
+        {
+            Airplane = airplane,
+            Airline = airline,
+            DepartureAirport = departureAirport,
+            ArrivalAirport = arrivalAirport,
+            FlightNumber = newOffer.FlightNumber,
+            DepartureTime = newOffer.DepartureTime,
+            ArrivalTime = newOffer.ArrivalTime,
+            BasePrice = newOffer.BasePrice,
+            AvailableEconomySeats = newOffer.AvailableEconomySeats,
+            AvailableBusinessSeats = newOffer.AvailableBusinessSeats,
+            AvailableFirstClassSeats = newOffer.AvailableFirstClassSeats,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        var savedOffer = await offerRepository.AddOffer(offer);
+        return savedOffer.Id;
     }
 
     public async Task UpdateOffer(Offer offer)

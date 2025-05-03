@@ -8,7 +8,7 @@ public interface IOfferService
 {
     Task<Offer> GetOffer(Guid id);
     Task<IEnumerable<OfferListDto>> GetOffers();
-    Task<Guid> AddOffer(Offer offer);
+    Task<Guid> AddOffer(OfferRequestDto offer);
     Task UpdateOffer(Offer offer);
     Task DeleteOffer(Guid id);
     Task<bool> CheckSeatAvailability(CheckSeatAvailabilityRequest request);

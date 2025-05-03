@@ -1,5 +1,4 @@
-﻿using Mapster;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TravelMateOfferService.Data;
 using TravelMateOfferService.Models;
 
@@ -34,13 +33,35 @@ public class OfferRepository(DataContext context) : IOfferRepository
         return await context.Offers.ToListAsync();
     }
 
-    public async Task<Guid> AddOffer(Offer offer)
+    public async Task<Airline> GetAirlineByName(string name)
     {
-        var newOffer = offer.Adapt<Offer>();
-        newOffer.Id = Guid.NewGuid();
-        await context.Offers.AddAsync(newOffer);
+        var airline = await context.Airlines.FirstOrDefaultAsync(x => x.Name == name);
+        if (airline == null)
+            throw new KeyNotFoundException($"Airline with name {name} not found");
+        return airline;
+    }
+
+    public async Task<Airplane> GetAirplaneById(Guid id)
+    {
+        var airplane = await context.Airplanes.FirstOrDefaultAsync(x => x.Id == id);
+        if (airplane == null)
+            throw new KeyNotFoundException($"Airplane with id {id} not found");
+        return airplane;
+    }
+
+    public async Task<Airport> GetAirportByCode(string code)
+    {
+        var airport = await context.Airports.FirstOrDefaultAsync(x => x.Code == code);
+        if (airport == null)
+            throw new KeyNotFoundException($"Airport with code {code} not found");
+        return airport;
+    }
+
+    public async Task<Offer> AddOffer(Offer offer)
+    {
+        await context.Offers.AddAsync(offer);
         await context.SaveChangesAsync();
-        return newOffer.Id;
+        return offer;
     }
 
     public Task UpdateOffer(Offer offer)

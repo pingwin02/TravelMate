@@ -5,7 +5,7 @@ namespace TravelMateBookingService.Services;
 
 public interface IBookingService
 {
-    Task<Booking> CreateBooking(Guid userId, BookingRequestDto bookingRequestDto);
-    Task<Booking> GetBookingById(Guid bookingId);
+    Task<Guid> CreateBooking(Guid userId, BookingRequestDto bookingRequestDto);
+    Task<Booking> GetBookingById(Guid userId, Guid bookingId);
     Task<List<Booking>> GetBookingsByUserId(Guid userId);
 }

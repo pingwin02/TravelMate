@@ -61,7 +61,8 @@ builder.Services.Configure<BookingsSettings>(
 
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IBookingService, BookingService>();
-builder.Services.AddHostedService<BookingExpirationService>();
+builder.Services.AddSingleton<BookingExpirationService>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<BookingExpirationService>());
 
 builder.Services.AddAuthentication(options =>
     {

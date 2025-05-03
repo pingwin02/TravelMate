@@ -13,22 +13,26 @@
    dotnet tool install --global dotnet-ef
    ```
 
-2. Create databases in MariaDB
+### Manual way
 
-   ```sql
-   CREATE DATABASE RSWD_188597_offersdb;
-   CREATE DATABASE RSWD_188597_authdb;
-   CREATE DATABASE RSWD_188597_bookingsdb;
+2. Run docker compose command:
+
+   ```bash
+   docker compose up -d mariadb rabbitmq
    ```
 
 3. Create migrations and update the database for all services:
 
-   Example for TravelMateOfferService:
+   ```bash
+   ./migrations.sh
+   ```
+
+### Automatic way
+
+2. Run docker compose command:
 
    ```bash
-   cd ./TravelMateOfferService
-   dotnet-ef migrations add InitialCreate
-   dotnet-ef database update
+   docker compose up -d
    ```
 
 ## Scraper

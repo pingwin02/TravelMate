@@ -31,7 +31,7 @@ services:
     build:
       context: ./TravelMateOfferService
     ports:
-      - "18859:8080"
+      - "5000:8080"
     depends_on:
       mariadb:
         condition: service_healthy
@@ -43,7 +43,7 @@ services:
     build:
       context: ./TravelMateAuthService
     ports:
-      - "18860:8080"
+      - "5001:8080"
     depends_on:
       mariadb:
         condition: service_healthy
@@ -55,7 +55,7 @@ services:
     build:
       context: ./TravelMateBookingService
     ports:
-      - "18861:8080"
+      - "5002:8080"
     depends_on:
       mariadb:
         condition: service_healthy

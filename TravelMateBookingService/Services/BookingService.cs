@@ -15,7 +15,7 @@ public class BookingService(
     IRequestClient<CheckSeatAvailabilityRequest> seatAvailabilityRequest)
     : IBookingService
 {
-    public async Task<Booking> CreateBooking(Guid userId, BookingRequestDto bookingRequestDto)
+    public async Task<Guid> CreateBooking(Guid userId, BookingRequestDto bookingRequestDto)
     {
         var isSeatAvailableResponse = await seatAvailabilityRequest.GetResponse<CheckSeatAvailabilityResponse>(
             new CheckSeatAvailabilityRequest
@@ -39,14 +39,14 @@ public class BookingService(
             ReservedUntil = DateTime.Now.AddSeconds(settings.Value.BookingExpirationTime)
         };
         var savedBooking = await bookingRepository.CreateBooking(booking);
-        BookingExpirationService.AddBookingCancelationToQueue(savedBooking);
-        return booking;
+        BookingExpirationService.AddBookingCancellationToQueue(savedBooking);
+        return savedBooking.Id;
     }
 
 
-    public async Task<Booking> GetBookingById(Guid bookingId)
+    public async Task<Booking> GetBookingById(Guid userId, Guid bookingId)
     {
-        return await bookingRepository.GetBookingById(bookingId);
+        return await bookingRepository.GetBookingById(userId, bookingId);
     }
 
     public async Task<List<Booking>> GetBookingsByUserId(Guid userId)
