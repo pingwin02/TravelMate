@@ -1,4 +1,4 @@
-﻿namespace TravelMateOfferService.Models.DTO;
+namespace TravelMateOfferService.Models.DTO;
 
 public class OfferListDto
 {
