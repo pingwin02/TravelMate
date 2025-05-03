@@ -1,12 +1,13 @@
 **/venv
 **/.vs
+**/.idea
 **/bin
 **/obj
 **/__pycache__
 **/.vscode
 **/results
+**/dumps
 **/appsettings.Production.json
 **/appsettings.Development.json
 **/appsettings.json
 **/Migrations
-**/*.json
