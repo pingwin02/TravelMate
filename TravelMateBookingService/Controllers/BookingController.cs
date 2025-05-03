@@ -21,7 +21,7 @@ public class BookingController(IBookingService bookingService, IServiceProvider 
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var createdBooking = await bookingService.CreateBooking(Guid.Parse(userId), booking);
-            return Created($"/api/booking/{createdBooking}", createdBooking);
+            return Created($"/api/booking/{createdBooking.Id}", createdBooking);
         }
         catch (SeatNotAvailableException e)
         {

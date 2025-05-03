@@ -1,5 +1,5 @@
 @api_url = http://localhost:5002/api
-@token = 
+@token =
 
 GET {{api_url}}/Booking/user-info
 Authorization: Bearer {{token}}
@@ -21,11 +21,11 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "offerId": "08dd8a5f-3206-4fca-8805-8cbcc2bc9909",
+  "offerId": "007a4ecb-8b0e-4278-bbba-62d748841a05",
   "seatNumber": "20A",
   "seatType": 2,
   "passengerName": "John Traveller",
-  "passengerType": 2
+  "passengerType": 0
 }
 
 ###

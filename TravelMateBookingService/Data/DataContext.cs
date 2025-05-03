@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TravelMateBookingService.Models.Bookings;
 
-namespace TravelMateBackend.Data;
+namespace TravelMateBookingService.Data;
 
 public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
 {

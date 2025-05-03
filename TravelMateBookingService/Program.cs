@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TravelMate.Models.Messages;
-using TravelMateBackend.Data;
+using TravelMateBookingService.Data;
 using TravelMateBookingService.Models.Settings;
 using TravelMateBookingService.Repositories;
 using TravelMateBookingService.Services;
@@ -20,6 +20,7 @@ var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
 builder.Services.AddMassTransit(busConfig =>
 {
     busConfig.AddRequestClient<CheckSeatAvailabilityRequest>(new Uri("queue:check-seat-availability-queue"));
+    busConfig.AddRequestClient<PaymentRequest>(new Uri("queue:payment-queue"));
     busConfig.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(rabbitMqSettings["Host"], h =>

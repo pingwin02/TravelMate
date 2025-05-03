@@ -14,7 +14,7 @@ public class BookingExpirationService(IServiceProvider serviceProvider) : Backgr
     public static void AddBookingCancellationToQueue(Booking booking)
     {
         Console.WriteLine($"Adding booking {booking.Id} to queue for cancellation at {booking.ReservedUntil}");
-        Queue.Enqueue((booking.Id, booking.SeatType, booking.OfferId, booking.ReservedUntil.Value));
+        Queue.Enqueue((booking.Id, booking.SeatType, booking.OfferId, booking.ReservedUntil));
     }
 
     public async Task CancelBooking(Guid bookingId, SeatType seatType, Guid offerId,
@@ -46,8 +46,10 @@ public class BookingExpirationService(IServiceProvider serviceProvider) : Backgr
                 Console.WriteLine($"Seat is available again, canceling {bookingId}");
                 await bookingRepository.ChangeBookingStatus(bookingId, BookingStatus.Canceled);
             }
-
-            Console.WriteLine($"Failed to cancel booking {bookingId}");
+            else
+            {
+                Console.WriteLine($"Failed to cancel booking {bookingId}");
+            }
         }
         catch (Exception ex)
         {

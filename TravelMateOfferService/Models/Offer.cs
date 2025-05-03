@@ -29,3 +29,10 @@ public enum SeatType
     Business,
     FirstClass
 }
+
+public enum PassengerType
+{
+    Adult,
+    Child,
+    Baby
+}

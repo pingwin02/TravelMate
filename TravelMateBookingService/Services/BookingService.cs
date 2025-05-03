@@ -12,16 +12,18 @@ namespace TravelMateBookingService.Services;
 public class BookingService(
     IBookingRepository bookingRepository,
     IOptions<BookingsSettings> settings,
-    IRequestClient<CheckSeatAvailabilityRequest> seatAvailabilityRequest)
+    IRequestClient<CheckSeatAvailabilityRequest> seatAvailabilityRequest,
+    IRequestClient<PaymentRequest> paymentRequest)
     : IBookingService
 {
-    public async Task<Guid> CreateBooking(Guid userId, BookingRequestDto bookingRequestDto)
+    public async Task<BookingDto> CreateBooking(Guid userId, BookingRequestDto bookingRequestDto)
     {
         var isSeatAvailableResponse = await seatAvailabilityRequest.GetResponse<CheckSeatAvailabilityResponse>(
             new CheckSeatAvailabilityRequest
             {
                 OfferId = bookingRequestDto.OfferId,
-                SeatType = bookingRequestDto.SeatType
+                SeatType = bookingRequestDto.SeatType,
+                PassengerType = bookingRequestDto.PassengerType
             });
         Console.WriteLine("Received seat availability response: " + isSeatAvailableResponse.Message.IsAvailable);
         if (!isSeatAvailableResponse.Message.IsAvailable) throw new SeatNotAvailableException();
@@ -40,7 +42,21 @@ public class BookingService(
         };
         var savedBooking = await bookingRepository.CreateBooking(booking);
         BookingExpirationService.AddBookingCancellationToQueue(savedBooking);
-        return savedBooking.Id;
+
+        var paymentResponse = await paymentRequest.GetResponse<PaymentResponse>(
+            new PaymentRequest
+            {
+                BookingId = savedBooking.Id,
+                Price = isSeatAvailableResponse.Message.DynamicPrice
+            });
+
+        return new BookingDto
+        {
+            Id = savedBooking.Id,
+            CreatedAt = savedBooking.CreatedAt,
+            ReservedUntil = savedBooking.ReservedUntil,
+            PaymentId = paymentResponse.Message.PaymentId
+        };
     }
 
 
