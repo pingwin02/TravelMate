@@ -4,73 +4,72 @@ using TravelMateOfferService.Models;
 using TravelMateOfferService.Models.DTO;
 using TravelMateOfferService.Services;
 
-namespace TravelMateOfferService.Controllers
+namespace TravelMateOfferService.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class OfferController(IOfferService offerService) : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class OfferController(IOfferService offerService) : ControllerBase
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetOffer(Guid id)
     {
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetOffer(Guid id)
+        try
         {
-            try
-            {
-                var offer = await offerService.GetOffer(id);
-                return Ok(offer);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var offer = await offerService.GetOffer(id);
+            return Ok(offer);
         }
-
-        [HttpGet]
-        public async Task<IActionResult> GetOffers()
+        catch (KeyNotFoundException ex)
         {
-            var offers = await offerService.GetOffers();
-            return Ok(offers);
+            return NotFound(ex.Message);
         }
+    }
 
-        [HttpPost]
-        public async Task<IActionResult> AddOffer([FromBody] Offer offer)
+    [HttpGet]
+    public async Task<IActionResult> GetOffers()
+    {
+        var offers = await offerService.GetOffers();
+        return Ok(offers);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddOffer([FromBody] OfferRequestDto offer)
+    {
+        try
         {
-            try
-            {
-                var result = await offerService.AddOffer(offer);
-                return Created($"/api/offers/{result}", result);
-            }
-            catch (DbUpdateException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var result = await offerService.AddOffer(offer);
+            return Created($"/api/offer/{result}", result);
         }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateOffer([FromBody] Offer offer)
+        catch (DbUpdateException ex)
         {
-            try
-            {
-                await offerService.UpdateOffer(offer);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            return BadRequest(ex.Message);
         }
+    }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOffer(Guid id)
+    [HttpPut]
+    public async Task<IActionResult> UpdateOffer([FromBody] Offer offer)
+    {
+        try
         {
-            try
-            {
-                await offerService.DeleteOffer(id);
-                return Ok();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await offerService.UpdateOffer(offer);
+            return NoContent();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteOffer(Guid id)
+    {
+        try
+        {
+            await offerService.DeleteOffer(id);
+            return Ok();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
         }
     }
 }

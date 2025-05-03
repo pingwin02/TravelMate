@@ -2,10 +2,10 @@
 
 # Script to dump or import multiple databases from/to a Docker container
 
-CONTAINER_NAME="mariadb"
+CONTAINER_NAME="db"
 DB_USER="root"
 DB_PASSWORD="student"
-DB_NAMES=("RSWD_188597_offersdb" "RSWD_188597_authdb")
+DB_NAMES=("RSWD_188597_offersdb" "RSWD_188597_authdb" "RSWD_188597_bookingsdb")
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 DUMP_DIR="./dumps"
 

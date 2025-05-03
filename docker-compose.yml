@@ -10,7 +10,7 @@ services:
       RABBITMQ_DEFAULT_PASS: "admin"
 
   mariadb:
-    container_name: mariadb
+    container_name: db
     image: mariadb:latest
     ports:
       - "3306:3306"
@@ -31,7 +31,7 @@ services:
     build:
       context: ./TravelMateOfferService
     ports:
-      - "18859:8080"
+      - "5000:8080"
     depends_on:
       mariadb:
         condition: service_healthy
@@ -43,11 +43,24 @@ services:
     build:
       context: ./TravelMateAuthService
     ports:
-      - "18860:8080"
+      - "5001:8080"
     depends_on:
       mariadb:
         condition: service_healthy
       rabbitmq:
         condition: service_started
+
+  travelmatebookingservice:
+    container_name: TravelMateBookingService
+    build:
+      context: ./TravelMateBookingService
+    ports:
+      - "5002:8080"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+
 volumes:
   mariadb_data:

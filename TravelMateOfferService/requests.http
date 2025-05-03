@@ -1,0 +1,26 @@
+@api_url = http://localhost:5000/api
+
+GET {{api_url}}/offer
+
+###
+
+GET {{api_url}}/offer/08dd8a5f-3206-4fca-8805-8cbcc2bc9909
+
+###
+
+POST {{api_url}}/offer
+Content-Type: application/json
+
+{
+  "airplaneId": "1e2b695f-1ecb-408e-b0ae-21fbff7efe1d",
+  "airlineName": "Vueling",
+  "departureAirportCode": "FCO",
+  "arrivalAirportCode": "ORY",
+  "flightNumber": "Vueling 6255",
+  "departureTime": "2025-05-03T16:11:19.098Z",
+  "arrivalTime": "2025-05-03T17:23:19.098Z",
+  "basePrice": 550,
+  "availableEconomySeats": 15,
+  "availableBusinessSeats": 5,
+  "availableFirstClassSeats": 1
+}

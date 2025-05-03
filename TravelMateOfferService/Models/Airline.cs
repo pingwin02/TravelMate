@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TravelMateOfferService.Models
+namespace TravelMateOfferService.Models;
+
+public class Airline
 {
-    public class Airline
-    {
-        [Key] public string Name { get; set; }
-        public string IconUrl { get; set; }
-    }
+    [Key] public string Name { get; set; }
+    public string IconUrl { get; set; }
 }

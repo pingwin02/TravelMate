@@ -13,44 +13,26 @@
    dotnet tool install --global dotnet-ef
    ```
 
-2. Create databases in MariaDB
+### Manual way
 
-   ```sql
-   CREATE DATABASE RSWD_188597_offersdb;
-   CREATE DATABASE RSWD_188597_authdb;
-   ```
-
-3. Update the `appsettings.Development.json`:
-
-   Travel Mate Offers:
-
-   ```json
-    "ConnectionStrings": {
-        "DefaultDbConnection": "Server=localhost;Database=RSWD_188597_offersdb;User=root;Password=yourpassword;"
-    }
-   ```
-
-   Travel Mate Auth:
-
-   ```json
-   "ConnectionStrings": {
-       "DefaultDbConnection": "Server=localhost;Database=RSWD_188597_authdb;User=root;Password=yourpassword;"
-   },
-   "Jwt": {
-       "Key": "tokenkey",
-       "Issuer": "authmicroservice",
-       "Audience": "mainapp"
-   }
-   ```
-
-4. Create migrations and update the database for all services:
-
-   Example for TravelMateOfferService:
+2. Run docker compose command:
 
    ```bash
-   cd ./TravelMateOfferService
-   dotnet-ef migrations add InitialCreate
-   dotnet-ef database update
+   docker compose up -d mariadb rabbitmq
+   ```
+
+3. Create migrations and update the database for all services:
+
+   ```bash
+   ./migrations.sh
+   ```
+
+### Automatic way
+
+2. Run docker compose command:
+
+   ```bash
+   docker compose up -d
    ```
 
 ## Scraper

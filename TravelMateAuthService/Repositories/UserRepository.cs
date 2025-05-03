@@ -5,43 +5,42 @@ using TravelMateAuthService.Controllers;
 using TravelMateAuthService.Data;
 using TravelMateAuthService.Entities;
 
-namespace TravelMateAuthService.Repositories
+namespace TravelMateAuthService.Repositories;
+
+public class UserRepository(DataContext context) : IUserRepository
 {
-    public class UserRepository(DataContext context) : IUserRepository
+    private readonly PasswordHasher<UserCredentials> _passwordHasher = new();
+
+    public async Task<Guid?> CheckLoginCredentials(Credentials credentials)
     {
-        private readonly PasswordHasher<UserCredentials> _passwordHasher = new();
+        var user = await context.Users
+            .FirstOrDefaultAsync(u => u.Username == credentials.Username);
 
-        public async Task<Guid?> CheckLoginCredentials(Credentials credentials)
+        if (user == null)
+            return null;
+
+        var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, credentials.Password);
+
+        return result == PasswordVerificationResult.Success ? user.Guid : null;
+    }
+
+    public async Task RegisterUser(Credentials credentials)
+    {
+        var existingUser = await context.Users
+            .FirstOrDefaultAsync(u => u.Username == credentials.Username);
+
+        if (existingUser != null)
+            throw new DuplicateNameException("Username already exists");
+
+        var user = new UserCredentials
         {
-            var user = await context.Users
-                .FirstOrDefaultAsync(u => u.Username == credentials.Username);
+            Username = credentials.Username,
+            Guid = Guid.NewGuid()
+        };
 
-            if (user == null)
-                return null;
+        user.PasswordHash = _passwordHasher.HashPassword(user, credentials.Password);
 
-            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, credentials.Password);
-
-            return result == PasswordVerificationResult.Success ? user.Guid : null;
-        }
-
-        public async Task RegisterUser(Credentials credentials)
-        {
-            var existingUser = await context.Users
-                .FirstOrDefaultAsync(u => u.Username == credentials.Username);
-            
-            if (existingUser != null)
-                throw new DuplicateNameException("Username already exists");
-            
-            var user = new UserCredentials
-            {
-                Username = credentials.Username,
-                Guid = Guid.NewGuid()
-            };
-
-            user.PasswordHash = _passwordHasher.HashPassword(user, credentials.Password);
-
-            await context.Users.AddAsync(user);
-            await context.SaveChangesAsync();
-        }
+        await context.Users.AddAsync(user);
+        await context.SaveChangesAsync();
     }
 }

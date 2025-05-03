@@ -1,4 +1,4 @@
-@api_url = http://localhost:5109/api
+@api_url = http://localhost:5001/api
 
 POST {{api_url}}/auth/register
 Content-Type: application/json

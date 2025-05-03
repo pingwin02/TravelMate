@@ -1,10 +1,9 @@
 ﻿using TravelMateAuthService.Controllers;
 
-namespace TravelMateAuthService.Services
+namespace TravelMateAuthService.Services;
+
+public interface IUserService
 {
-    public interface IUserService
-    {
-        public Task<Guid?> CheckLoginCredentials(Credentials credentials);
-        public Task RegisterUser(Credentials credentials);
-    }
+    public Task<Guid?> CheckLoginCredentials(Credentials credentials);
+    public Task RegisterUser(Credentials credentials);
 }

@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TravelMateOfferService.Models
+namespace TravelMateOfferService.Models;
+
+public class Airport
 {
-    public class Airport
-    {
-        [Key] [StringLength(3)] public string Code { get; set; }
-        public string? Name { get; set; }
-        public string City { get; set; }
-        public string? Country { get; set; }
-    }
+    [Key] [StringLength(3)] public string Code { get; set; }
+    public string? Name { get; set; }
+    public string City { get; set; }
+    public string? Country { get; set; }
 }

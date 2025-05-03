@@ -1,5 +1,5 @@
-using TravelMateAuthService.Data;
 using Microsoft.EntityFrameworkCore;
+using TravelMateAuthService.Data;
 using TravelMateAuthService.Repositories;
 using TravelMateAuthService.Services;
 

@@ -1,2 +1,5 @@
-﻿**/bin
+**/.idea
+**/bin
 **/obj
+**/Migrations
+**/Properties

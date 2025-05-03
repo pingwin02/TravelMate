@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using MassTransit;
+using Microsoft.EntityFrameworkCore;
+using TravelMateOfferService.Consumers;
 using TravelMateOfferService.Data;
 using TravelMateOfferService.Repositories;
 using TravelMateOfferService.Services;
@@ -12,6 +14,25 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 builder.Services.AddScoped<IOfferRepository, OfferRepository>();
 builder.Services.AddScoped<IOfferService, OfferService>();
+builder.Services.AddScoped<CheckSeatAvailabilityConsumer>();
+
+var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
+builder.Services.AddMassTransit(busConfig =>
+{
+    busConfig.AddConsumer<CheckSeatAvailabilityConsumer>();
+    busConfig.SetKebabCaseEndpointNameFormatter();
+    busConfig.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(rabbitMqSettings["Host"], h =>
+        {
+            h.Username(rabbitMqSettings["Username"]);
+            h.Password(rabbitMqSettings["Password"]);
+        });
+
+        cfg.ReceiveEndpoint("check-seat-availability-queue",
+            e => { e.ConfigureConsumer<CheckSeatAvailabilityConsumer>(context); });
+    });
+});
 
 builder.Services.AddSwaggerGen();
 var app = builder.Build();
