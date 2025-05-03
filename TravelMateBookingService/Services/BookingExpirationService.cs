@@ -25,9 +25,9 @@ public class BookingExpirationService(IServiceProvider serviceProvider) : Backgr
             using var scope = serviceProvider.CreateScope();
             var bookingRepository = scope.ServiceProvider.GetRequiredService<IBookingRepository>();
 
-            if (await bookingRepository.CheckIfCancelled(bookingId))
+            if (!await bookingRepository.CheckIfPending(bookingId))
             {
-                Console.WriteLine($"Booking {bookingId} is already canceled");
+                Console.WriteLine($"Booking {bookingId} is not pending, skipping cancellation");
                 return;
             }
 
@@ -59,6 +59,7 @@ public class BookingExpirationService(IServiceProvider serviceProvider) : Backgr
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        Console.WriteLine("BookingExpirationService started");
         while (!stoppingToken.IsCancellationRequested)
             if (Queue.TryDequeue(out var task))
             {

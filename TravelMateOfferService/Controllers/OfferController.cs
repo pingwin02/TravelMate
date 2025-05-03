@@ -7,7 +7,7 @@ using TravelMateOfferService.Services;
 namespace TravelMateOfferService.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/[controller]s")]
 public class OfferController(IOfferService offerService) : ControllerBase
 {
     [HttpGet("{id}")]

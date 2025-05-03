@@ -8,7 +8,7 @@ using TravelMateBookingService.Services;
 
 namespace TravelMateBookingService.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/[controller]s")]
 [ApiController]
 public class BookingController(IBookingService bookingService, IServiceProvider serviceProvider)
     : ControllerBase
@@ -74,8 +74,8 @@ public class BookingController(IBookingService bookingService, IServiceProvider 
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var booking = await bookingService.GetBookingById(Guid.Parse(userId), id);
-            if (booking.Status is BookingStatus.Canceled or BookingStatus.Confirmed)
-                return BadRequest("Booking is already canceled or confirmed");
+            if (booking.Status is not BookingStatus.Pending)
+                return BadRequest("Booking is not in a cancellable state");
 
             using var scope = serviceProvider.CreateScope();
             var expirationService = scope.ServiceProvider.GetRequiredService<BookingExpirationService>();

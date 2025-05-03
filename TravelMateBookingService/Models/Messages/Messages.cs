@@ -26,13 +26,24 @@ public class CancelReservationResponse
     public bool IsCanceled { get; set; }
 }
 
-public class PaymentRequest
+public class PaymentCreationRequest
 {
     public Guid BookingId { get; set; }
     public decimal Price { get; set; }
 }
 
-public class PaymentResponse
+public class PaymentCreationResponse
 {
     public Guid PaymentId { get; set; }
+}
+
+public class BookingStatusUpdateRequest
+{
+    public Guid BookingId { get; set; }
+    public BookingStatus Status { get; set; }
+}
+
+public class BookingStatusUpdateResponse
+{
+    public bool IsUpdated { get; set; }
 }

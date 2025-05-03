@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TravelMate.Models.Messages;
+using TravelMateBookingService.Consumers;
 using TravelMateBookingService.Data;
 using TravelMateBookingService.Models.Settings;
 using TravelMateBookingService.Repositories;
@@ -16,11 +17,22 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultDbConnection"),
         ServerVersion.Parse("11.7.2-mariadb")));
+
+builder.Services.Configure<BookingsSettings>(
+    builder.Configuration.GetSection("BookingsSettings"));
+
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<BookingStatusUpdateConsumer>();
+builder.Services.AddSingleton<BookingExpirationService>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<BookingExpirationService>());
+
 var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
 builder.Services.AddMassTransit(busConfig =>
 {
     busConfig.AddRequestClient<CheckSeatAvailabilityRequest>(new Uri("queue:check-seat-availability-queue"));
-    busConfig.AddRequestClient<PaymentRequest>(new Uri("queue:payment-queue"));
+    busConfig.AddRequestClient<PaymentCreationRequest>(new Uri("queue:payment-queue"));
+    busConfig.AddConsumer<BookingStatusUpdateConsumer>();
     busConfig.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(rabbitMqSettings["Host"], h =>
@@ -28,6 +40,9 @@ builder.Services.AddMassTransit(busConfig =>
             h.Username(rabbitMqSettings["Username"]);
             h.Password(rabbitMqSettings["Password"]);
         });
+
+        cfg.ReceiveEndpoint("update-booking-status-queue",
+            e => { e.ConfigureConsumer<BookingStatusUpdateConsumer>(context); });
     });
 });
 builder.Services.AddSwaggerGen(c =>
@@ -57,13 +72,6 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-builder.Services.Configure<BookingsSettings>(
-    builder.Configuration.GetSection("BookingsSettings"));
-
-builder.Services.AddScoped<IBookingRepository, BookingRepository>();
-builder.Services.AddScoped<IBookingService, BookingService>();
-builder.Services.AddSingleton<BookingExpirationService>();
-builder.Services.AddHostedService(sp => sp.GetRequiredService<BookingExpirationService>());
 
 builder.Services.AddAuthentication(options =>
     {
@@ -85,7 +93,6 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddAuthorization();
-
 
 var app = builder.Build();
 

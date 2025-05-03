@@ -13,7 +13,7 @@ public class BookingService(
     IBookingRepository bookingRepository,
     IOptions<BookingsSettings> settings,
     IRequestClient<CheckSeatAvailabilityRequest> seatAvailabilityRequest,
-    IRequestClient<PaymentRequest> paymentRequest)
+    IRequestClient<PaymentCreationRequest> paymentRequest)
     : IBookingService
 {
     public async Task<BookingDto> CreateBooking(Guid userId, BookingRequestDto bookingRequestDto)
@@ -30,6 +30,7 @@ public class BookingService(
 
         var booking = new Booking
         {
+            Id = Guid.NewGuid(),
             UserId = userId,
             OfferId = bookingRequestDto.OfferId,
             Status = BookingStatus.Pending,
@@ -40,22 +41,25 @@ public class BookingService(
             CreatedAt = DateTime.Now,
             ReservedUntil = DateTime.Now.AddSeconds(settings.Value.BookingExpirationTime)
         };
-        var savedBooking = await bookingRepository.CreateBooking(booking);
-        BookingExpirationService.AddBookingCancellationToQueue(savedBooking);
 
-        var paymentResponse = await paymentRequest.GetResponse<PaymentResponse>(
-            new PaymentRequest
+        var paymentResponse = await paymentRequest.GetResponse<PaymentCreationResponse>(
+            new PaymentCreationRequest
             {
-                BookingId = savedBooking.Id,
+                BookingId = booking.Id,
                 Price = isSeatAvailableResponse.Message.DynamicPrice
             });
+
+        booking.PaymentId = paymentResponse.Message.PaymentId;
+
+        var savedBooking = await bookingRepository.CreateBooking(booking);
+        BookingExpirationService.AddBookingCancellationToQueue(savedBooking);
 
         return new BookingDto
         {
             Id = savedBooking.Id,
             CreatedAt = savedBooking.CreatedAt,
             ReservedUntil = savedBooking.ReservedUntil,
-            PaymentId = paymentResponse.Message.PaymentId
+            PaymentId = savedBooking.PaymentId.Value
         };
     }
 
@@ -68,5 +72,15 @@ public class BookingService(
     public async Task<List<Booking>> GetBookingsByUserId(Guid userId)
     {
         return await bookingRepository.GetBookingsByUserId(userId);
+    }
+
+    public Task<bool> ChangeBookingStatus(Guid bookingId, BookingStatus status)
+    {
+        return bookingRepository.ChangeBookingStatus(bookingId, status);
+    }
+
+    public Task<bool> CheckIfPending(Guid bookingId)
+    {
+        return bookingRepository.CheckIfPending(bookingId);
     }
 }
