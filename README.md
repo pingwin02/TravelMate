@@ -18,7 +18,7 @@
    ```sql
    CREATE DATABASE RSWD_188597_offersdb;
    CREATE DATABASE RSWD_188597_authdb;
-   CREATE DATABASE RSWD_188597_bookingdb;
+   CREATE DATABASE RSWD_188597_bookingsdb;
    ```
 
 3. Create migrations and update the database for all services:
