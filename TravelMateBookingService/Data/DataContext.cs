@@ -1,15 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TravelMateBookingService.Models.Bookings;
 
+namespace TravelMateBackend.Data;
 
-namespace TravelMateBackend.Data
+public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
 {
-    public class DataContext : DbContext
-    {
-        public DataContext(DbContextOptions<DataContext> options) : base(options)
-        {
-        }
-
-        public DbSet<Booking> Bookings { get; set; }
-    }
+    public DbSet<Booking> Bookings { get; set; }
 }

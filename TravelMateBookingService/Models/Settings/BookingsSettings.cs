@@ -1,7 +1,6 @@
-﻿namespace TravelMateBookingService.Models.Settings
+﻿namespace TravelMateBookingService.Models.Settings;
+
+public class BookingsSettings
 {
-    public class BookingsSettings
-    {
-        public int BookingExpirationTime { get; set; }
-    }
+    public int BookingExpirationTime { get; set; }
 }

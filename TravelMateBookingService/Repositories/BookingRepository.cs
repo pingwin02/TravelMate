@@ -2,45 +2,44 @@
 using TravelMateBackend.Data;
 using TravelMateBookingService.Models.Bookings;
 
-namespace TravelMateBookingService.Repositories
+namespace TravelMateBookingService.Repositories;
+
+public class BookingRepository(DataContext dataContext) : IBookingRepository
 {
-    public class BookingRepository : IBookingRepository
+    public async Task<Booking> CreateBooking(Booking booking)
     {
-        private readonly DataContext _context;
-        public BookingRepository(DataContext dataContext) {
-            _context = dataContext;
-        }
+        await dataContext.Bookings.AddAsync(booking);
+        await dataContext.SaveChangesAsync();
+        return booking;
+    }
 
-        public async Task<Booking> CreateBooking(Booking booking)
-        {
-            await _context.Bookings.AddAsync(booking);
-            await _context.SaveChangesAsync();
-            return booking;
-        }
+    public async Task<bool> ChangeBookingStatus(Guid bookingId, BookingStatus status)
+    {
+        var booking = await dataContext.Bookings.FindAsync(bookingId);
+        //zamienic na logger potem
+        Console.WriteLine($"Booking found: {booking != null}");
+        if (booking == null) return false;
+        booking.Status = status;
 
-        public async Task<bool> ChangeBookingStatus(Guid bookingId, BookingStatus status)
-        {
-            var booking = await _context.Bookings.FindAsync(bookingId);
-            //zamienic na logger potem
-            Console.WriteLine($"Booking found: {booking != null}");
-            if (booking == null) return false;
-            booking.Status = status;
-            
-            _context.Bookings.Update(booking);
-            await _context.SaveChangesAsync();
-            return true;
-        }
+        dataContext.Bookings.Update(booking);
+        await dataContext.SaveChangesAsync();
+        return true;
+    }
 
-        public async Task<Booking> GetBookingById(Guid bookingId)
-        {
-            return await _context.Bookings.FindAsync(bookingId);
-        }
+    public async Task<Booking> GetBookingById(Guid bookingId)
+    {
+        var booking = await dataContext.Bookings.FindAsync(bookingId);
 
-        public async Task<List<Booking>> GetBookingsByUserId(Guid userId)
-        {
-            return await _context.Bookings
-                .Where(b => b.UserId == userId)
-                .ToListAsync();
-        }
+        if (booking == null)
+            throw new KeyNotFoundException($"Booking with id {bookingId} not found");
+
+        return booking;
+    }
+
+    public async Task<List<Booking>> GetBookingsByUserId(Guid userId)
+    {
+        return await dataContext.Bookings
+            .Where(b => b.UserId == userId)
+            .ToListAsync();
     }
 }
