@@ -6,10 +6,9 @@ export interface Booking {
   Id: string;
   UserId: string;
   OfferId: string;
-  PaymentUrl: string | null;
+  PaymentId: string | null;
   Status: BookingStatus;
-  ReservedUntil: string | null;
-  SeatNumber: string;
+  ReservedUntil: string;
   SeatType: SeatType;
   PassengerName: string;
   PassengerType: PassengerType;

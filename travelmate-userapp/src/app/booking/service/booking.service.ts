@@ -14,16 +14,16 @@ export class BookingService {
 
   /* get user bookings */
   getBookingsByUser(): Observable<Bookings[]>{
-    return this.http.get<Bookings[]>( '/rezerwacje/Booking');
+    return this.http.get<Bookings[]>( '/rezerwacje/Bookings');
   }
 
   /* create a booking */
   createBooking(booking: BookingCreate): Observable<any> {
-    return this.http.post('/rezerwacje/Booking/create', booking);
+    return this.http.post('/rezerwacje/Bookings/create', booking);
   }
 
   /* get booking by id */
   getBookingById(id: string): Observable<Booking> {
-    return this.http.get<Booking>(`/rezerwacje/Booking/${id}`);
+    return this.http.get<Booking>(`/rezerwacje/Bookings/${id}`);
   }
 }

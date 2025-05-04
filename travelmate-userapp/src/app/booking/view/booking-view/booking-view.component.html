@@ -3,11 +3,7 @@
 
   <div class="card">
     <div class="card-body">
-      <div class="d-flex justify-content-end mb-3">
-<!--        <div class="timer-box">-->
-<!--          Time left: <strong>{{ timeLeft }}s</strong>-->
-<!--        </div>-->
-      </div>
+
       <form [formGroup]="reservationForm">
         <div class="mb-3">
           <label for="name" class="form-label">First name</label>
@@ -22,18 +18,18 @@
         <div class="mb-3">
           <label for="passenger_type" class="form-label">Choose passenger type</label>
           <select class="form-select" id="passenger_type" formControlName="passenger_type">
-            <option [value]="'Baby'">Baby</option>
-            <option [value]="'Child'">Child</option>
-            <option [value]="'Adult'">Adult</option>
+            <option [value]="0">Adult</option>
+            <option [value]="1">Child</option>
+            <option [value]="2">Baby</option>
           </select>
         </div>
 
         <div class="mb-3">
           <label for="seat_type" class="form-label">Choose seat type</label>
           <select class="form-select" id="seat_type" formControlName="seat_type">
-            <option [value]="'Economy'">Economy</option>
-            <option [value]="'Business'">Business</option>
-            <option [value]="'FirstClass'">First Class</option>
+            <option [value]="0">Economy</option>
+            <option [value]="1">Business</option>
+            <option [value]="2">First Class</option>
           </select>
         </div>
 

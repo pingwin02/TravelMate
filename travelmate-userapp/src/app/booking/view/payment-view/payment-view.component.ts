@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationStart, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Booking} from "../../model/Booking";
 import {BookingService} from "../../service/booking.service";
 
@@ -27,6 +27,7 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
       this.bookingService.getBookingById(this.bookingId).subscribe({
         next: (booking) => {
           this.booking = booking;
+          console.log('Booking object:', booking);
           this.initTimer();
         },
         error: (err) => {
@@ -38,10 +39,14 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
   }
 
   initTimer(): void {
-    if (!this.booking.ReservedUntil) return;
+    if (!this.booking.ReservedUntil) {
+      return;
+    }
 
     const expiry = new Date(this.booking.ReservedUntil).getTime();
-    this.timeLeft = Math.floor((expiry - Date.now()) / 1000);
+    const correctedExpiry = expiry + (2 * 60 * 60 * 1000);
+    this.timeLeft = Math.floor((correctedExpiry - Date.now()) / 1000);
+    console.log('Time:', this.timeLeft);
 
     this.timerInterval = setInterval(() => {
       if (this.timeLeft > 0) {
