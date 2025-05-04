@@ -25,5 +25,14 @@
     "pathRewrite": {
       "^/rezerwacje": ""
     }
+  },
+  "/platnosci": {
+    "target": "http://localhost:5003/api",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/platnosci": ""
+    }
   }
 }
