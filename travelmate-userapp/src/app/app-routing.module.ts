@@ -4,9 +4,12 @@ import {OffersViewComponent} from "./offers/view/offers-view/offers-view.compone
 import {OfferViewComponent} from "./offers/view/offer-view/offer-view.component";
 import {LoginViewComponent} from "./auth/view/login-view/login-view.component";
 import {BookingViewComponent} from "./booking/view/booking-view/booking-view.component";
-import {PaymentViewComponent} from "./payment/view/payment-view/payment-view.component";
+import {PaymentViewComponent} from "./booking/view/payment-view/payment-view.component";
 import {authGuard} from "./auth/auth.guard";
 import {MyBookingsViewComponent} from "./booking/view/my-bookings-view/my-bookings-view.component";
+import {
+  PaymentConfirmationViewComponent
+} from "./booking/view/payment-confirmation-view/payment-confirmation-view.component";
 
 const routes: Routes = [
   {
@@ -22,12 +25,17 @@ const routes: Routes = [
     component: LoginViewComponent
   },
   {
-    path: 'booking',
+    path: 'booking/:id',
     component: BookingViewComponent,
     canActivate: [authGuard]
   },
   {
-    path: 'payment',
+    path: 'payment-confirmation/:id',
+    component: PaymentConfirmationViewComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'payment/:id',
     component: PaymentViewComponent,
     canActivate: [authGuard]
   },

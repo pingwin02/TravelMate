@@ -1,9 +1,17 @@
+import {BookingStatus} from "./booking-status.enum";
+import {SeatType} from "./seat-type.enum";
+import {PassengerType} from "./passenger-type.enum";
+
 export interface Booking {
-  booking_id: number;
-  user_id: number;
-  offer_id: number;
-  status: string;
-  seat_type: number;
-  passenger_name: string;
-  passenger_type: string;
+  Id: string;
+  UserId: string;
+  OfferId: string;
+  PaymentUrl: string | null;
+  Status: BookingStatus;
+  ReservedUntil: string | null;
+  SeatNumber: string;
+  SeatType: SeatType;
+  PassengerName: string;
+  PassengerType: PassengerType;
+  CreatedAt: string;
 }

@@ -1,0 +1,27 @@
+<div class="container mt-4" *ngIf="booking">
+  <h2>Payment</h2>
+
+  <div class="d-flex justify-content-end mb-3">
+    <div class="timer-box bg-light p-2 rounded shadow-sm">
+      Time left: <strong>{{ timeLeft }}s</strong>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Booking for {{ booking.PassengerName }}</h5>
+      <p class="card-text">
+        <strong>Offer ID:</strong> {{ booking.OfferId }}<br>
+        <strong>Status:</strong> {{ booking.Status }}<br>
+        <strong>Seat:</strong> {{ booking.SeatType }} {{ booking.SeatNumber }}<br>
+        <strong>Passenger Type:</strong> {{ booking.PassengerType }}<br>
+      </p>
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <button class="btn btn-lg btn-success px-5 py-2" (click)="payNow()" [disabled]="timeLeft === 0">
+      Pay Now
+    </button>
+  </div>
+</div>

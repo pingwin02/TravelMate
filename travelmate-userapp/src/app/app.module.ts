@@ -9,9 +9,10 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { OfferViewComponent } from './offers/view/offer-view/offer-view.component';
 import { LoginViewComponent } from './auth/view/login-view/login-view.component';
 import { BookingViewComponent } from './booking/view/booking-view/booking-view.component';
-import { PaymentViewComponent } from './payment/view/payment-view/payment-view.component';
+import { PaymentViewComponent } from './booking/view/payment-view/payment-view.component';
 import {TokenInterceptor} from "./auth/token.interceptor";
 import { MyBookingsViewComponent } from './booking/view/my-bookings-view/my-bookings-view.component';
+import { PaymentConfirmationViewComponent } from './booking/view/payment-confirmation-view/payment-confirmation-view.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { MyBookingsViewComponent } from './booking/view/my-bookings-view/my-book
     LoginViewComponent,
     BookingViewComponent,
     PaymentViewComponent,
-    MyBookingsViewComponent
+    MyBookingsViewComponent,
+    PaymentConfirmationViewComponent
   ],
   imports: [
     BrowserModule,

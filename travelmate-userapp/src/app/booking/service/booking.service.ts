@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
 import {Bookings} from "../model/Bookings";
 import {HttpClient} from "@angular/common/http";
+import {BookingCreate} from "../model/BookingCreate";
+import {Booking} from "../model/Booking";
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +14,16 @@ export class BookingService {
 
   /* get user bookings */
   getBookingsByUser(): Observable<Bookings[]>{
-    return this.http.get<Bookings[]>( '/bookings/Bookings');
+    return this.http.get<Bookings[]>( '/rezerwacje/Booking');
+  }
+
+  /* create a booking */
+  createBooking(booking: BookingCreate): Observable<any> {
+    return this.http.post('/rezerwacje/Booking/create', booking);
+  }
+
+  /* get booking by id */
+  getBookingById(id: string): Observable<Booking> {
+    return this.http.get<Booking>(`/rezerwacje/Booking/${id}`);
   }
 }

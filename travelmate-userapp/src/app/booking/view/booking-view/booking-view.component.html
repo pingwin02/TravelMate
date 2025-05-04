@@ -4,9 +4,9 @@
   <div class="card">
     <div class="card-body">
       <div class="d-flex justify-content-end mb-3">
-        <div class="timer-box">
-          Time left: <strong>{{ timeLeft }}s</strong>
-        </div>
+<!--        <div class="timer-box">-->
+<!--          Time left: <strong>{{ timeLeft }}s</strong>-->
+<!--        </div>-->
       </div>
       <form [formGroup]="reservationForm">
         <div class="mb-3">
@@ -22,23 +22,22 @@
         <div class="mb-3">
           <label for="passenger_type" class="form-label">Choose passenger type</label>
           <select class="form-select" id="passenger_type" formControlName="passenger_type">
-            <option value="1">baby</option>
-            <option value="2">child</option>
-            <option value="3">teenager</option>
-            <option value="4">adult</option>
+            <option [value]="'Baby'">Baby</option>
+            <option [value]="'Child'">Child</option>
+            <option [value]="'Adult'">Adult</option>
           </select>
         </div>
 
         <div class="mb-3">
-          <label for="seat_type" class="form-label">Choose ticket type</label>
+          <label for="seat_type" class="form-label">Choose seat type</label>
           <select class="form-select" id="seat_type" formControlName="seat_type">
-            <option value="1">economy</option>
-            <option value="2">business</option>
-            <option value="3">first class</option>
+            <option [value]="'Economy'">Economy</option>
+            <option [value]="'Business'">Business</option>
+            <option [value]="'FirstClass'">First Class</option>
           </select>
         </div>
 
-        <button type="submit" class="btn btn-primary" [disabled]="reservationForm.invalid" (click)="goToPayment()">Go to payment</button>
+        <button type="submit" class="btn btn-primary" [disabled]="reservationForm.invalid" (click)="goToPayment()">Next</button>
       </form>
     </div>
   </div>
