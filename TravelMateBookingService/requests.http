@@ -22,7 +22,6 @@ Content-Type: application/json
 
 {
   "offerId": "08dd8a86-751d-4036-8dd5-a8063bae6bc1",
-  "seatNumber": "20A",
   "seatType": 1,
   "passengerName": "John Traveller",
   "passengerType": 2

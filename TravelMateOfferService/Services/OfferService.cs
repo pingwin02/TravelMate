@@ -46,7 +46,7 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
             AvailableEconomySeats = newOffer.AvailableEconomySeats,
             AvailableBusinessSeats = newOffer.AvailableBusinessSeats,
             AvailableFirstClassSeats = newOffer.AvailableFirstClassSeats,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.Now
         };
 
         var savedOffer = await offerRepository.AddOffer(offer);

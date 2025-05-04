@@ -19,7 +19,7 @@ Content-Type: application/json
 
 ###
 
-GET {{offers_url}}/offers/08dd8a8e-46c3-472f-8f34-5ed2950b6fe5
+GET {{offers_url}}/offers/08dd8af4-9708-458f-8dc0-beb129e12c69
 
 ###
 
@@ -53,8 +53,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "offerId": "08dd8a8e-46c3-472f-8f34-5ed2950b6fe5",
-  "seatNumber": "20A",
+  "offerId": "08dd8af4-9708-458f-8dc0-beb129e12c69",
   "seatType": 2,
   "passengerName": "John Traveller",
   "passengerType": 1

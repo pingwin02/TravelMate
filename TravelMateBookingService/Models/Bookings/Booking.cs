@@ -14,7 +14,6 @@ public class Booking
     public Guid? PaymentId { get; set; }
     public BookingStatus Status { get; set; }
     public DateTime ReservedUntil { get; set; }
-    public string SeatNumber { get; set; }
     public SeatType SeatType { get; set; }
     public string PassengerName { get; set; }
     public PassengerType PassengerType { get; set; }

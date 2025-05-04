@@ -34,7 +34,6 @@ public class BookingService(
             UserId = userId,
             OfferId = bookingRequestDto.OfferId,
             Status = BookingStatus.Pending,
-            SeatNumber = bookingRequestDto.SeatNumber,
             SeatType = bookingRequestDto.SeatType,
             PassengerName = bookingRequestDto.PassengerName,
             PassengerType = bookingRequestDto.PassengerType,

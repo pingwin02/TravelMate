@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using TravelMateOfferService.Models;
 using TravelMateOfferService.Models.DTO;
 using TravelMateOfferService.Services;
@@ -39,7 +38,7 @@ public class OfferController(IOfferService offerService) : ControllerBase
             var result = await offerService.AddOffer(offer);
             return Created($"/api/offer/{result}", result);
         }
-        catch (DbUpdateException ex)
+        catch (KeyNotFoundException ex)
         {
             return BadRequest(ex.Message);
         }
