@@ -6,11 +6,13 @@ public class CheckSeatAvailabilityRequest
 {
     public Guid OfferId { get; set; }
     public SeatType SeatType { get; set; }
+    public PassengerType PassengerType { get; set; }
 }
 
 public class CheckSeatAvailabilityResponse
 {
     public bool IsAvailable { get; set; }
+    public decimal DynamicPrice { get; set; }
 }
 
 public class CancelReservationRequest

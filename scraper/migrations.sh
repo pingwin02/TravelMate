@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for dir in TravelMate*/; do
+for dir in ../TravelMate*/; do
     if [ -d "$dir" ]; then
         echo "Processing directory: $dir"
         cd "$dir" || exit

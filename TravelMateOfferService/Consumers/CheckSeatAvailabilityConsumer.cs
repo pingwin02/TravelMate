@@ -34,7 +34,8 @@ public class CheckSeatAvailabilityConsumer(IServiceProvider serviceProvider)
 
         await context.RespondAsync(new CheckSeatAvailabilityResponse
         {
-            IsAvailable = seatIsAvailable
+            IsAvailable = seatIsAvailable,
+            DynamicPrice = seatIsAvailable ? await offerService.CalculateDynamicPrice(request) : 0
         });
     }
 }

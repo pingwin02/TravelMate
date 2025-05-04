@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TravelMateBackend.Data;
+using TravelMateBookingService.Data;
 using TravelMateBookingService.Models.Bookings;
 
 namespace TravelMateBookingService.Repositories;
@@ -16,9 +16,10 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
     public async Task<bool> ChangeBookingStatus(Guid bookingId, BookingStatus status)
     {
         var booking = await dataContext.Bookings.FindAsync(bookingId);
-        //zamienic na logger potem
-        Console.WriteLine($"Booking found: {booking != null}");
-        if (booking == null) return false;
+
+        if (booking == null)
+            throw new KeyNotFoundException($"Booking with id {bookingId} not found");
+
         booking.Status = status;
 
         dataContext.Bookings.Update(booking);
@@ -26,10 +27,10 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
         return true;
     }
 
-    public Task<bool> CheckIfCancelled(Guid bookingId)
+    public Task<bool> CheckIfPending(Guid bookingId)
     {
         var booking = dataContext.Bookings.Find(bookingId);
-        return booking == null ? Task.FromResult(false) : Task.FromResult(booking.Status == BookingStatus.Canceled);
+        return Task.FromResult(booking is { Status: BookingStatus.Pending });
     }
 
     public async Task<Booking> GetBookingById(Guid userId, Guid bookingId)

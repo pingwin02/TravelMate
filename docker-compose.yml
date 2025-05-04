@@ -62,5 +62,17 @@ services:
       rabbitmq:
         condition: service_started
 
+  travelmatepaymentservice:
+    container_name: TravelMatePaymentService
+    build:
+      context: ./TravelMatePaymentService
+    ports:
+      - "5003:8080"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+
 volumes:
   mariadb_data:

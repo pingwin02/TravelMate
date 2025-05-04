@@ -1,0 +1,84 @@
+@auth_url = http://localhost:5001/api
+@token = 
+POST {{auth_url}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+
+###
+
+POST {{auth_url}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+
+###
+
+@offers_url = http://localhost:5000/api
+
+POST {{offers_url}}/offers
+Content-Type: application/json
+
+{
+  "airplaneId": "1e2b695f-1ecb-408e-b0ae-21fbff7efe1d",
+  "airlineName": "Vueling",
+  "departureAirportCode": "FCO",
+  "arrivalAirportCode": "ORY",
+  "flightNumber": "Vueling 6255",
+  "departureTime": "2025-05-03T16:11:19.098Z",
+  "arrivalTime": "2025-05-03T17:23:19.098Z",
+  "basePrice": 550,
+  "availableEconomySeats": 1,
+  "availableBusinessSeats": 1,
+  "availableFirstClassSeats": 1
+}
+
+###
+
+@offer_id = 08dd8afb-fa12-4b6b-8941-c2922aac4f69
+
+GET {{offers_url}}/offers/{{offer_id}}
+
+###
+
+@bookings_url = http://localhost:5002/api
+
+POST {{bookings_url}}/bookings/create
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "offerId": "{{offer_id}}",
+  "seatType": 1,
+  "passengerName": "John Traveller",
+  "passengerType": 1
+}
+
+###
+
+@booking_id = 47874e8d-0721-4fd3-bd6f-e8e57e7beb2a
+@payment_id = 08dd8afc-1c49-4336-8399-f428247672d0
+
+GET {{bookings_url}}/bookings/{{booking_id}}
+Authorization: Bearer {{token}}
+
+###
+
+DELETE {{bookings_url}}/bookings/{{booking_id}}
+Authorization: Bearer {{token}}
+
+###
+
+@api_url = http://localhost:5003/api
+
+GET {{api_url}}/payments/{{payment_id}}
+
+###
+
+GET {{api_url}}/payments/{{payment_id}}/pay

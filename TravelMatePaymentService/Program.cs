@@ -1,9 +1,11 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using TravelMateOfferService.Consumers;
-using TravelMateOfferService.Data;
-using TravelMateOfferService.Repositories;
-using TravelMateOfferService.Services;
+using TravelMate.Models.Messages;
+using TravelMatePaymentService.Consumers;
+using TravelMatePaymentService.Data;
+using TravelMatePaymentService.Models.Settings;
+using TravelMatePaymentService.Repositories;
+using TravelMatePaymentService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
@@ -12,15 +14,18 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultDbConnection"),
         ServerVersion.Parse("11.7.2-mariadb")));
 
-builder.Services.AddScoped<IOfferRepository, OfferRepository>();
-builder.Services.AddScoped<IOfferService, OfferService>();
-builder.Services.AddScoped<CheckSeatAvailabilityConsumer>();
+builder.Services.Configure<PaymentsSettings>(
+    builder.Configuration.GetSection("PaymentsSettings"));
+
+builder.Services.AddScoped<IPaymentsRepository, PaymentsRepository>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<CreatePaymentConsumer>();
 
 var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
 builder.Services.AddMassTransit(busConfig =>
 {
-    busConfig.AddConsumer<CheckSeatAvailabilityConsumer>();
-    busConfig.SetKebabCaseEndpointNameFormatter();
+    busConfig.AddRequestClient<BookingStatusUpdateRequest>(new Uri("queue:update-booking-status-queue"));
+    busConfig.AddConsumer<CreatePaymentConsumer>();
     busConfig.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(rabbitMqSettings["Host"], h =>
@@ -29,11 +34,10 @@ builder.Services.AddMassTransit(busConfig =>
             h.Password(rabbitMqSettings["Password"]);
         });
 
-        cfg.ReceiveEndpoint("check-seat-availability-queue",
-            e => { e.ConfigureConsumer<CheckSeatAvailabilityConsumer>(context); });
+        cfg.ReceiveEndpoint("payment-queue",
+            e => { e.ConfigureConsumer<CreatePaymentConsumer>(context); });
     });
 });
-
 builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
@@ -45,8 +49,8 @@ app.UseSwagger();
 
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TravelMateOfferService API v1");
-    c.DocumentTitle = "TravelMate Offers API";
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TravelMatePaymentService API v1");
+    c.DocumentTitle = "TravelMate Payment API";
 });
 
 app.UseAuthorization();

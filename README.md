@@ -24,7 +24,7 @@
 3. Create migrations and update the database for all services:
 
    ```bash
-   ./migrations.sh
+   ./scraper/migrations.sh
    ```
 
 ### Automatic way

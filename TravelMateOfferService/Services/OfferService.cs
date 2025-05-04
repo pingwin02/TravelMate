@@ -46,7 +46,7 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
             AvailableEconomySeats = newOffer.AvailableEconomySeats,
             AvailableBusinessSeats = newOffer.AvailableBusinessSeats,
             AvailableFirstClassSeats = newOffer.AvailableFirstClassSeats,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.Now
         };
 
         var savedOffer = await offerRepository.AddOffer(offer);
@@ -111,5 +111,27 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
         }
 
         await offerRepository.UpdateOffer(offer);
+    }
+
+    public async Task<decimal> CalculateDynamicPrice(CheckSeatAvailabilityRequest request)
+    {
+        var offer = await offerRepository.GetOffer(request.OfferId);
+        var basePrice = offer.BasePrice;
+
+        switch (request.PassengerType)
+        {
+            // TODO: Add more complex logic for dynamic pricing
+            case PassengerType.Adult:
+                basePrice *= 1.2m; // Increase price for adults
+                break;
+            case PassengerType.Child:
+                basePrice *= 0.8m; // Decrease price for children
+                break;
+            case PassengerType.Baby:
+                basePrice *= 0.5m; // Decrease price for babies
+                break;
+        }
+
+        return basePrice;
     }
 }

@@ -1,14 +1,14 @@
 @api_url = http://localhost:5000/api
 
-GET {{api_url}}/offer
+GET {{api_url}}/offers
 
 ###
 
-GET {{api_url}}/offer/08dd8a5f-3206-4fca-8805-8cbcc2bc9909
+GET {{api_url}}/offers/08dd8a86-751d-4036-8dd5-a8063bae6bc1
 
 ###
 
-POST {{api_url}}/offer
+POST {{api_url}}/offers
 Content-Type: application/json
 
 {
@@ -20,7 +20,7 @@ Content-Type: application/json
   "departureTime": "2025-05-03T16:11:19.098Z",
   "arrivalTime": "2025-05-03T17:23:19.098Z",
   "basePrice": 550,
-  "availableEconomySeats": 15,
-  "availableBusinessSeats": 5,
+  "availableEconomySeats": 1,
+  "availableBusinessSeats": 1,
   "availableFirstClassSeats": 1
 }
