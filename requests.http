@@ -1,3 +1,25 @@
+@auth_url = http://localhost:5001/api
+@token = 
+POST {{auth_url}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+
+###
+
+POST {{auth_url}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+
+###
+
 @offers_url = http://localhost:5000/api
 
 POST {{offers_url}}/offers
@@ -19,62 +41,44 @@ Content-Type: application/json
 
 ###
 
-GET {{offers_url}}/offers/08dd8af4-9708-458f-8dc0-beb129e12c69
+@offer_id = 08dd8afb-fa12-4b6b-8941-c2922aac4f69
 
-###
-
-@auth_url = http://localhost:5001/api
-
-POST {{auth_url}}/auth/register
-Content-Type: application/json
-
-{
-  "username": "admin",
-  "password": "admin"
-}
-
-###
-
-POST {{auth_url}}/auth/login
-Content-Type: application/json
-
-{
-  "username": "admin",
-  "password": "admin"
-}
+GET {{offers_url}}/offers/{{offer_id}}
 
 ###
 
 @bookings_url = http://localhost:5002/api
-@token = 
 
 POST {{bookings_url}}/bookings/create
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "offerId": "08dd8af4-9708-458f-8dc0-beb129e12c69",
-  "seatType": 2,
+  "offerId": "{{offer_id}}",
+  "seatType": 1,
   "passengerName": "John Traveller",
   "passengerType": 1
 }
 
 ###
 
-GET {{bookings_url}}/bookings/5fe8fe5b-bfa2-4fec-b884-9b94adc86de6
+@booking_id = 47874e8d-0721-4fd3-bd6f-e8e57e7beb2a
+@payment_id = 08dd8afc-1c49-4336-8399-f428247672d0
+
+GET {{bookings_url}}/bookings/{{booking_id}}
 Authorization: Bearer {{token}}
 
 ###
 
-DELETE {{bookings_url}}/bookings/5fe8fe5b-bfa2-4fec-b884-9b94adc86de6
+DELETE {{bookings_url}}/bookings/{{booking_id}}
 Authorization: Bearer {{token}}
 
 ###
 
 @api_url = http://localhost:5003/api
 
-GET {{api_url}}/payments/08dd8a8e-ea36-4b4e-8404-01ac3d58b44d
+GET {{api_url}}/payments/{{payment_id}}
 
 ###
 
-GET {{api_url}}/payments/08dd8a8e-ea36-4b4e-8404-01ac3d58b44d/pay
+GET {{api_url}}/payments/{{payment_id}}/pay

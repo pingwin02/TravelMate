@@ -39,9 +39,6 @@ public class PaymentService(
 
         var isSuccess = new Random().NextDouble() > settings.Value.PaymentFailureChance;
 
-        await paymentsRepository.ChangePaymentStatus(paymentId,
-            isSuccess ? PaymentStatus.Completed : PaymentStatus.Failed);
-
         var bookingStatusUpdateResponse = await bookingStatusUpdateRequest.GetResponse<BookingStatusUpdateResponse>(
             new BookingStatusUpdateRequest
             {
@@ -49,9 +46,17 @@ public class PaymentService(
                 Status = isSuccess ? BookingStatus.Confirmed : BookingStatus.Canceled
             });
 
-        Console.WriteLine(bookingStatusUpdateResponse.Message.IsUpdated
-            ? "Booking status updated successfully"
-            : "Failed to update booking status");
+        if (bookingStatusUpdateResponse.Message.IsUpdated)
+        {
+            var status = isSuccess ? PaymentStatus.Completed : PaymentStatus.Failed;
+            await paymentsRepository.ChangePaymentStatus(paymentId, status);
+            Console.WriteLine($"Payment status updated for payment {paymentId} to {status}");
+        }
+        else
+        {
+            throw new InvalidOperationException(
+                $"Payment with id {paymentId} could not be finalized, because booking is already cancelled");
+        }
 
         return isSuccess;
     }

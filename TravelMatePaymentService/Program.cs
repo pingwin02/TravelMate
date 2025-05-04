@@ -47,7 +47,11 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseSwagger();
 
-app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "TravelMatePaymentService API v1"); c.DocumentTitle = "TravelMate Payment API"; });
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TravelMatePaymentService API v1");
+    c.DocumentTitle = "TravelMate Payment API";
+});
 
 app.UseAuthorization();
 app.MapControllers();

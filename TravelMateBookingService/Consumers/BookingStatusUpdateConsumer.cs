@@ -21,12 +21,15 @@ public class BookingStatusUpdateConsumer(IServiceProvider serviceProvider)
             Console.WriteLine($"Booking {bookingId} is not pending, skipping cancellation");
             isUpdated = false;
         }
+        else
+        {
+            await bookingService.ChangeBookingStatus(
+                bookingId,
+                bookingStatusUpdateRequest.Status);
 
-        await bookingService.ChangeBookingStatus(
-            bookingId,
-            bookingStatusUpdateRequest.Status);
+            Console.WriteLine($"Booking status updated for booking {bookingId}");
+        }
 
-        Console.WriteLine($"Booking status updated for booking {bookingId}");
         await context.RespondAsync(new BookingStatusUpdateResponse
         {
             IsUpdated = isUpdated

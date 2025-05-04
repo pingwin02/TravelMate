@@ -102,7 +102,11 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseSwagger();
 
-app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "TravelMateBookingService API v1"); c.DocumentTitle = "TravelMate Bookings API"; });
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TravelMateBookingService API v1");
+    c.DocumentTitle = "TravelMate Bookings API";
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
