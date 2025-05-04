@@ -34,7 +34,7 @@ builder.Services.AddMassTransit(busConfig =>
             h.Password(rabbitMqSettings["Password"]);
         });
 
-        cfg.ReceiveEndpoint("payment-queue",
+        cfg.ReceiveEndpoint("create-payment",
             e => { e.ConfigureConsumer<CreatePaymentConsumer>(context); });
     });
 });

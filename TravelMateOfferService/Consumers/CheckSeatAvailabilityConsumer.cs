@@ -32,8 +32,9 @@ public class CheckSeatAvailabilityConsumer(IServiceProvider serviceProvider)
 
         var seatIsAvailable = await offerService.CheckSeatAvailability(request);
 
-        await context.RespondAsync(new CheckSeatAvailabilityResponse
+        await context.Publish(new CheckSeatAvailabilityResponse
         {
+            CorrelationId = context.Message.CorrelationId,
             IsAvailable = seatIsAvailable,
             DynamicPrice = seatIsAvailable ? await offerService.CalculateDynamicPrice(request) : 0
         });

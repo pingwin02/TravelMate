@@ -19,8 +19,9 @@ public class CreatePaymentConsumer(IServiceProvider serviceProvider)
 
         Console.WriteLine($"Payment created for booking {paymentRequest.BookingId}");
 
-        await context.RespondAsync(new PaymentCreationResponse
+        await context.Publish(new PaymentCreatedEvent
         {
+            CorrelationId = context.Message.CorrelationId,
             PaymentId = payment.Id
         });
     }

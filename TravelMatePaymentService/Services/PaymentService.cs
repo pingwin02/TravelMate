@@ -10,7 +10,8 @@ namespace TravelMatePaymentService.Services;
 public class PaymentService(
     IPaymentsRepository paymentsRepository,
     IOptions<PaymentsSettings> settings,
-    IRequestClient<BookingStatusUpdateRequest> bookingStatusUpdateRequest)
+    IRequestClient<BookingStatusUpdateRequest> bookingStatusUpdateRequest,
+    IPublishEndpoint publishEndpoint)
     : IPaymentService
 {
     public async Task<Payment> GetPaymentById(Guid paymentId)
@@ -39,24 +40,31 @@ public class PaymentService(
 
         var isSuccess = new Random().NextDouble() > settings.Value.PaymentFailureChance;
 
-        var bookingStatusUpdateResponse = await bookingStatusUpdateRequest.GetResponse<BookingStatusUpdateResponse>(
-            new BookingStatusUpdateRequest
-            {
-                BookingId = payment.BookingId,
-                Status = isSuccess ? BookingStatus.Confirmed : BookingStatus.Canceled
-            });
+        await publishEndpoint.Publish(new PaymentFinalizedEvent
+        {
+            CorrelationId = Guid.NewGuid(),
+            IsSuccess = isSuccess,
+        });
+        
 
-        if (bookingStatusUpdateResponse.Message.IsUpdated)
-        {
-            var status = isSuccess ? PaymentStatus.Completed : PaymentStatus.Failed;
-            await paymentsRepository.ChangePaymentStatus(paymentId, status);
-            Console.WriteLine($"Payment status updated for payment {paymentId} to {status}");
-        }
-        else
-        {
-            throw new InvalidOperationException(
-                $"Payment with id {paymentId} could not be finalized, because booking is already cancelled");
-        }
+        //var bookingStatusUpdateResponse = await bookingStatusUpdateRequest.GetResponse<BookingStatusUpdateResponse>(
+        //    new BookingStatusUpdateRequest
+        //    {
+        //        BookingId = payment.BookingId,
+        //        Status = isSuccess ? BookingStatus.Confirmed : BookingStatus.Canceled
+        //    });
+
+        //if (bookingStatusUpdateResponse.Message.IsUpdated)
+        //{
+        //    var status = isSuccess ? PaymentStatus.Completed : PaymentStatus.Failed;
+        //    await paymentsRepository.ChangePaymentStatus(paymentId, status);
+        //    Console.WriteLine($"Payment status updated for payment {paymentId} to {status}");
+        //}
+        //else
+        //{
+        //    throw new InvalidOperationException(
+        //        $"Payment with id {paymentId} could not be finalized, because booking is already cancelled");
+        //}
 
         return isSuccess;
     }

@@ -1,0 +1,6 @@
+@TravelMateSagaOrchestrator_HostAddress = http://localhost:5087
+
+GET {{TravelMateSagaOrchestrator_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

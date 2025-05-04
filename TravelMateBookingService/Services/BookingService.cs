@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using MassTransit.Transports;
 using Microsoft.Extensions.Options;
 using TravelMate.Models.Messages;
 using TravelMateBookingService.Controllers.Exceptions;
@@ -13,53 +14,66 @@ public class BookingService(
     IBookingRepository bookingRepository,
     IOptions<BookingsSettings> settings,
     IRequestClient<CheckSeatAvailabilityRequest> seatAvailabilityRequest,
-    IRequestClient<PaymentCreationRequest> paymentRequest)
+    IRequestClient<PaymentCreationRequest> paymentRequest,
+    IPublishEndpoint publishEndpoint)
     : IBookingService
 {
     public async Task<BookingDto> CreateBooking(Guid userId, BookingRequestDto bookingRequestDto)
     {
-        var isSeatAvailableResponse = await seatAvailabilityRequest.GetResponse<CheckSeatAvailabilityResponse>(
-            new CheckSeatAvailabilityRequest
-            {
-                OfferId = bookingRequestDto.OfferId,
-                SeatType = bookingRequestDto.SeatType,
-                PassengerType = bookingRequestDto.PassengerType
-            });
-        Console.WriteLine("Received seat availability response: " + isSeatAvailableResponse.Message.IsAvailable);
-        if (!isSeatAvailableResponse.Message.IsAvailable) throw new SeatNotAvailableException();
-
-        var booking = new Booking
+        var correlationId = Guid.NewGuid();
+        var bookingId = Guid.NewGuid();
+        await publishEndpoint.Publish(new BookingStartedEvent
         {
-            Id = Guid.NewGuid(),
-            UserId = userId,
+            CorrelationId = correlationId,
             OfferId = bookingRequestDto.OfferId,
-            Status = BookingStatus.Pending,
+            BookingId = bookingId,
             SeatType = bookingRequestDto.SeatType,
-            PassengerName = bookingRequestDto.PassengerName,
-            PassengerType = bookingRequestDto.PassengerType,
-            CreatedAt = DateTime.Now,
-            ReservedUntil = DateTime.Now.AddSeconds(settings.Value.BookingExpirationTime)
-        };
+            PassengerType = bookingRequestDto.PassengerType
+        });
 
-        var paymentResponse = await paymentRequest.GetResponse<PaymentCreationResponse>(
-            new PaymentCreationRequest
-            {
-                BookingId = booking.Id,
-                Price = isSeatAvailableResponse.Message.DynamicPrice
-            });
+        return null;
+        //var isSeatAvailableResponse = await seatAvailabilityRequest.GetResponse<CheckSeatAvailabilityResponse>(
+        //    new CheckSeatAvailabilityRequest
+        //    {
+        //        OfferId = bookingRequestDto.OfferId,
+        //        SeatType = bookingRequestDto.SeatType,
+        //        PassengerType = bookingRequestDto.PassengerType
+        //    });
+        //Console.WriteLine("Received seat availability response: " + isSeatAvailableResponse.Message.IsAvailable);
+        //if (!isSeatAvailableResponse.Message.IsAvailable) throw new SeatNotAvailableException();
 
-        booking.PaymentId = paymentResponse.Message.PaymentId;
+        //var booking = new Booking
+        //{
+        //    Id = Guid.NewGuid(),
+        //    UserId = userId,
+        //    OfferId = bookingRequestDto.OfferId,
+        //    Status = BookingStatus.Pending,
+        //    SeatType = bookingRequestDto.SeatType,
+        //    PassengerName = bookingRequestDto.PassengerName,
+        //    PassengerType = bookingRequestDto.PassengerType,
+        //    CreatedAt = DateTime.Now,
+        //    ReservedUntil = DateTime.Now.AddSeconds(settings.Value.BookingExpirationTime)
+        //};
 
-        var savedBooking = await bookingRepository.CreateBooking(booking);
-        BookingExpirationService.AddBookingCancellationToQueue(savedBooking);
+        //var paymentResponse = await paymentRequest.GetResponse<PaymentCreationResponse>(
+        //    new PaymentCreationRequest
+        //    {
+        //        BookingId = booking.Id,
+        //        Price = isSeatAvailableResponse.Message.DynamicPrice
+        //    });
 
-        return new BookingDto
-        {
-            Id = savedBooking.Id,
-            CreatedAt = savedBooking.CreatedAt,
-            ReservedUntil = savedBooking.ReservedUntil,
-            PaymentId = savedBooking.PaymentId.Value
-        };
+        //booking.PaymentId = paymentResponse.Message.PaymentId;
+
+        //var savedBooking = await bookingRepository.CreateBooking(booking);
+        //BookingExpirationService.AddBookingCancellationToQueue(savedBooking);
+
+        //return new BookingDto
+        //{
+        //    Id = savedBooking.Id,
+        //    CreatedAt = savedBooking.CreatedAt,
+        //    ReservedUntil = savedBooking.ReservedUntil,
+        //    PaymentId = savedBooking.PaymentId.Value
+        //};
     }
 
 

@@ -74,5 +74,17 @@ services:
       rabbitmq:
         condition: service_started
 
+  travelmatesagaorchestrator:
+    container_name: TraveLMateSagaOrchestrator
+    build:
+      context: ./TraveLMateSagaOrchestrator
+    ports:
+      - "5004:8080"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+
 volumes:
   mariadb_data:
