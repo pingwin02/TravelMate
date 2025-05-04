@@ -1,6 +1,6 @@
 {
   "/oferty": {
-    "target": "http://localhost:5175/api",
+    "target": "http://localhost:5000/api",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug",
@@ -9,12 +9,21 @@
     }
   },
   "/auth": {
-    "target": "http://localhost:5109/api",
+    "target": "http://localhost:5001/api",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug",
     "pathRewrite": {
       "^/auth": ""
+    }
+  },
+  "/rezerwacje": {
+    "target": "http://localhost:5002/api",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/rezerwacje": ""
     }
   }
 }

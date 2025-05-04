@@ -11,7 +11,6 @@ import { LoginViewComponent } from './auth/view/login-view/login-view.component'
 import { BookingViewComponent } from './booking/view/booking-view/booking-view.component';
 import { PaymentViewComponent } from './payment/view/payment-view/payment-view.component';
 import {TokenInterceptor} from "./auth/token.interceptor";
-import { MyBookingsComponent } from './booking/view/my-bookings/my-bookings.component';
 import { MyBookingsViewComponent } from './booking/view/my-bookings-view/my-bookings-view.component';
 
 @NgModule({
@@ -22,7 +21,6 @@ import { MyBookingsViewComponent } from './booking/view/my-bookings-view/my-book
     LoginViewComponent,
     BookingViewComponent,
     PaymentViewComponent,
-    MyBookingsComponent,
     MyBookingsViewComponent
   ],
   imports: [

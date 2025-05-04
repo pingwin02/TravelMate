@@ -1,11 +1,11 @@
 <div class="container mt-4">
   <h2 class="mb-4">Bookings</h2>
 
-  <div *ngIf="bookings?.length === 0" class="text-muted text-center mt-5">
+  <div *ngIf="bookings && bookings.length === 0" class="text-muted text-center mt-5">
     <p class="fs-5">No bookings available.</p>
   </div>
 
-  <div *ngIf="bookings?.length > 0">>
+  <div *ngIf="bookings && bookings.length > 0">>
     <div class="col-12" *ngFor="let booking of bookings | paginate: { itemsPerPage: 10, currentPage: page }">
       <div class="card mb-3">
         <div class="card-body">
@@ -23,5 +23,5 @@
   </div>
 
   <!-- pagination -->
-  <pagination-controls (pageChange)="page = $event"></pagination-controls>
+  <pagination-controls id="bookings-pagination" (pageChange)="page = $event"></pagination-controls>
 </div>

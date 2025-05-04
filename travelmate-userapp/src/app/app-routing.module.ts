@@ -6,6 +6,7 @@ import {LoginViewComponent} from "./auth/view/login-view/login-view.component";
 import {BookingViewComponent} from "./booking/view/booking-view/booking-view.component";
 import {PaymentViewComponent} from "./payment/view/payment-view/payment-view.component";
 import {authGuard} from "./auth/auth.guard";
+import {MyBookingsViewComponent} from "./booking/view/my-bookings-view/my-bookings-view.component";
 
 const routes: Routes = [
   {
@@ -28,6 +29,11 @@ const routes: Routes = [
   {
     path: 'payment',
     component: PaymentViewComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'my-bookings',
+    component: MyBookingsViewComponent,
     canActivate: [authGuard]
   }
 ];
