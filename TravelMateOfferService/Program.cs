@@ -43,7 +43,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseSwagger();
 
-app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "TravelMateOfferService API v1"); });
+app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "TravelMateOfferService API v1"); c.DocumentTitle = "TravelMate Offers API"; });
 
 app.UseAuthorization();
 app.MapControllers();
