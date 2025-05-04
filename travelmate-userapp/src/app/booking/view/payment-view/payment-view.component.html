@@ -1,27 +1,33 @@
 <div class="container mt-4" *ngIf="booking">
   <h2>Payment</h2>
 
-  <div class="d-flex justify-content-end mb-3">
+  <div *ngIf="!isCanceled" class="d-flex justify-content-end mb-3">
     <div class="timer-box bg-light p-2 rounded shadow-sm">
       Time left: <strong>{{ timeLeft }}s</strong>
     </div>
   </div>
 
-  <div class="card">
+  <div *ngIf="!isCanceled; else failure" class="card">
     <div class="card-body">
-      <h5 class="card-title">Booking for {{ booking.PassengerName }}</h5>
-      <p class="card-text">
-        <strong>Offer ID:</strong> {{ booking.OfferId }}<br>
-        <strong>Status:</strong> {{ booking.Status }}<br>
-        <strong>Seat Type:</strong> {{ booking.SeatType }}<br>
-        <strong>Passenger Type:</strong> {{ booking.PassengerType }}<br>
+      <h5 class="card-title">Booking for {{ booking.passengerName }}</h5>
+      <p class="card-text" *ngIf="payment">
+        <strong>Seat Type:</strong>  {{ seatTypeLabels[booking.seatType] }}<br>
+        <strong>Passenger Type:</strong> {{ passengerTypeLabels[booking.passengerType] }}<br>
+        <strong>Amount to pay:</strong> {{ payment.amount }}<br>
       </p>
     </div>
   </div>
 
-  <div class="text-center mt-4">
+  <div *ngIf="!isCanceled" class="text-center mt-4">
     <button class="btn btn-lg btn-success px-5 py-2" (click)="payNow()" [disabled]="timeLeft === 0">
       Pay Now
     </button>
   </div>
 </div>
+
+<ng-template #failure>
+  <div class="alert alert-danger" role="alert">
+    <h1>Reservation has been canceled </h1>
+    <p>Time limit has been exceeded.</p>
+  </div>
+</ng-template>

@@ -2,6 +2,11 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {Booking} from "../../model/Booking";
 import {BookingService} from "../../service/booking.service";
+import {BookingStatus} from "../../model/booking-status.enum";
+import {SeatTypeLabels} from "../../model/seat-type.enum";
+import {PassengerTypeLabels} from "../../model/passenger-type.enum";
+import {PaymentService} from "../../service/payment.service";
+import {Payment} from "../../model/Payment";
 
 @Component({
   selector: 'app-payment-view',
@@ -10,13 +15,18 @@ import {BookingService} from "../../service/booking.service";
 })
 export class PaymentViewComponent implements OnInit, OnDestroy {
   booking!: Booking;
+  payment!: Payment;
   timeLeft: number = 0;
   timerInterval: any;
   private bookingId: string | null;
+  isCanceled: boolean = false;
+  seatTypeLabels = SeatTypeLabels
+  passengerTypeLabels = PassengerTypeLabels
 
   constructor(
     private route: ActivatedRoute,
     private bookingService: BookingService,
+    private paymentService: PaymentService,
     private router: Router
   ) {
     this.bookingId = this.route.snapshot.paramMap.get('id');
@@ -27,8 +37,18 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
       this.bookingService.getBookingById(this.bookingId).subscribe({
         next: (booking) => {
           this.booking = booking;
-          console.log('Booking object:', booking);
-          this.initTimer();
+          if (this.booking.status === BookingStatus.Canceled) {
+            this.isCanceled = true;
+          }
+          else {
+            this.isCanceled = false;
+            this.paymentService.getPaymentById(this.booking.paymentId!).subscribe({
+              next: (payment) => {
+                this.payment = payment
+              }
+            });
+            this.initTimer();
+          }
         },
         error: (err) => {
           // console.error(err);
@@ -39,14 +59,13 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
   }
 
   initTimer(): void {
-    if (!this.booking.ReservedUntil) {
+    if (!this.booking.reservedUntil) {
       return;
     }
 
-    const expiry = new Date(this.booking.ReservedUntil).getTime();
+    const expiry = new Date(this.booking.reservedUntil).getTime();
     const correctedExpiry = expiry + (2 * 60 * 60 * 1000);
     this.timeLeft = Math.floor((correctedExpiry - Date.now()) / 1000);
-    console.log('Time:', this.timeLeft);
 
     this.timerInterval = setInterval(() => {
       if (this.timeLeft > 0) {
@@ -71,5 +90,4 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     clearInterval(this.timerInterval);
   }
-
 }
