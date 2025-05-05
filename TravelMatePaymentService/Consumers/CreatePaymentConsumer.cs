@@ -15,12 +15,14 @@ public class CreatePaymentConsumer(IServiceProvider serviceProvider)
         using var scope = serviceProvider.CreateScope();
         var paymentService = scope.ServiceProvider.GetRequiredService<IPaymentService>();
 
-        var payment = await paymentService.CreatePayment(paymentRequest.BookingId, paymentRequest.Price);
+        var payment = await paymentService.CreatePayment(paymentRequest.BookingId, paymentRequest.Price,
+            context.Message.CorrelationId);
 
         Console.WriteLine($"Payment created for booking {paymentRequest.BookingId}");
 
-        await context.RespondAsync(new PaymentCreationResponse
+        await context.Publish(new PaymentCreatedEvent
         {
+            CorrelationId = context.Message.CorrelationId,
             PaymentId = payment.Id
         });
     }

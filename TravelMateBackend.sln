@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateAuthService", "TravelMateAuthService\TravelMateAuthService.csproj", "{C38D1699-2DDE-4E39-8117-0EDFC33C3285}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateBookingService", "TravelMateBookingService\TravelMateBookingService.csproj", "{DD0D73BB-17E1-4106-8042-8592BDF30309}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateOfferService", "TravelMateOfferService\TravelMateOfferService.csproj", "{A66780A1-F6B0-4E37-BE3D-7DA49B1629E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMatePaymentService", "TravelMatePaymentService\TravelMatePaymentService.csproj", "{73719C7E-FE26-450B-8D07-B49B61014090}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateSagaOrchestrator", "TravelMateSagaOrchestrator\TravelMateSagaOrchestrator.csproj", "{26C6D0BA-DBE9-4A3B-849D-FBD6BAA433AD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C38D1699-2DDE-4E39-8117-0EDFC33C3285}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C38D1699-2DDE-4E39-8117-0EDFC33C3285}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C38D1699-2DDE-4E39-8117-0EDFC33C3285}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C38D1699-2DDE-4E39-8117-0EDFC33C3285}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD0D73BB-17E1-4106-8042-8592BDF30309}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD0D73BB-17E1-4106-8042-8592BDF30309}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD0D73BB-17E1-4106-8042-8592BDF30309}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD0D73BB-17E1-4106-8042-8592BDF30309}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A66780A1-F6B0-4E37-BE3D-7DA49B1629E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A66780A1-F6B0-4E37-BE3D-7DA49B1629E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A66780A1-F6B0-4E37-BE3D-7DA49B1629E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A66780A1-F6B0-4E37-BE3D-7DA49B1629E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73719C7E-FE26-450B-8D07-B49B61014090}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73719C7E-FE26-450B-8D07-B49B61014090}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73719C7E-FE26-450B-8D07-B49B61014090}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73719C7E-FE26-450B-8D07-B49B61014090}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26C6D0BA-DBE9-4A3B-849D-FBD6BAA433AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26C6D0BA-DBE9-4A3B-849D-FBD6BAA433AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26C6D0BA-DBE9-4A3B-849D-FBD6BAA433AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26C6D0BA-DBE9-4A3B-849D-FBD6BAA433AD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

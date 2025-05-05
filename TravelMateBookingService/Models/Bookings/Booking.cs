@@ -12,6 +12,7 @@ public class Booking
     public Guid UserId { get; set; }
     public Guid OfferId { get; set; }
     public Guid? PaymentId { get; set; }
+    public Guid? CorrelationId { get; set; }
     public BookingStatus Status { get; set; }
     public DateTime ReservedUntil { get; set; }
     public SeatType SeatType { get; set; }

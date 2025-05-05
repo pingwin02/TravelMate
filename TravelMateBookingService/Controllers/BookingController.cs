@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TravelMateBookingService.Controllers.Exceptions;
 using TravelMateBookingService.Models.Bookings;
 using TravelMateBookingService.Models.Bookings.DTO;
 using TravelMateBookingService.Services;
@@ -21,9 +20,9 @@ public class BookingController(IBookingService bookingService, IServiceProvider 
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var createdBooking = await bookingService.CreateBooking(Guid.Parse(userId), booking);
-            return Created($"/api/booking/{createdBooking.Id}", createdBooking);
+            return Created($"/api/bookings/{createdBooking.Id}", createdBooking);
         }
-        catch (SeatNotAvailableException e)
+        catch (InvalidOperationException e)
         {
             return BadRequest(e.Message);
         }
@@ -79,7 +78,8 @@ public class BookingController(IBookingService bookingService, IServiceProvider 
 
             using var scope = serviceProvider.CreateScope();
             var expirationService = scope.ServiceProvider.GetRequiredService<BookingExpirationService>();
-            await expirationService.CancelBooking(booking.Id, booking.SeatType, booking.OfferId);
+            await expirationService.CancelBooking(booking.Id, booking.SeatType, booking.OfferId,
+                booking.CorrelationId.Value);
 
             return Ok($"Booking {booking.Id} canceled");
         }

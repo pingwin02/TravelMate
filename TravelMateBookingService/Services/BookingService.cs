@@ -1,7 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Options;
 using TravelMate.Models.Messages;
-using TravelMateBookingService.Controllers.Exceptions;
 using TravelMateBookingService.Models.Bookings;
 using TravelMateBookingService.Models.Bookings.DTO;
 using TravelMateBookingService.Models.Settings;
@@ -13,24 +12,43 @@ public class BookingService(
     IBookingRepository bookingRepository,
     IOptions<BookingsSettings> settings,
     IRequestClient<CheckSeatAvailabilityRequest> seatAvailabilityRequest,
-    IRequestClient<PaymentCreationRequest> paymentRequest)
+    IRequestClient<PaymentCreationRequest> paymentRequest,
+    IPublishEndpoint publishEndpoint,
+    IBus bus)
     : IBookingService
 {
     public async Task<BookingDto> CreateBooking(Guid userId, BookingRequestDto bookingRequestDto)
     {
-        var isSeatAvailableResponse = await seatAvailabilityRequest.GetResponse<CheckSeatAvailabilityResponse>(
-            new CheckSeatAvailabilityRequest
+        var correlationId = Guid.NewGuid();
+        var bookingId = Guid.NewGuid();
+        var task = new TaskCompletionSource<BookingSagaStatusResponse>();
+        var handle = bus.ConnectReceiveEndpoint($"booking-status-response-{correlationId}", e =>
+        {
+            e.Handler<BookingSagaStatusResponse>(context =>
             {
-                OfferId = bookingRequestDto.OfferId,
-                SeatType = bookingRequestDto.SeatType,
-                PassengerType = bookingRequestDto.PassengerType
+                task.TrySetResult(context.Message);
+                return Task.CompletedTask;
             });
-        Console.WriteLine("Received seat availability response: " + isSeatAvailableResponse.Message.IsAvailable);
-        if (!isSeatAvailableResponse.Message.IsAvailable) throw new SeatNotAvailableException();
+        });
+        await publishEndpoint.Publish(new BookingStartedEvent
+        {
+            CorrelationId = correlationId,
+            OfferId = bookingRequestDto.OfferId,
+            BookingId = bookingId,
+            SeatType = bookingRequestDto.SeatType,
+            PassengerType = bookingRequestDto.PassengerType
+        });
+
+
+        var result = await task.Task;
+        Console.WriteLine($"Received payment result for {result.CorrelationId} {result.IsSuccessful}");
+
+        if (!result.IsSuccessful)
+            throw new InvalidOperationException();
 
         var booking = new Booking
         {
-            Id = Guid.NewGuid(),
+            Id = bookingId,
             UserId = userId,
             OfferId = bookingRequestDto.OfferId,
             Status = BookingStatus.Pending,
@@ -38,21 +56,14 @@ public class BookingService(
             PassengerName = bookingRequestDto.PassengerName,
             PassengerType = bookingRequestDto.PassengerType,
             CreatedAt = DateTime.Now,
-            ReservedUntil = DateTime.Now.AddSeconds(settings.Value.BookingExpirationTime)
+            ReservedUntil = DateTime.Now.AddSeconds(settings.Value.BookingExpirationTime),
+            PaymentId = result.PaymentId,
+            CorrelationId = correlationId
         };
 
-        var paymentResponse = await paymentRequest.GetResponse<PaymentCreationResponse>(
-            new PaymentCreationRequest
-            {
-                BookingId = booking.Id,
-                Price = isSeatAvailableResponse.Message.DynamicPrice
-            });
-
-        booking.PaymentId = paymentResponse.Message.PaymentId;
-
         var savedBooking = await bookingRepository.CreateBooking(booking);
-        BookingExpirationService.AddBookingCancellationToQueue(savedBooking);
-
+        Console.WriteLine(savedBooking);
+        BookingExpirationService.AddBookingCancellationToQueue(savedBooking, correlationId);
         return new BookingDto
         {
             Id = savedBooking.Id,
@@ -73,9 +84,9 @@ public class BookingService(
         return await bookingRepository.GetBookingsByUserId(userId);
     }
 
-    public Task<bool> ChangeBookingStatus(Guid bookingId, BookingStatus status)
+    public async Task<bool> ChangeBookingStatus(Guid bookingId, BookingStatus status)
     {
-        return bookingRepository.ChangeBookingStatus(bookingId, status);
+        return await bookingRepository.ChangeBookingStatus(bookingId, status);
     }
 
     public Task<bool> CheckIfPending(Guid bookingId)

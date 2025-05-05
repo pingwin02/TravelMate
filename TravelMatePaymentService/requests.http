@@ -1,7 +1,0 @@
-@api_url = http://localhost:5003/api
-
-GET {{api_url}}/payments/08dd8a8b-538c-4279-83c7-845b968eef4a
-
-###
-
-GET {{api_url}}/payments/08dd8a8b-538c-4279-83c7-845b968eef4a/pay

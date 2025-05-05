@@ -69,6 +69,7 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
         try
         {
             var offer = await offerRepository.GetOffer(request.OfferId);
+
             switch (request.SeatType)
             {
                 case SeatType.Economy when offer.AvailableEconomySeats > 0:
@@ -93,7 +94,7 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
         }
     }
 
-    public async Task CancelSeatReservation(CancelReservationRequest request)
+    public async Task CancelSeatReservation(CancelSeatAvailabilityCommand request)
     {
         var offer = await offerRepository.GetOffer(request.OfferId);
 

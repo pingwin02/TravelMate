@@ -20,6 +20,7 @@ var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
 builder.Services.AddMassTransit(busConfig =>
 {
     busConfig.AddConsumer<CheckSeatAvailabilityConsumer>();
+    busConfig.AddConsumer<CancelSeatAvailabilityConsumer>();
     busConfig.SetKebabCaseEndpointNameFormatter();
     busConfig.UsingRabbitMq((context, cfg) =>
     {
@@ -31,6 +32,8 @@ builder.Services.AddMassTransit(busConfig =>
 
         cfg.ReceiveEndpoint("check-seat-availability-queue",
             e => { e.ConfigureConsumer<CheckSeatAvailabilityConsumer>(context); });
+        cfg.ReceiveEndpoint("cancel-seat-availability-queue",
+            e => { e.ConfigureConsumer<CancelSeatAvailabilityConsumer>(context); });
     });
 });
 
