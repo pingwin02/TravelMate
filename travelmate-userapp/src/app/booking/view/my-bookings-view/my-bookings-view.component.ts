@@ -6,6 +6,7 @@ import {Booking} from "../../model/Booking";
 import {SeatTypeLabels} from "../../model/seat-type.enum";
 import {PassengerTypeLabels} from "../../model/passenger-type.enum";
 import {BookingStatus} from "../../model/booking-status.enum";
+import {PaymentStatusLabels} from "../../model/payment-status.enum";
 
 @Component({
   selector: 'app-my-bookings-view',
@@ -18,11 +19,7 @@ export class MyBookingsViewComponent implements OnInit {
 
   seatTypeLabels = SeatTypeLabels;
   passengerTypeLabels = PassengerTypeLabels;
-  bookingStatusLabels: Record<BookingStatus, string> = {
-    [BookingStatus.Pending]: 'Pending',
-    [BookingStatus.Confirmed]: 'Confirmed',
-    [BookingStatus.Canceled]: 'Canceled'
-  };
+  bookingStatusLabels = PaymentStatusLabels;
 
   pageBooking: number = 1;
 

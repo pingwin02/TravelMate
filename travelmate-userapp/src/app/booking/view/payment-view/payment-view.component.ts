@@ -7,6 +7,8 @@ import {SeatTypeLabels} from "../../model/seat-type.enum";
 import {PassengerTypeLabels} from "../../model/passenger-type.enum";
 import {PaymentService} from "../../service/payment.service";
 import {Payment} from "../../model/Payment";
+import {Offer} from "../../../offers/model/Offer";
+import {OffersService} from "../../../offers/service/offers.service";
 
 @Component({
   selector: 'app-payment-view',
@@ -15,6 +17,7 @@ import {Payment} from "../../model/Payment";
 })
 export class PaymentViewComponent implements OnInit, OnDestroy {
   booking!: Booking;
+  offer!: Offer;
   payment!: Payment;
   timeLeft: number = 0;
   timerInterval: any;
@@ -28,6 +31,7 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private bookingService: BookingService,
     private paymentService: PaymentService,
+    private offersService: OffersService,
     private router: Router
   ) {
     this.bookingId = this.route.snapshot.paramMap.get('id');
@@ -38,22 +42,23 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
       this.bookingService.getBookingById(this.bookingId).subscribe({
         next: (booking) => {
           this.booking = booking;
-          if (this.booking.status === BookingStatus.Canceled) {
-            this.isCanceled = true;
-          }
-          else if (this.booking.status === BookingStatus.Confirmed) {
-            this.isConfirmed = true;
-          }
-          else {
-            this.isCanceled = false;
-            this.isCanceled = false;
-            this.paymentService.getPaymentById(this.booking.paymentId!).subscribe({
-              next: (payment) => {
-                this.payment = payment
-              }
-            });
-            this.initTimer();
-          }
+          this.offersService.getOfferById(this.booking.offerId).subscribe((offer : Offer) => {
+            this.offer = offer;
+            if (this.booking.status === BookingStatus.Canceled) {
+              this.isCanceled = true;
+            } else if (this.booking.status === BookingStatus.Confirmed) {
+              this.isConfirmed = true;
+            } else {
+              this.isCanceled = false;
+              this.isCanceled = false;
+              this.paymentService.getPaymentById(this.booking.paymentId!).subscribe({
+                next: (payment) => {
+                  this.payment = payment
+                }
+              });
+              this.initTimer();
+            }
+          })
         },
         error: (err) => {
           // console.error(err);
