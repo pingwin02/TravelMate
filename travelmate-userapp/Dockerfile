@@ -12,8 +12,6 @@ RUN npm run build
 
 FROM nginx:alpine
 
-RUN apk add --no-cache gettext
-
 COPY --from=build /app/dist/travelmate-userapp /usr/share/nginx/html
 COPY ./default.conf.template /etc/nginx/templates/default.conf.template
 
