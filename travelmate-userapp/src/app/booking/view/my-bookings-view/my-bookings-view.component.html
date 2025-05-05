@@ -5,8 +5,8 @@
     <p class="fs-5">No bookings available.</p>
   </div>
 
-  <div *ngIf="bookings && bookings.length > 0">>
-    <div class="col-12" *ngFor="let booking of bookings | paginate: { itemsPerPage: 10, currentPage: page }">
+  <div *ngIf="bookings && bookings.length > 0">
+    <div class="col-12" *ngFor="let booking of bookings  | paginate: { id: 'bookings-pagination', itemsPerPage: 10, currentPage: pageBooking }">
       <div class="card mb-3">
         <div class="card-body">
           <h5 class="card-title">{{ booking.OfferId }} </h5>
@@ -23,5 +23,5 @@
   </div>
 
   <!-- pagination -->
-  <pagination-controls id="bookings-pagination" (pageChange)="page = $event"></pagination-controls>
+  <pagination-controls id="bookings-pagination" (pageChange)="pageBooking = $event"></pagination-controls>
 </div>

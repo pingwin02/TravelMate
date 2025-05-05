@@ -4,6 +4,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {BookingCreate} from "../../model/BookingCreate";
 import {HttpClient} from "@angular/common/http";
 import {BookingService} from "../../service/booking.service";
+import {Offer} from "../../../offers/model/Offer";
+import {OffersService} from "../../../offers/service/offers.service";
 
 @Component({
   selector: 'app-booking-view',
@@ -12,13 +14,14 @@ import {BookingService} from "../../service/booking.service";
 })
 export class BookingViewComponent {
   reservationForm: FormGroup;
+  offer!: Offer | null;
   private offerId: string = '';
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private http: HttpClient,
-    private bookingService: BookingService
+    private bookingService: BookingService,
+    private offersService: OffersService
   ) {
     this.reservationForm = this.fb.group({
       name: ['', Validators.required],
@@ -29,6 +32,9 @@ export class BookingViewComponent {
 
     this.route.paramMap.subscribe(params => {
       this.offerId = params.get('id') || '';
+      this.offersService.getOfferById( this.offerId).subscribe((offer : Offer) => {
+        this.offer =offer;
+      })
     });
   }
 

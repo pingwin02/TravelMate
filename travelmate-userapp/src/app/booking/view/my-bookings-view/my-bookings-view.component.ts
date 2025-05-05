@@ -9,7 +9,7 @@ import {BookingService} from "../../service/booking.service";
 })
 export class MyBookingsViewComponent implements OnInit{
   bookings: Bookings[] = [];
-  page: number = 1;
+  pageBooking: number = 1;
 
   constructor(private bookingService: BookingService) {}
 

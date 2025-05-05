@@ -18,7 +18,7 @@ export class OffersViewComponent implements OnInit {
     arrival_date: '',
     airline: '',
   };
-  page: number = 1;
+  pageOffer: number = 1;
 
   constructor(private offersService: OffersService) {}
 

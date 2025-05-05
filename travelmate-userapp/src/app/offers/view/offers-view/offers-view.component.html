@@ -27,7 +27,7 @@
 
   <!-- offers -->
   <div>
-    <div class="col-12" *ngFor="let offer of filteredOffers | paginate: { itemsPerPage: 10, currentPage: page }">
+    <div class="col-12" *ngFor="let offer of filteredOffers | paginate: { id: 'offers-pagination', itemsPerPage: 10, currentPage: pageOffer }">
       <div class="card mb-3">
         <div class="card-body">
           <h5 class="card-title">{{ offer.flightNumber }} [{{ offer.departureAirport }} - {{ offer.arrivalAirport }}] </h5>
@@ -45,5 +45,5 @@
   </div>
 
   <!-- pagination -->
-  <pagination-controls id="offers-pagination" (pageChange)="page = $event"></pagination-controls>
+  <pagination-controls id="offers-pagination" (pageChange)="pageOffer = $event"></pagination-controls>
 </div>
