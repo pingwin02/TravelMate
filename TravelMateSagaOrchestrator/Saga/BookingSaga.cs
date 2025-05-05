@@ -175,16 +175,6 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
         });
     }
 
-    private async Task PerformSeatCompensation(SagaConsumeContext<BookingSagaState, CheckSeatAvailabilityResponse> context)
-    {
-        Console.WriteLine($"[Saga] Compensating seat availability for booking {context.Saga.BookingId}");
-        await context.Send(new Uri("queue:cancel-seat-availability-queue"), new CancelSeatAvailabilityCommand
-        {
-            CorrelationId = context.Saga.CorrelationId,
-            OfferId = context.Saga.OfferId,
-            SeatType = context.Saga.SeatType
-        });
-    }
 
 
 
