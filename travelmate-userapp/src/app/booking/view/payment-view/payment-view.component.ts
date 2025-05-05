@@ -20,6 +20,7 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
   timerInterval: any;
   private bookingId: string | null;
   isCanceled: boolean = false;
+  isConfirmed: boolean = false;
   seatTypeLabels = SeatTypeLabels
   passengerTypeLabels = PassengerTypeLabels
 
@@ -40,7 +41,11 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
           if (this.booking.status === BookingStatus.Canceled) {
             this.isCanceled = true;
           }
+          else if (this.booking.status === BookingStatus.Confirmed) {
+            this.isConfirmed = true;
+          }
           else {
+            this.isCanceled = false;
             this.isCanceled = false;
             this.paymentService.getPaymentById(this.booking.paymentId!).subscribe({
               next: (payment) => {
@@ -84,7 +89,7 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
     // } else {
     //   alert('Payment URL not available.');
     // }
-    this.router.navigate(['/payment-confirmation', this.bookingId]);
+    this.router.navigate(['/payment-confirmation', this.booking.paymentId]);
   }
 
   ngOnDestroy(): void {
