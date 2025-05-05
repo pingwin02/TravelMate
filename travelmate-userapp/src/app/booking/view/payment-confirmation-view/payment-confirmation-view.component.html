@@ -1,0 +1,38 @@
+<div
+  class="container mt-4"
+  *ngIf="payment && paymentResult != null; else finished"
+>
+  <div class="card" *ngIf="!isCanceled && !isConfirmed">
+    <div class="card-body">
+      <div
+        *ngIf="paymentResult; else failure"
+        class="alert alert-success"
+        role="alert"
+      >
+        <h1>Payment processed succesfully</h1>
+        <p>Your reservation has been confirmed.</p>
+      </div>
+
+      <ng-template #failure>
+        <div class="alert alert-danger" role="alert">
+          <h1>Payment was unsuccessful</h1>
+          <p>We apologize for the inconvenience. Please try again later.</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<ng-template #finished>
+  <div class="container mt-4">
+    <div *ngIf="isCanceled" class="alert alert-danger" role="alert">
+      <h1>Reservation has been canceled</h1>
+      <p>Time limit has been exceeded.</p>
+    </div>
+    <div *ngIf="isConfirmed" class="card">
+      <div class="card-body">
+        <h1>Reservation has been confirmed</h1>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,80 @@
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management
+    expose:
+      - "5672"
+      - "15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "admin"
+      RABBITMQ_DEFAULT_PASS: "admin"
+    networks:
+      - RSWD_188597_network
+
+  travelmatefrontend:
+    container_name: TravelMateFrontend
+    image: pingwin02/travelmatefrontend
+    ports:
+      - "18859:80"
+    environment:
+      OFFERS_API_URL: "http://travelmateofferservice:8080/api"
+      AUTH_API_URL: "http://travelmateauthservice:8080/api"
+      BOOKING_API_URL: "http://travelmatebookingservice:8080/api"
+      PAYMENT_API_URL: "http://travelmatepaymentservice:8080/api"
+    depends_on:
+      - travelmateofferservice
+      - travelmateauthservice
+      - travelmatebookingservice
+      - travelmatepaymentservice
+    networks:
+      - admin-mysql_default
+      - RSWD_188597_network
+
+  travelmateofferservice:
+    container_name: TravelMateOfferService
+    image: pingwin02/travelmateofferservice
+    expose:
+      - "8080"
+    depends_on:
+      - rabbitmq
+    networks:
+      - admin-mysql_default
+      - RSWD_188597_network
+
+  travelmateauthservice:
+    container_name: TravelMateAuthService
+    image: pingwin02/travelmateauthservice
+    expose:
+      - "8080"
+    depends_on:
+      - rabbitmq
+    networks:
+      - admin-mysql_default
+      - RSWD_188597_network
+
+  travelmatebookingservice:
+    container_name: TravelMateBookingService
+    image: pingwin02/travelmatebookingservice
+    expose:
+      - "8080"
+    depends_on:
+      - rabbitmq
+    networks:
+      - admin-mysql_default
+      - RSWD_188597_network
+
+  travelmatepaymentservice:
+    container_name: TravelMatePaymentService
+    image: pingwin02/travelmatepaymentservice
+    expose:
+      - "8080"
+    depends_on:
+      - rabbitmq
+    networks:
+      - admin-mysql_default
+      - RSWD_188597_network
+
+networks:
+  admin-mysql_default:
+    external: true
+  RSWD_188597_network:
