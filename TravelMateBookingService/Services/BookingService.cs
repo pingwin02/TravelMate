@@ -1,8 +1,6 @@
 ﻿using MassTransit;
-using MassTransit.Transports;
 using Microsoft.Extensions.Options;
 using TravelMate.Models.Messages;
-using TravelMateBookingService.Controllers.Exceptions;
 using TravelMateBookingService.Models.Bookings;
 using TravelMateBookingService.Models.Bookings.DTO;
 using TravelMateBookingService.Models.Settings;

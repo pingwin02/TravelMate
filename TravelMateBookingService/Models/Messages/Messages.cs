@@ -9,8 +9,8 @@ public class BookingStartedEvent
     public Guid OfferId { get; set; }
     public SeatType SeatType { get; set; }
     public PassengerType PassengerType { get; set; }
-
 }
+
 public class CheckSeatAvailabilityRequest
 {
     public Guid CorrelationId { get; set; }

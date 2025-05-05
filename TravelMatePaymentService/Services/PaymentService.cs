@@ -43,9 +43,9 @@ public class PaymentService(
         await publishEndpoint.Publish(new PaymentFinalizedEvent
         {
             CorrelationId = Guid.NewGuid(),
-            IsSuccess = isSuccess,
+            IsSuccess = isSuccess
         });
-        
+
 
         //var bookingStatusUpdateResponse = await bookingStatusUpdateRequest.GetResponse<BookingStatusUpdateResponse>(
         //    new BookingStatusUpdateRequest

@@ -24,7 +24,7 @@
 3. Create migrations and update the database for all services:
 
    ```bash
-   ./scraper/migrations.sh
+   cd scraper && ./migrations.sh
    ```
 
 ### Automatic way
@@ -112,13 +112,13 @@
 
 ### Alternative way to insert data into the database
 
-1. Make dumps of the database tables using `scraper/dump.sh` file. This file will create a dump of the database tables
+1. Make dumps of the database tables using `dump.sh` script. This script will create a dump of the database tables
    and save them in the `dumps` folder. The dumps will be in the form of `.sql` files.
 2. To create dumps, run the following command:
    ```bash
-   ./dump.sh
+   cd scraper && ./dump.sh
    ```
 3. To restore the dumps, run the following command:
    ```bash
-   ./dump.sh --restore
+   cd scraper && ./dump.sh --restore
    ```

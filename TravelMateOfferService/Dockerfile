@@ -12,7 +12,6 @@ COPY ["TravelMateOfferService.csproj", "./"]
 RUN dotnet restore "TravelMateOfferService.csproj"
 COPY . .
 RUN dotnet-ef migrations add InitialCreate
-WORKDIR "/src/"
 RUN dotnet build "./TravelMateOfferService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

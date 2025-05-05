@@ -75,9 +75,9 @@ services:
         condition: service_started
 
   travelmatesagaorchestrator:
-    container_name: TraveLMateSagaOrchestrator
+    container_name: TravelMateSagaOrchestrator
     build:
-      context: ./TraveLMateSagaOrchestrator
+      context: ./TravelMateSagaOrchestrator
     ports:
       - "5004:8080"
     depends_on:

@@ -5,17 +5,19 @@ using TravelMateSagaOrchestrator.Saga;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
+var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
+
 builder.Services.AddMassTransit(x =>
 {
     x.AddSagaStateMachine<BookingSaga, BookingSagaState>()
-        .InMemoryRepository(); 
+        .InMemoryRepository();
 
-   x.UsingRabbitMq((context, cfg) =>
+    x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("rabbitmq", h =>
+        cfg.Host(rabbitMqSettings["Host"], h =>
         {
-            h.Username("admin");
-            h.Password("admin");
+            h.Username(rabbitMqSettings["Username"]);
+            h.Password(rabbitMqSettings["Password"]);
         });
 
         cfg.ConfigureEndpoints(context);
@@ -26,13 +28,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
-// Swagger setup (optional)
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseAuthorization();
 app.MapControllers();
