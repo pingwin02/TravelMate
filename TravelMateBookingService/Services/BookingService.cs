@@ -1,5 +1,7 @@
 ﻿using MassTransit;
+using MassTransit.Clients;
 using Microsoft.Extensions.Options;
+using System.Reflection.Metadata;
 using TravelMate.Models.Messages;
 using TravelMateBookingService.Models.Bookings;
 using TravelMateBookingService.Models.Bookings.DTO;
@@ -13,13 +15,25 @@ public class BookingService(
     IOptions<BookingsSettings> settings,
     IRequestClient<CheckSeatAvailabilityRequest> seatAvailabilityRequest,
     IRequestClient<PaymentCreationRequest> paymentRequest,
-    IPublishEndpoint publishEndpoint)
+    IPublishEndpoint publishEndpoint,
+    IBus bus)
     : IBookingService
 {
     public async Task<BookingDto> CreateBooking(Guid userId, BookingRequestDto bookingRequestDto)
     {
+
         var correlationId = Guid.NewGuid();
         var bookingId = Guid.NewGuid();
+        var task = new TaskCompletionSource<BookingSagaStatusResponse>();
+        var handle = bus.ConnectReceiveEndpoint($"booking-status-response-{correlationId}", e =>
+        {
+            e.Handler<BookingSagaStatusResponse>(context =>
+            {
+                Console.WriteLine($"Received payment result for {context.Message.CorrelationId}");
+                task.TrySetResult(context.Message);
+                return Task.CompletedTask;
+            });
+        });
         await publishEndpoint.Publish(new BookingStartedEvent
         {
             CorrelationId = correlationId,
@@ -29,7 +43,55 @@ public class BookingService(
             PassengerType = bookingRequestDto.PassengerType
         });
 
-        return null;
+       
+        var result = await task.Task;
+        Console.WriteLine($"Received payment result for {result.CorrelationId} {result.IsSuccessful}");
+
+        if (!result.IsSuccessful)
+            throw new InvalidOperationException();
+
+        var booking = new Booking
+        {
+            Id = bookingId,
+            UserId = userId,
+            OfferId = bookingRequestDto.OfferId,
+            Status = BookingStatus.Pending,
+            SeatType = bookingRequestDto.SeatType,
+            PassengerName = bookingRequestDto.PassengerName,
+            PassengerType = bookingRequestDto.PassengerType,
+            CreatedAt = DateTime.Now,
+            ReservedUntil = DateTime.Now.AddSeconds(settings.Value.BookingExpirationTime),
+            PaymentId = result.PaymentId
+        };
+       
+        var savedBooking = await bookingRepository.CreateBooking(booking);
+        Console.WriteLine(savedBooking);
+        BookingExpirationService.AddBookingCancellationToQueue(savedBooking);
+        return new BookingDto
+        {
+            Id = savedBooking.Id,
+            CreatedAt = savedBooking.CreatedAt,
+            ReservedUntil = savedBooking.ReservedUntil,
+            PaymentId = savedBooking.PaymentId.Value
+        };
+
+        //var response = await requestClient.GetResponse<BookingSagaStatusResponse>(new BookingStartedEvent
+        //{
+        //    CorrelationId = correlationId,
+        //    OfferId = bookingRequestDto.OfferId,
+        //    BookingId = bookingId,
+        //    SeatType = bookingRequestDto.SeatType,
+        //    PassengerType = bookingRequestDto.PassengerType
+        //});
+
+        //if (response.Message.IsSuccessful)
+        //{
+        //    
+        //}
+        //return null;
+
+
+
         //var isSeatAvailableResponse = await seatAvailabilityRequest.GetResponse<CheckSeatAvailabilityResponse>(
         //    new CheckSeatAvailabilityRequest
         //    {

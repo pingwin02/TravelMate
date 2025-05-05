@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TravelMateBookingService.Controllers.Exceptions;
 using TravelMateBookingService.Models.Bookings;
 using TravelMateBookingService.Models.Bookings.DTO;
 using TravelMateBookingService.Services;
@@ -23,7 +22,7 @@ public class BookingController(IBookingService bookingService, IServiceProvider 
             var createdBooking = await bookingService.CreateBooking(Guid.Parse(userId), booking);
             return Created($"/api/bookings/{createdBooking.Id}", createdBooking);
         }
-        catch (SeatNotAvailableException e)
+        catch (InvalidOperationException e)
         {
             return BadRequest(e.Message);
         }

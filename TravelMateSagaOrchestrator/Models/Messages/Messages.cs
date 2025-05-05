@@ -49,6 +49,13 @@ public class BookingStatusUpdateRequest
     public BookingStatus Status { get; set; }
 }
 
+public class BookingSagaStatusResponse
+{
+    public Guid CorrelationId { get; set; }
+    public Guid PaymentId{ get; set; }
+    public bool IsSuccessful { get; set; }
+
+}
 public enum BookingStatus
 {
     Pending,
@@ -69,3 +76,4 @@ public enum PassengerType
     Child,
     Baby
 }
+

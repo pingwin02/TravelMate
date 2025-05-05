@@ -19,13 +19,14 @@ public class PaymentService(
         return await paymentsRepository.GetPaymentById(paymentId);
     }
 
-    public async Task<Payment> CreatePayment(Guid bookingId, decimal price)
+    public async Task<Payment> CreatePayment(Guid bookingId, decimal price, Guid correlationId)
     {
         var payment = new Payment
         {
             BookingId = bookingId,
             Amount = price,
-            Status = PaymentStatus.Pending
+            Status = PaymentStatus.Pending,
+            CorrelationId = correlationId
         };
 
         return await paymentsRepository.CreatePayment(payment);
@@ -42,7 +43,7 @@ public class PaymentService(
 
         await publishEndpoint.Publish(new PaymentFinalizedEvent
         {
-            CorrelationId = Guid.NewGuid(),
+            CorrelationId = payment.CorrelationId,
             IsSuccess = isSuccess
         });
 

@@ -60,3 +60,10 @@ public class BookingStatusUpdateResponse
 {
     public bool IsUpdated { get; set; }
 }
+public class BookingSagaStatusResponse
+{
+    public Guid CorrelationId { get; set; }
+    public Guid PaymentId { get; set; }
+    public bool IsSuccessful { get; set; }
+
+}

@@ -69,6 +69,13 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                     context.Saga.PaymentId = context.Message.PaymentId;
                     Console.WriteLine($"[Saga] Payment created: {context.Saga.PaymentId}");
                 })
+                .SendAsync(context=>new Uri($"queue:booking-status-response-{context.Saga.CorrelationId}"), context =>
+                    Task.FromResult(new BookingSagaStatusResponse
+                    {
+                        CorrelationId = context.Saga.CorrelationId,
+                        PaymentId = context.Saga.PaymentId,
+                        IsSuccessful = true
+                    }))
                 .TransitionTo(PaymentCreated)
         );
 
