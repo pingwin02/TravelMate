@@ -61,12 +61,13 @@ public class BookingService(
             PassengerType = bookingRequestDto.PassengerType,
             CreatedAt = DateTime.Now,
             ReservedUntil = DateTime.Now.AddSeconds(settings.Value.BookingExpirationTime),
-            PaymentId = result.PaymentId
+            PaymentId = result.PaymentId,
+            CorrelationId = correlationId
         };
        
         var savedBooking = await bookingRepository.CreateBooking(booking);
         Console.WriteLine(savedBooking);
-        BookingExpirationService.AddBookingCancellationToQueue(savedBooking);
+        BookingExpirationService.AddBookingCancellationToQueue(savedBooking,correlationId);
         return new BookingDto
         {
             Id = savedBooking.Id,
@@ -147,9 +148,9 @@ public class BookingService(
         return await bookingRepository.GetBookingsByUserId(userId);
     }
 
-    public Task<bool> ChangeBookingStatus(Guid bookingId, BookingStatus status)
+    public async Task<bool> ChangeBookingStatus(Guid bookingId, BookingStatus status)
     {
-        return bookingRepository.ChangeBookingStatus(bookingId, status);
+        return await bookingRepository.ChangeBookingStatus(bookingId, status);
     }
 
     public Task<bool> CheckIfPending(Guid bookingId)

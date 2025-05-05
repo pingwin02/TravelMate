@@ -94,7 +94,7 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
         }
     }
 
-    public async Task CancelSeatReservation(CancelReservationRequest request)
+    public async Task CancelSeatReservation(CancelSeatAvailabilityCommand request)
     {
         var offer = await offerRepository.GetOffer(request.OfferId);
 

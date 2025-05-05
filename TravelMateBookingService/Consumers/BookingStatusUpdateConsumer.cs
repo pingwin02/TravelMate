@@ -14,12 +14,12 @@ public class BookingStatusUpdateConsumer(IServiceProvider serviceProvider)
         Console.WriteLine($"Received booking status update request for booking {bookingId}");
         var bookingService = serviceProvider.GetRequiredService<IBookingService>();
 
-        var isUpdated = true;
+
 
         if (!await bookingService.CheckIfPending(bookingId))
         {
-            Console.WriteLine($"Booking {bookingId} is not pending, skipping cancellation");
-            isUpdated = false;
+            Console.WriteLine($"Booking {bookingId} is not pending, skipping status change");
+            return;
         }
         else
         {
@@ -27,12 +27,8 @@ public class BookingStatusUpdateConsumer(IServiceProvider serviceProvider)
                 bookingId,
                 bookingStatusUpdateRequest.Status);
 
-            Console.WriteLine($"Booking status updated for booking {bookingId}");
+            Console.WriteLine($"Booking status updated for booking {bookingId} to {bookingStatusUpdateRequest.Status}");
         }
 
-        await context.RespondAsync(new BookingStatusUpdateResponse
-        {
-            IsUpdated = isUpdated
-        });
     }
 }

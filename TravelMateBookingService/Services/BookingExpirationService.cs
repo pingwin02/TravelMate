@@ -8,22 +8,23 @@ namespace TravelMateBookingService.Services;
 
 public class BookingExpirationService(IServiceProvider serviceProvider) : BackgroundService
 {
-    private static readonly ConcurrentQueue<(Guid BookingId, SeatType seatType, Guid OfferId, DateTime CancelAt)>
+    private static readonly ConcurrentQueue<(Guid BookingId, SeatType seatType, Guid OfferId, DateTime CancelAt, Guid correlationId)>
         Queue = new();
 
-    public static void AddBookingCancellationToQueue(Booking booking)
+    public static void AddBookingCancellationToQueue(Booking booking, Guid correlationId)
     {
         Console.WriteLine($"Adding booking {booking.Id} to queue for cancellation at {booking.ReservedUntil}");
-        Queue.Enqueue((booking.Id, booking.SeatType, booking.OfferId, booking.ReservedUntil));
+        Queue.Enqueue((booking.Id, booking.SeatType, booking.OfferId, booking.ReservedUntil,correlationId));
     }
 
-    public async Task CancelBooking(Guid bookingId, SeatType seatType, Guid offerId,
+    public async Task CancelBooking(Guid bookingId, SeatType seatType, Guid offerId, Guid correlationId,
         CancellationToken cancellationToken = default)
     {
         try
         {
             using var scope = serviceProvider.CreateScope();
             var bookingRepository = scope.ServiceProvider.GetRequiredService<IBookingRepository>();
+            var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
 
             if (!await bookingRepository.CheckIfPending(bookingId))
             {
@@ -31,25 +32,13 @@ public class BookingExpirationService(IServiceProvider serviceProvider) : Backgr
                 return;
             }
 
-            var cancelReservationClient = scope.ServiceProvider
-                .GetRequiredService<IRequestClient<CancelReservationRequest>>();
-
-            var response = await cancelReservationClient.GetResponse<CancelReservationResponse>(
-                new CancelReservationRequest
-                {
-                    OfferId = offerId,
-                    SeatType = seatType
-                }, cancellationToken);
-
-            if (response.Message.IsCanceled)
+            var res = await bookingRepository.ChangeBookingStatus(bookingId, BookingStatus.Canceled);
+            //event do sagi
+            await publishEndpoint.Publish(new BookingCancelledEvent
             {
-                Console.WriteLine($"Seat is available again, canceling {bookingId}");
-                await bookingRepository.ChangeBookingStatus(bookingId, BookingStatus.Canceled);
-            }
-            else
-            {
-                Console.WriteLine($"Failed to cancel booking {bookingId}");
-            }
+                CorrelationId = correlationId,
+                BookingId = bookingId,
+            });
         }
         catch (Exception ex)
         {
@@ -67,7 +56,7 @@ public class BookingExpirationService(IServiceProvider serviceProvider) : Backgr
                 if (delay > TimeSpan.Zero)
                     await Task.Delay(delay, stoppingToken);
 
-                await CancelBooking(task.BookingId, task.seatType, task.OfferId, stoppingToken);
+                await CancelBooking(task.BookingId, task.seatType, task.OfferId, task.correlationId, stoppingToken);
             }
             else
             {

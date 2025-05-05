@@ -33,6 +33,7 @@ builder.Services.AddMassTransit(busConfig =>
     busConfig.AddRequestClient<CheckSeatAvailabilityRequest>(new Uri("queue:check-seat-availability-queue"));
     busConfig.AddRequestClient<PaymentCreationRequest>(new Uri("queue:payment-queue"));
     busConfig.AddConsumer<BookingStatusUpdateConsumer>();
+    busConfig.AddConsumer<CancelBookingConsumer>();
     busConfig.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(rabbitMqSettings["Host"], h =>
@@ -43,6 +44,9 @@ builder.Services.AddMassTransit(busConfig =>
 
         cfg.ReceiveEndpoint("update-booking-status-queue",
             e => { e.ConfigureConsumer<BookingStatusUpdateConsumer>(context); });
+
+        cfg.ReceiveEndpoint("cancel-booking-queue",
+            e => { e.ConfigureConsumer<CancelBookingConsumer>(context); });
     });
 });
 builder.Services.AddSwaggerGen(c =>

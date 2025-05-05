@@ -14,6 +14,8 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
         Event(() => SeatAvailabilityChecked, x => x.CorrelateById(m => m.Message.CorrelationId));
         Event(() => PaymentCreatedEvent, x => x.CorrelateById(m => m.Message.CorrelationId));
         Event(() => PaymentFinalizedEvent, x => x.CorrelateById(m => m.Message.CorrelationId));
+        Event(() => BookingCancelledEvent, x => x.CorrelateById(m => m.Message.CorrelationId));
+        Event(() => PaymentFailedEvent, x => x.CorrelateById(m => m.Message.CorrelationId));
 
         Initially(
             When(BookingStarted)
@@ -53,10 +55,11 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                                 Price = context.Saga.Price
                             })),
                     elseBinder => elseBinder
-                        .Then(context =>
+                        .Then(async context =>
                         {
                             Console.WriteLine(
                                 $"[Saga] No available seat for offer {context.Saga.OfferId}. Booking failed.");
+                            //await PerformSeatCompensation(context);
                         })
                         .Finalize()
                 )
@@ -80,18 +83,110 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
         );
 
         During(PaymentCreated,
+
             When(PaymentFinalizedEvent)
                 .Then(context =>
                 {
                     Console.WriteLine(
                         $"[Saga] Payment finalized for correlation {context.Saga.CorrelationId} with status: {(context.Message.IsSuccess ? "Success" : "Failure")}");
+
+                    Console.WriteLine("[Saga] Updating booking status");
                 })
+                .SendAsync(new Uri("queue:update-booking-status-queue"), context =>
+                            Task.FromResult(new BookingStatusUpdateRequest
+                            {
+                                CorrelationId = context.Saga.CorrelationId,
+                                BookingId = context.Saga.BookingId,
+                                Status = BookingStatus.Confirmed
+                            }))
                 .TransitionTo(PaymentFinalized)
+                .Finalize()
+        );
+
+        DuringAny(
+            When(BookingCancelledEvent)
+                .ThenAsync(async context =>
+                {
+                    Console.WriteLine($"[Saga] Booking cancelled for correlation {context.Saga.CorrelationId}");
+                    await PerformBookingCancellationCompesation(context);
+                })
+                .Finalize(),
+            When(PaymentFailedEvent)
+                .ThenAsync(async context =>
+                {
+                    Console.WriteLine($"[Saga] Payment failed for correlation {context.Saga.CorrelationId}");
+                    await PerformPaymentFailureCompensation(context);
+                })
                 .Finalize()
         );
 
         SetCompletedWhenFinalized();
     }
+
+    private async Task PerformBookingCancellationCompesation(SagaConsumeContext<BookingSagaState, BookingCancelledEvent> context)
+    {
+        Console.WriteLine($"current state {context.Saga.CurrentState}");
+        if (context.Saga.CurrentState.Equals(SeatChecked.Name))
+        {
+            Console.WriteLine($"[Saga] Compensating seat availability for booking {context.Saga.BookingId}");
+            await context.Send(new Uri("queue:cancel-seat-availability-queue"), new CancelSeatAvailabilityCommand
+            {
+                CorrelationId = context.Saga.CorrelationId,
+                OfferId = context.Saga.OfferId,
+                SeatType = context.Saga.SeatType
+            });
+
+            return;
+        }
+        if (context.Saga.CurrentState.Equals(PaymentCreated.Name))
+        {
+            Console.WriteLine($"[Saga] Compensating payment for booking {context.Saga.BookingId}");
+            await context.Send(new Uri("queue:cancel-payment-queue"), new CancelPaymentCommand
+            {
+                CorrelationId = context.Saga.CorrelationId,
+                PaymentId = context.Saga.PaymentId
+            });
+            Console.WriteLine($"[Saga] Compensating seat availability for booking {context.Saga.BookingId}");
+            await context.Send(new Uri("queue:cancel-seat-availability-queue"), new CancelSeatAvailabilityCommand
+            {
+                CorrelationId = context.Saga.CorrelationId,
+                OfferId = context.Saga.OfferId,
+                SeatType = context.Saga.SeatType
+            });
+        }
+        
+    }
+
+    private async Task PerformPaymentFailureCompensation(SagaConsumeContext<BookingSagaState, PaymentFailedEvent> context)
+    {
+        Console.WriteLine($"[Saga] Compensating seat availability for booking {context.Saga.BookingId}");
+        await context.Send(new Uri("queue:cancel-seat-availability-queue"), new CancelSeatAvailabilityCommand
+        {
+            CorrelationId = context.Saga.CorrelationId,
+            OfferId = context.Saga.OfferId,
+            SeatType = context.Saga.SeatType
+        });
+
+        Console.WriteLine($"[Saga] Cancelling booking {context.Saga.BookingId}");
+        await context.Send(new Uri("queue:cancel-booking-queue"), new CancelBookingCommand
+        {
+            CorrelationId = context.Saga.CorrelationId,
+            BookingId = context.Saga.BookingId
+        });
+    }
+
+    private async Task PerformSeatCompensation(SagaConsumeContext<BookingSagaState, CheckSeatAvailabilityResponse> context)
+    {
+        Console.WriteLine($"[Saga] Compensating seat availability for booking {context.Saga.BookingId}");
+        await context.Send(new Uri("queue:cancel-seat-availability-queue"), new CancelSeatAvailabilityCommand
+        {
+            CorrelationId = context.Saga.CorrelationId,
+            OfferId = context.Saga.OfferId,
+            SeatType = context.Saga.SeatType
+        });
+    }
+
+
 
     public State SeatChecked { get; } = null!;
     public State PaymentCreated { get; } = null!;
@@ -101,4 +196,9 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
     public Event<CheckSeatAvailabilityResponse> SeatAvailabilityChecked { get; } = null!;
     public Event<PaymentCreatedEvent> PaymentCreatedEvent { get; } = null!;
     public Event<PaymentFinalizedEvent> PaymentFinalizedEvent { get; } = null!;
+    public Event<BookingCancelledEvent> BookingCancelledEvent { get; } = null!;
+    public Event<PaymentFailedEvent> PaymentFailedEvent { get; } = null!;
+
+
 }
+

@@ -12,6 +12,6 @@ public interface IOfferService
     Task UpdateOffer(Offer offer);
     Task DeleteOffer(Guid id);
     Task<bool> CheckSeatAvailability(CheckSeatAvailabilityRequest request);
-    Task CancelSeatReservation(CancelReservationRequest request);
+    Task CancelSeatReservation(CancelSeatAvailabilityCommand request);
     Task<decimal> CalculateDynamicPrice(CheckSeatAvailabilityRequest request);
 }

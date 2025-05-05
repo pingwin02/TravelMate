@@ -7,4 +7,6 @@ public interface IPaymentService
     Task<Payment> GetPaymentById(Guid paymentId);
     Task<Payment> CreatePayment(Guid bookingId, decimal price, Guid CorrelationId);
     Task<bool> FinalizePayment(Guid paymentId);
+
+    Task<bool> CancelPayment(Guid paymentId);
 }

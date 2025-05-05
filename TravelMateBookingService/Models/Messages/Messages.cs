@@ -52,6 +52,7 @@ public class PaymentCreationResponse
 
 public class BookingStatusUpdateRequest
 {
+    public Guid CorrelationId { get; set; }
     public Guid BookingId { get; set; }
     public BookingStatus Status { get; set; }
 }
@@ -66,4 +67,15 @@ public class BookingSagaStatusResponse
     public Guid PaymentId { get; set; }
     public bool IsSuccessful { get; set; }
 
+}
+public class BookingCancelledEvent
+{
+    public Guid CorrelationId { get; set; }
+    public Guid BookingId { get; set; }
+}
+
+public class CancelBookingCommand
+{
+    public Guid CorrelationId { get; set; }
+    public Guid BookingId { get; set; }
 }
