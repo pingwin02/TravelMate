@@ -1,0 +1,85 @@
+<div class="container mt-4">
+  <h2>Reservation</h2>
+
+  <div class="card">
+    <div class="card-body">
+      <form [formGroup]="reservationForm">
+        <div class="mb-3">
+          <label for="name" class="form-label">First name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="name"
+            formControlName="name"
+            placeholder="Enter your first name"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="surname" class="form-label">Last name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="surname"
+            formControlName="surname"
+            placeholder="Enter your last name"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="passenger_type" class="form-label"
+            >Choose passenger type</label
+          >
+          <select
+            class="form-select"
+            id="passenger_type"
+            formControlName="passenger_type"
+          >
+            <option [value]="0">Adult</option>
+            <option [value]="1">Child</option>
+            <option [value]="2">Baby</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="seat_type" class="form-label">Choose seat type</label>
+          <select
+            class="form-select"
+            id="seat_type"
+            formControlName="seat_type"
+            *ngIf="offer"
+          >
+            <option *ngIf="offer.availableEconomySeats > 0" [value]="0">
+              Economy
+            </option>
+            <option *ngIf="offer.availableBusinessSeats > 0" [value]="1">
+              Business
+            </option>
+            <option *ngIf="offer.availableFirstClassSeats > 0" [value]="2">
+              First Class
+            </option>
+          </select>
+          <div
+            *ngIf="
+              offer &&
+              offer.availableEconomySeats === 0 &&
+              offer.availableBusinessSeats === 0 &&
+              offer.availableFirstClassSeats === 0
+            "
+          >
+            <p class="text-danger">No seats available for this offer.</p>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="reservationForm.invalid"
+          (click)="goToPayment()"
+        >
+          Next
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
