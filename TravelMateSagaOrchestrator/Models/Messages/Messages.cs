@@ -54,9 +54,8 @@ public class BookingStatusUpdateRequest
 public class BookingSagaStatusResponse
 {
     public Guid CorrelationId { get; set; }
-    public Guid PaymentId{ get; set; }
+    public Guid PaymentId { get; set; }
     public bool IsSuccessful { get; set; }
-
 }
 
 public class BookingCancelledEvent
@@ -64,26 +63,31 @@ public class BookingCancelledEvent
     public Guid CorrelationId { get; set; }
     public Guid BookingId { get; set; }
 }
+
 public class CancelPaymentCommand
 {
     public Guid CorrelationId { get; set; }
     public Guid PaymentId { get; set; }
 }
+
 public class CancelSeatAvailabilityCommand
 {
     public Guid CorrelationId { get; set; }
     public Guid OfferId { get; set; }
     public SeatType SeatType { get; set; }
 }
+
 public class CancelBookingCommand
 {
     public Guid CorrelationId { get; set; }
     public Guid BookingId { get; set; }
 }
+
 public class PaymentFailedEvent
 {
     public Guid CorrelationId { get; set; }
 }
+
 public enum BookingStatus
 {
     Pending,
@@ -104,4 +108,3 @@ public enum PassengerType
     Child,
     Baby
 }
-

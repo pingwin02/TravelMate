@@ -8,13 +8,14 @@ namespace TravelMateBookingService.Services;
 
 public class BookingExpirationService(IServiceProvider serviceProvider) : BackgroundService
 {
-    private static readonly ConcurrentQueue<(Guid BookingId, SeatType seatType, Guid OfferId, DateTime CancelAt, Guid correlationId)>
+    private static readonly ConcurrentQueue<(Guid BookingId, SeatType seatType, Guid OfferId, DateTime CancelAt, Guid
+            correlationId)>
         Queue = new();
 
     public static void AddBookingCancellationToQueue(Booking booking, Guid correlationId)
     {
         Console.WriteLine($"Adding booking {booking.Id} to queue for cancellation at {booking.ReservedUntil}");
-        Queue.Enqueue((booking.Id, booking.SeatType, booking.OfferId, booking.ReservedUntil,correlationId));
+        Queue.Enqueue((booking.Id, booking.SeatType, booking.OfferId, booking.ReservedUntil, correlationId));
     }
 
     public async Task CancelBooking(Guid bookingId, SeatType seatType, Guid offerId, Guid correlationId,
@@ -33,11 +34,11 @@ public class BookingExpirationService(IServiceProvider serviceProvider) : Backgr
             }
 
             var res = await bookingRepository.ChangeBookingStatus(bookingId, BookingStatus.Canceled);
-            //event do sagi
+
             await publishEndpoint.Publish(new BookingCancelledEvent
             {
                 CorrelationId = correlationId,
-                BookingId = bookingId,
+                BookingId = bookingId
             });
         }
         catch (Exception ex)

@@ -45,21 +45,17 @@ public class PaymentService(
         await paymentsRepository.ChangePaymentStatus(paymentId, status);
         Console.WriteLine($"Payment status updated for payment {paymentId} to {status}");
 
-        if(isSuccess)
-        {
+        if (isSuccess)
             await publishEndpoint.Publish(new PaymentFinalizedEvent
             {
                 CorrelationId = payment.CorrelationId,
-                IsSuccess = isSuccess,
+                IsSuccess = isSuccess
             });
-        }
         else
-        {
             await publishEndpoint.Publish(new PaymentFailedEvent
             {
-                CorrelationId = payment.CorrelationId,
+                CorrelationId = payment.CorrelationId
             });
-        }
 
         return isSuccess;
     }
@@ -69,7 +65,7 @@ public class PaymentService(
         var payment = await paymentsRepository.GetPaymentById(paymentId);
         if (payment.Status != PaymentStatus.Pending)
             throw new InvalidOperationException($"Payment with id {paymentId} is not in pending status");
-       
+
         var res = await paymentsRepository.ChangePaymentStatus(paymentId, PaymentStatus.Failed);
         return res;
     }

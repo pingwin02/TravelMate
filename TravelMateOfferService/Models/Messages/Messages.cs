@@ -35,6 +35,7 @@ public class CancelPaymentCommand
     public Guid CorrelationId { get; set; }
     public Guid PaymentId { get; set; }
 }
+
 public class CancelSeatAvailabilityCommand
 {
     public Guid CorrelationId { get; set; }

@@ -45,11 +45,13 @@ public class BookingCancelledEvent
     public Guid CorrelationId { get; set; }
     public Guid BookingId { get; set; }
 }
+
 public class CancelPaymentCommand
 {
     public Guid CorrelationId { get; set; }
     public Guid PaymentId { get; set; }
 }
+
 public class PaymentFailedEvent
 {
     public Guid CorrelationId { get; set; }

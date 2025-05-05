@@ -48,7 +48,6 @@ public class AuthController(IConfiguration config, IUserService userService) : C
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        // Create the token
         var token = new JwtSecurityToken(
             config["Jwt:Issuer"],
             config["Jwt:Audience"],

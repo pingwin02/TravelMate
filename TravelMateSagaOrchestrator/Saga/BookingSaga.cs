@@ -62,13 +62,14 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                             Console.WriteLine(
                                 $"[Saga] No available seat for offer {context.Saga.OfferId} {context.Saga.CorrelationId}. Booking failed.");
                         })
-                        .SendAsync(context => new Uri($"queue:booking-status-response-{context.Saga.CorrelationId}"), context =>
-                            Task.FromResult(new BookingSagaStatusResponse
-                            {
-                                CorrelationId = context.Saga.CorrelationId,
-                                PaymentId = Guid.Empty,
-                                IsSuccessful = false
-                            }))
+                        .SendAsync(context => new Uri($"queue:booking-status-response-{context.Saga.CorrelationId}"),
+                            context =>
+                                Task.FromResult(new BookingSagaStatusResponse
+                                {
+                                    CorrelationId = context.Saga.CorrelationId,
+                                    PaymentId = Guid.Empty,
+                                    IsSuccessful = false
+                                }))
                         .Finalize()
                 )
         );
@@ -80,7 +81,7 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                     context.Saga.PaymentId = context.Message.PaymentId;
                     Console.WriteLine($"[Saga] Payment created: {context.Saga.PaymentId}");
                 })
-                .SendAsync(context=>new Uri($"queue:booking-status-response-{context.Saga.CorrelationId}"), context =>
+                .SendAsync(context => new Uri($"queue:booking-status-response-{context.Saga.CorrelationId}"), context =>
                     Task.FromResult(new BookingSagaStatusResponse
                     {
                         CorrelationId = context.Saga.CorrelationId,
@@ -91,7 +92,6 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
         );
 
         During(PaymentCreated,
-
             When(PaymentFinalizedEvent)
                 .Then(context =>
                 {
@@ -101,12 +101,12 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                     Console.WriteLine("[Saga] Updating booking status");
                 })
                 .SendAsync(new Uri("queue:update-booking-status-queue"), context =>
-                            Task.FromResult(new BookingStatusUpdateRequest
-                            {
-                                CorrelationId = context.Saga.CorrelationId,
-                                BookingId = context.Saga.BookingId,
-                                Status = BookingStatus.Confirmed
-                            }))
+                    Task.FromResult(new BookingStatusUpdateRequest
+                    {
+                        CorrelationId = context.Saga.CorrelationId,
+                        BookingId = context.Saga.BookingId,
+                        Status = BookingStatus.Confirmed
+                    }))
                 .TransitionTo(PaymentFinalized)
                 .Finalize()
         );
@@ -131,7 +131,20 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
         SetCompletedWhenFinalized();
     }
 
-    private async Task PerformBookingCancellationCompesation(SagaConsumeContext<BookingSagaState, BookingCancelledEvent> context)
+
+    public State SeatChecked { get; } = null!;
+    public State PaymentCreated { get; } = null!;
+    public State PaymentFinalized { get; } = null!;
+
+    public Event<BookingStartedEvent> BookingStarted { get; } = null!;
+    public Event<CheckSeatAvailabilityResponse> SeatAvailabilityChecked { get; } = null!;
+    public Event<PaymentCreatedEvent> PaymentCreatedEvent { get; } = null!;
+    public Event<PaymentFinalizedEvent> PaymentFinalizedEvent { get; } = null!;
+    public Event<BookingCancelledEvent> BookingCancelledEvent { get; } = null!;
+    public Event<PaymentFailedEvent> PaymentFailedEvent { get; } = null!;
+
+    private async Task PerformBookingCancellationCompesation(
+        SagaConsumeContext<BookingSagaState, BookingCancelledEvent> context)
     {
         Console.WriteLine($"current state {context.Saga.CurrentState}");
         if (context.Saga.CurrentState.Equals(SeatChecked.Name))
@@ -146,6 +159,7 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
 
             return;
         }
+
         if (context.Saga.CurrentState.Equals(PaymentCreated.Name))
         {
             Console.WriteLine($"[Saga] Compensating payment for booking {context.Saga.BookingId}");
@@ -162,10 +176,10 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                 SeatType = context.Saga.SeatType
             });
         }
-        
     }
 
-    private async Task PerformPaymentFailureCompensation(SagaConsumeContext<BookingSagaState, PaymentFailedEvent> context)
+    private async Task PerformPaymentFailureCompensation(
+        SagaConsumeContext<BookingSagaState, PaymentFailedEvent> context)
     {
         Console.WriteLine($"[Saga] Compensating seat availability for booking {context.Saga.BookingId}");
         await context.Send(new Uri("queue:cancel-seat-availability-queue"), new CancelSeatAvailabilityCommand
@@ -182,21 +196,4 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
             BookingId = context.Saga.BookingId
         });
     }
-
-
-
-
-    public State SeatChecked { get; } = null!;
-    public State PaymentCreated { get; } = null!;
-    public State PaymentFinalized { get; } = null!;
-
-    public Event<BookingStartedEvent> BookingStarted { get; } = null!;
-    public Event<CheckSeatAvailabilityResponse> SeatAvailabilityChecked { get; } = null!;
-    public Event<PaymentCreatedEvent> PaymentCreatedEvent { get; } = null!;
-    public Event<PaymentFinalizedEvent> PaymentFinalizedEvent { get; } = null!;
-    public Event<BookingCancelledEvent> BookingCancelledEvent { get; } = null!;
-    public Event<PaymentFailedEvent> PaymentFailedEvent { get; } = null!;
-
-
 }
-

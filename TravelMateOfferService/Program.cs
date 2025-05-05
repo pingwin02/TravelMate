@@ -32,10 +32,8 @@ builder.Services.AddMassTransit(busConfig =>
 
         cfg.ReceiveEndpoint("check-seat-availability-queue",
             e => { e.ConfigureConsumer<CheckSeatAvailabilityConsumer>(context); });
-        cfg.ReceiveEndpoint("cancel-seat-availability-queue", e =>
-        {
-            e.ConfigureConsumer<CancelSeatAvailabilityConsumer>(context);
-        });
+        cfg.ReceiveEndpoint("cancel-seat-availability-queue",
+            e => { e.ConfigureConsumer<CancelSeatAvailabilityConsumer>(context); });
     });
 });
 

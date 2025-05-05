@@ -14,6 +14,4 @@ public class BookingSagaState : SagaStateMachineInstance
     public decimal Price { get; set; }
     public Guid OfferId { get; set; }
     public Guid CorrelationId { get; set; }
-
-
 }

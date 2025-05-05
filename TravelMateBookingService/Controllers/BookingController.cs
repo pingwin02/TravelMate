@@ -78,7 +78,8 @@ public class BookingController(IBookingService bookingService, IServiceProvider 
 
             using var scope = serviceProvider.CreateScope();
             var expirationService = scope.ServiceProvider.GetRequiredService<BookingExpirationService>();
-            await expirationService.CancelBooking(booking.Id, booking.SeatType, booking.OfferId, booking.CorrelationId.Value);
+            await expirationService.CancelBooking(booking.Id, booking.SeatType, booking.OfferId,
+                booking.CorrelationId.Value);
 
             return Ok($"Booking {booking.Id} canceled");
         }

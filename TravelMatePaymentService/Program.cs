@@ -37,10 +37,7 @@ builder.Services.AddMassTransit(busConfig =>
 
         cfg.ReceiveEndpoint("create-payment",
             e => { e.ConfigureConsumer<CreatePaymentConsumer>(context); });
-        cfg.ReceiveEndpoint("cancel-payment-queue", e =>
-        {
-            e.ConfigureConsumer<CancelPaymentConsumer>(context);
-        });
+        cfg.ReceiveEndpoint("cancel-payment-queue", e => { e.ConfigureConsumer<CancelPaymentConsumer>(context); });
     });
 });
 builder.Services.AddSwaggerGen();

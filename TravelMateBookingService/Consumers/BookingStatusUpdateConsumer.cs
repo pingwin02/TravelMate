@@ -15,11 +15,9 @@ public class BookingStatusUpdateConsumer(IServiceProvider serviceProvider)
         var bookingService = serviceProvider.GetRequiredService<IBookingService>();
 
 
-
         if (!await bookingService.CheckIfPending(bookingId))
         {
             Console.WriteLine($"Booking {bookingId} is not pending, skipping status change");
-            return;
         }
         else
         {
@@ -29,6 +27,5 @@ public class BookingStatusUpdateConsumer(IServiceProvider serviceProvider)
 
             Console.WriteLine($"Booking status updated for booking {bookingId} to {bookingStatusUpdateRequest.Status}");
         }
-
     }
 }

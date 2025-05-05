@@ -1,7 +1,5 @@
 ﻿using MassTransit;
-using MassTransit.Clients;
 using Microsoft.Extensions.Options;
-using System.Reflection.Metadata;
 using TravelMate.Models.Messages;
 using TravelMateBookingService.Models.Bookings;
 using TravelMateBookingService.Models.Bookings.DTO;
@@ -21,7 +19,6 @@ public class BookingService(
 {
     public async Task<BookingDto> CreateBooking(Guid userId, BookingRequestDto bookingRequestDto)
     {
-
         var correlationId = Guid.NewGuid();
         var bookingId = Guid.NewGuid();
         var task = new TaskCompletionSource<BookingSagaStatusResponse>();
@@ -39,10 +36,10 @@ public class BookingService(
             OfferId = bookingRequestDto.OfferId,
             BookingId = bookingId,
             SeatType = bookingRequestDto.SeatType,
-            PassengerType = bookingRequestDto.PassengerType,
+            PassengerType = bookingRequestDto.PassengerType
         });
 
-       
+
         var result = await task.Task;
         Console.WriteLine($"Received payment result for {result.CorrelationId} {result.IsSuccessful}");
 
@@ -63,10 +60,10 @@ public class BookingService(
             PaymentId = result.PaymentId,
             CorrelationId = correlationId
         };
-       
+
         var savedBooking = await bookingRepository.CreateBooking(booking);
         Console.WriteLine(savedBooking);
-        BookingExpirationService.AddBookingCancellationToQueue(savedBooking,correlationId);
+        BookingExpirationService.AddBookingCancellationToQueue(savedBooking, correlationId);
         return new BookingDto
         {
             Id = savedBooking.Id,
@@ -74,8 +71,6 @@ public class BookingService(
             ReservedUntil = savedBooking.ReservedUntil,
             PaymentId = savedBooking.PaymentId.Value
         };
-
-       
     }
 
 
