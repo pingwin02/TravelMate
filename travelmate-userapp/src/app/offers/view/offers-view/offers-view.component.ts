@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {OfferFilter} from "../../model/OfferFilter";
-import {OffersService} from "../../service/offers.service";
-import {OfferList} from "../../model/OfferList";
+import { Component, OnInit } from '@angular/core';
+import { OfferFilter } from '../../model/OfferFilter';
+import { OffersService } from '../../service/offers.service';
+import { OfferList } from '../../model/OfferList';
 
 @Component({
   selector: 'app-offers-view',
   templateUrl: './offers-view.component.html',
-  styleUrls: ['./offers-view.component.css']
+  styleUrls: ['./offers-view.component.css'],
 })
 export class OffersViewComponent implements OnInit {
   private offers: OfferList[] = [];
@@ -34,13 +34,25 @@ export class OffersViewComponent implements OnInit {
   }
 
   applyFilters() {
-    this.filteredOffers = this.offers.filter(offer => {
+    this.filteredOffers = this.offers.filter((offer) => {
       return (
-        (!this.filter.airline || offer.airlineName.toLowerCase().includes(this.filter.airline.toLowerCase())) &&
-        (!this.filter.departure || offer.departureAirport.toLowerCase().includes(this.filter.departure.toLowerCase())) &&
-        (!this.filter.arrival || offer.arrivalAirport.toLowerCase().includes(this.filter.arrival.toLowerCase())) &&
-        (!this.filter.departure_date || new Date(offer.departureTime) >= new Date(this.filter.departure_date)) &&
-        (!this.filter.arrival_date || new Date(offer.arrivalTime) <= new Date(this.filter.arrival_date))
+        (!this.filter.airline ||
+          offer.airlineName
+            .toLowerCase()
+            .includes(this.filter.airline.toLowerCase())) &&
+        (!this.filter.departure ||
+          offer.departureAirport
+            .toLowerCase()
+            .includes(this.filter.departure.toLowerCase())) &&
+        (!this.filter.arrival ||
+          offer.arrivalAirport
+            .toLowerCase()
+            .includes(this.filter.arrival.toLowerCase())) &&
+        (!this.filter.departure_date ||
+          new Date(offer.departureTime) >=
+            new Date(this.filter.departure_date)) &&
+        (!this.filter.arrival_date ||
+          new Date(offer.arrivalTime) <= new Date(this.filter.arrival_date))
       );
     });
   }

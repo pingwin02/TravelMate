@@ -1,13 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import {User} from "./auth/model/User";
-import {AuthService} from "./auth/service/auth.service";
+import { Component, OnInit } from '@angular/core';
+import { User } from './auth/model/User';
+import { AuthService } from './auth/service/auth.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   title = 'travelmate-userapp';
   username: string | null = null;
   isLoggedIn: boolean = false;

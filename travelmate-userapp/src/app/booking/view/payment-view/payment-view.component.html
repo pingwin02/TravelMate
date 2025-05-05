@@ -1,7 +1,10 @@
 <div class="container mt-4" *ngIf="booking && offer">
   <h2>Payment</h2>
 
-  <div *ngIf="!isCanceled && !isConfirmed" class="d-flex justify-content-end mb-3">
+  <div
+    *ngIf="!isCanceled && !isConfirmed"
+    class="d-flex justify-content-end mb-3"
+  >
     <div class="timer-box bg-light p-2 rounded shadow-sm">
       Time left: <strong>{{ timeLeft }}s</strong>
     </div>
@@ -11,25 +14,31 @@
     <div class="card-body">
       <h5 class="card-title">Booking for {{ booking.passengerName }}</h5>
       <p class="card-text" *ngIf="payment">
-        <strong>Seat Type:</strong>  {{ seatTypeLabels[booking.seatType] }}<br>
-        <strong>Passenger Type:</strong> {{ passengerTypeLabels[booking.passengerType] }}<br>
-        <strong>Amount to pay:</strong> {{ payment.amount }}<br>
+        <strong>Seat Type:</strong> {{ seatTypeLabels[booking.seatType] }}<br />
+        <strong>Passenger Type:</strong>
+        {{ passengerTypeLabels[booking.passengerType] }}<br />
+        <strong>Amount to pay:</strong> {{ payment.amount }}<br />
       </p>
-      <hr>
+      <hr />
       <p class="card-text">
-        <strong>Flight Number:</strong> {{ offer.flightNumber }}<br>
-        <strong>Airline:</strong> {{ offer.airline.name }}<br>
-        <strong>Airplane:</strong> {{ offer.airplane.name }}<br>
-        <strong>From:</strong> {{ offer.departureAirport.code }}<br>
-        <strong>To:</strong> {{ offer.arrivalAirport.code }}<br>
-        <strong>Departure:</strong> {{ offer.departureTime | date:'short' }}<br>
-        <strong>Arrival:</strong> {{ offer.arrivalTime | date:'short' }}<br>
+        <strong>Flight Number:</strong> {{ offer.flightNumber }}<br />
+        <strong>Airline:</strong> {{ offer.airline.name }}<br />
+        <strong>Airplane:</strong> {{ offer.airplane.name }}<br />
+        <strong>From:</strong> {{ offer.departureAirport.code }}<br />
+        <strong>To:</strong> {{ offer.arrivalAirport.code }}<br />
+        <strong>Departure:</strong> {{ offer.departureTime | date: "short"
+        }}<br />
+        <strong>Arrival:</strong> {{ offer.arrivalTime | date: "short" }}<br />
       </p>
     </div>
   </div>
 
   <div *ngIf="!isCanceled && !isConfirmed" class="text-center mt-4">
-    <button class="btn btn-lg btn-success px-5 py-2" (click)="payNow()" [disabled]="timeLeft === 0">
+    <button
+      class="btn btn-lg btn-success px-5 py-2"
+      (click)="payNow()"
+      [disabled]="timeLeft === 0"
+    >
       Pay Now
     </button>
   </div>
@@ -37,12 +46,12 @@
 
 <ng-template #ended>
   <div *ngIf="isCanceled" class="alert alert-danger" role="alert">
-    <h1>Reservation has been canceled </h1>
+    <h1>Reservation has been canceled</h1>
     <p>Time limit has been exceeded.</p>
   </div>
   <div class="card">
     <div *ngIf="isConfirmed" class="card-body">
-      <h1>Reservation has been confirmed </h1>
+      <h1>Reservation has been confirmed</h1>
     </div>
   </div>
 </ng-template>

@@ -1,4 +1,4 @@
-import {PaymentStatus} from "./payment-status.enum";
+import { PaymentStatus } from './payment-status.enum';
 
 export interface Payment {
   id: string;

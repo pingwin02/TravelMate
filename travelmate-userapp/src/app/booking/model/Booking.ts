@@ -1,6 +1,6 @@
-import {BookingStatus} from "./booking-status.enum";
-import {SeatType} from "./seat-type.enum";
-import {PassengerType} from "./passenger-type.enum";
+import { BookingStatus } from './booking-status.enum';
+import { SeatType } from './seat-type.enum';
+import { PassengerType } from './passenger-type.enum';
 
 export interface Booking {
   id: string;

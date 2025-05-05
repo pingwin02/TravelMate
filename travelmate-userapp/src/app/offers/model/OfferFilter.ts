@@ -1,7 +1,7 @@
-export interface OfferFilter{
-  departure: string
+export interface OfferFilter {
+  departure: string;
   arrival: string;
-  departure_date : string;
+  departure_date: string;
   arrival_date: string;
   airline: string;
 }

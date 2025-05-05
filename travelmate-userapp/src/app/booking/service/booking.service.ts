@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
-import {Observable} from "rxjs";
-import {Bookings} from "../model/Bookings";
-import {HttpClient} from "@angular/common/http";
-import {BookingCreate} from "../model/BookingCreate";
-import {Booking} from "../model/Booking";
+import { Observable } from 'rxjs';
+import { Bookings } from '../model/Bookings';
+import { HttpClient } from '@angular/common/http';
+import { BookingCreate } from '../model/BookingCreate';
+import { Booking } from '../model/Booking';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BookingService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   /* get user bookings */
-  getBookingsByUser(): Observable<Booking[]>{
-    return this.http.get<Booking[]>( '/rezerwacje/Bookings');
+  getBookingsByUser(): Observable<Booking[]> {
+    return this.http.get<Booking[]>('/rezerwacje/Bookings');
   }
 
   /* create a booking */

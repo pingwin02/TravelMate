@@ -1,6 +1,6 @@
-import {Airplane} from "../../models/Airplane";
-import {Airline} from "../../models/Airline";
-import {Airport} from "../../models/Airport";
+import { Airplane } from '../../models/Airplane';
+import { Airline } from '../../models/Airline';
+import { Airport } from '../../models/Airport';
 
 export interface Offer {
   id: string;

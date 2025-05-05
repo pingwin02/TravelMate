@@ -10,7 +10,7 @@ services:
       RABBITMQ_DEFAULT_PASS: "admin"
 
   mariadb:
-    container_name: db
+    container_name: admin-mysql_db
     image: mariadb:latest
     ports:
       - "3306:3306"
@@ -25,6 +25,23 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+
+  travelmatefrontend:
+    container_name: TravelMateFrontend
+    build:
+      context: ./travelmate-userapp
+    ports:
+      - "4200:80"
+    environment:
+      OFFERS_API_URL: "http://travelmateofferservice:8080/api"
+      AUTH_API_URL: "http://travelmateauthservice:8080/api"
+      BOOKING_API_URL: "http://travelmatebookingservice:8080/api"
+      PAYMENT_API_URL: "http://travelmatepaymentservice:8080/api"
+    depends_on:
+      - travelmateofferservice
+      - travelmateauthservice
+      - travelmatebookingservice
+      - travelmatepaymentservice
 
   travelmateofferservice:
     container_name: TravelMateOfferService

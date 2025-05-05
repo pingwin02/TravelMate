@@ -1,22 +1,25 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, catchError, Observable, tap, throwError} from "rxjs";
-import {User} from "../model/User";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {Router} from "@angular/router";
+import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import { User } from '../model/User';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private token = 'auth_token';
   private user_name = 'user_name';
   private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {}
 
   login(user: User): Observable<any> {
     return this.http.post<any>('auth/auth/login', user).pipe(
-      tap(response => {
+      tap((response) => {
         if (response.token) {
           sessionStorage.setItem(this.token, response.token);
           sessionStorage.setItem(this.user_name, user.Username);
@@ -28,7 +31,7 @@ export class AuthService {
           return throwError(() => new Error('Invalid username or password.'));
         }
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -51,7 +54,7 @@ export class AuthService {
     return sessionStorage.getItem(this.token);
   }
 
-  getUsername(): string | null  {
+  getUsername(): string | null {
     return sessionStorage.getItem(this.user_name);
   }
 }

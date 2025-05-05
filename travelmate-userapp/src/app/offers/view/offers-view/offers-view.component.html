@@ -3,47 +3,96 @@
 
   <!-- filtering -->
   <div class="row mb-4">
-<!--    TODO: change to selection list -->
+    <!--    TODO: change to selection list -->
     <div class="col-md-3">
-      <input type="text" class="form-control" placeholder="Airline" [(ngModel)]="filter.airline"  (ngModelChange)="onFilterChange()">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Airline"
+        [(ngModel)]="filter.airline"
+        (ngModelChange)="onFilterChange()"
+      />
     </div>
     <div class="col-md-3">
-      <input type="text" class="form-control" placeholder="Departure" [(ngModel)]="filter.departure"  (ngModelChange)="onFilterChange()">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Departure"
+        [(ngModel)]="filter.departure"
+        (ngModelChange)="onFilterChange()"
+      />
     </div>
     <div class="col-md-3">
-      <input type="text" class="form-control" placeholder="Destination" [(ngModel)]="filter.arrival" (ngModelChange)="onFilterChange()">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Destination"
+        [(ngModel)]="filter.arrival"
+        (ngModelChange)="onFilterChange()"
+      />
     </div>
   </div>
   <div class="row mb-4">
     <div class="col-md-6">
       <label>From:</label>
-      <input type="date" class="form-control" [(ngModel)]="filter.departure_date" (ngModelChange)="onFilterChange()">
+      <input
+        type="date"
+        class="form-control"
+        [(ngModel)]="filter.departure_date"
+        (ngModelChange)="onFilterChange()"
+      />
     </div>
     <div class="col-md-6">
       <label>To:</label>
-      <input type="date" class="form-control" [(ngModel)]="filter.arrival_date" (ngModelChange)="onFilterChange()">
+      <input
+        type="date"
+        class="form-control"
+        [(ngModel)]="filter.arrival_date"
+        (ngModelChange)="onFilterChange()"
+      />
     </div>
   </div>
 
   <!-- offers -->
   <div>
-    <div class="col-12" *ngFor="let offer of filteredOffers | paginate: { id: 'offers-pagination', itemsPerPage: 10, currentPage: pageOffer }">
+    <div
+      class="col-12"
+      *ngFor="
+        let offer of filteredOffers
+          | paginate
+            : {
+                id: 'offers-pagination',
+                itemsPerPage: 10,
+                currentPage: pageOffer,
+              }
+      "
+    >
       <div class="card mb-3">
         <div class="card-body">
-          <h5 class="card-title">{{ offer.flightNumber }} [{{ offer.departureAirport }} - {{ offer.arrivalAirport }}] </h5>
+          <h5 class="card-title">
+            {{ offer.flightNumber }} [{{ offer.departureAirport }} -
+            {{ offer.arrivalAirport }}]
+          </h5>
           <p class="card-text">
-            <strong>From:</strong> {{ offer.departureAirport }}<br>
-            <strong>To:</strong> {{ offer.arrivalAirport }}<br>
-            <strong>Departure:</strong> {{ offer.departureTime | date:'short' }}<br>
-            <strong>Arrival:</strong> {{ offer.arrivalTime| date:'short' }}<br>
+            <strong>From:</strong> {{ offer.departureAirport }}<br />
+            <strong>To:</strong> {{ offer.arrivalAirport }}<br />
+            <strong>Departure:</strong> {{ offer.departureTime | date: "short"
+            }}<br />
+            <strong>Arrival:</strong> {{ offer.arrivalTime | date: "short"
+            }}<br />
             <strong>Price:</strong> {{ offer.basePrice }} PLN
           </p>
-          <button class="btn btn-primary" [routerLink]="['/offer', offer.id]">More Info</button>
+          <button class="btn btn-primary" [routerLink]="['/offer', offer.id]">
+            More Info
+          </button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- pagination -->
-  <pagination-controls id="offers-pagination" (pageChange)="pageOffer = $event"></pagination-controls>
+  <pagination-controls
+    id="offers-pagination"
+    (pageChange)="pageOffer = $event"
+  ></pagination-controls>
 </div>

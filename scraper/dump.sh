@@ -2,7 +2,7 @@
 
 # Script to dump or import multiple databases from/to a Docker container
 
-CONTAINER_NAME="db"
+CONTAINER_NAME="admin-mysql_db"
 DB_USER="root"
 DB_PASSWORD="student"
 DB_NAMES=($(grep -oP 'CREATE DATABASE \K\w+' ../init.sql))

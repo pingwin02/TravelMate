@@ -53,7 +53,7 @@ public class AuthController(IConfiguration config, IUserService userService) : C
             config["Jwt:Issuer"],
             config["Jwt:Audience"],
             claims,
-            expires: DateTime.Now.AddMinutes(30),
+            expires: DateTime.Now.AddMinutes(120),
             signingCredentials: credentials
         );
 

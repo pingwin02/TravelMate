@@ -1,8 +1,7 @@
 import { map, take } from 'rxjs/operators';
-import {CanActivateFn, Router} from "@angular/router";
-import {inject} from "@angular/core";
-import {AuthService} from "./service/auth.service";
-
+import { CanActivateFn, Router } from '@angular/router';
+import { inject } from '@angular/core';
+import { AuthService } from './service/auth.service';
 
 export const authGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
@@ -17,6 +16,6 @@ export const authGuard: CanActivateFn = () => {
         return false;
       }
       return true;
-    })
+    }),
   );
 };
