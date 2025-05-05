@@ -26,6 +26,7 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                     context.Saga.Created = DateTime.Now;
                     context.Saga.SeatType = context.Message.SeatType;
                     context.Saga.PassengerType = context.Message.PassengerType;
+                    context.Saga.Price = context.Message.Price;
                     Console.WriteLine($"[Saga] Booking started with ID {context.Saga.BookingId}");
                 })
                 .SendAsync(new Uri("queue:check-seat-availability-queue"), context =>
@@ -45,6 +46,7 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                         .Then(context =>
                         {
                             Console.WriteLine($"[Saga] Seat available for offer {context.Saga.OfferId}");
+                            context.Saga.Price = context.Message.DynamicPrice;
                         })
                         .TransitionTo(SeatChecked)
                         .SendAsync(new Uri("queue:create-payment"), context =>
@@ -55,12 +57,18 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                                 Price = context.Saga.Price
                             })),
                     elseBinder => elseBinder
-                        .Then(async context =>
+                        .Then(context =>
                         {
                             Console.WriteLine(
-                                $"[Saga] No available seat for offer {context.Saga.OfferId}. Booking failed.");
-                            //await PerformSeatCompensation(context);
+                                $"[Saga] No available seat for offer {context.Saga.OfferId} {context.Saga.CorrelationId}. Booking failed.");
                         })
+                        .SendAsync(context => new Uri($"queue:booking-status-response-{context.Saga.CorrelationId}"), context =>
+                            Task.FromResult(new BookingSagaStatusResponse
+                            {
+                                CorrelationId = context.Saga.CorrelationId,
+                                PaymentId = Guid.Empty,
+                                IsSuccessful = false
+                            }))
                         .Finalize()
                 )
         );

@@ -29,7 +29,6 @@ public class BookingService(
         {
             e.Handler<BookingSagaStatusResponse>(context =>
             {
-                Console.WriteLine($"Received payment result for {context.Message.CorrelationId}");
                 task.TrySetResult(context.Message);
                 return Task.CompletedTask;
             });
@@ -40,7 +39,7 @@ public class BookingService(
             OfferId = bookingRequestDto.OfferId,
             BookingId = bookingId,
             SeatType = bookingRequestDto.SeatType,
-            PassengerType = bookingRequestDto.PassengerType
+            PassengerType = bookingRequestDto.PassengerType,
         });
 
        
@@ -76,65 +75,7 @@ public class BookingService(
             PaymentId = savedBooking.PaymentId.Value
         };
 
-        //var response = await requestClient.GetResponse<BookingSagaStatusResponse>(new BookingStartedEvent
-        //{
-        //    CorrelationId = correlationId,
-        //    OfferId = bookingRequestDto.OfferId,
-        //    BookingId = bookingId,
-        //    SeatType = bookingRequestDto.SeatType,
-        //    PassengerType = bookingRequestDto.PassengerType
-        //});
-
-        //if (response.Message.IsSuccessful)
-        //{
-        //    
-        //}
-        //return null;
-
-
-
-        //var isSeatAvailableResponse = await seatAvailabilityRequest.GetResponse<CheckSeatAvailabilityResponse>(
-        //    new CheckSeatAvailabilityRequest
-        //    {
-        //        OfferId = bookingRequestDto.OfferId,
-        //        SeatType = bookingRequestDto.SeatType,
-        //        PassengerType = bookingRequestDto.PassengerType
-        //    });
-        //Console.WriteLine("Received seat availability response: " + isSeatAvailableResponse.Message.IsAvailable);
-        //if (!isSeatAvailableResponse.Message.IsAvailable) throw new SeatNotAvailableException();
-
-        //var booking = new Booking
-        //{
-        //    Id = Guid.NewGuid(),
-        //    UserId = userId,
-        //    OfferId = bookingRequestDto.OfferId,
-        //    Status = BookingStatus.Pending,
-        //    SeatType = bookingRequestDto.SeatType,
-        //    PassengerName = bookingRequestDto.PassengerName,
-        //    PassengerType = bookingRequestDto.PassengerType,
-        //    CreatedAt = DateTime.Now,
-        //    ReservedUntil = DateTime.Now.AddSeconds(settings.Value.BookingExpirationTime)
-        //};
-
-        //var paymentResponse = await paymentRequest.GetResponse<PaymentCreationResponse>(
-        //    new PaymentCreationRequest
-        //    {
-        //        BookingId = booking.Id,
-        //        Price = isSeatAvailableResponse.Message.DynamicPrice
-        //    });
-
-        //booking.PaymentId = paymentResponse.Message.PaymentId;
-
-        //var savedBooking = await bookingRepository.CreateBooking(booking);
-        //BookingExpirationService.AddBookingCancellationToQueue(savedBooking);
-
-        //return new BookingDto
-        //{
-        //    Id = savedBooking.Id,
-        //    CreatedAt = savedBooking.CreatedAt,
-        //    ReservedUntil = savedBooking.ReservedUntil,
-        //    PaymentId = savedBooking.PaymentId.Value
-        //};
+       
     }
 
 

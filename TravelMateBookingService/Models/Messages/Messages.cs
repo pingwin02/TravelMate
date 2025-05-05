@@ -9,6 +9,7 @@ public class BookingStartedEvent
     public Guid OfferId { get; set; }
     public SeatType SeatType { get; set; }
     public PassengerType PassengerType { get; set; }
+    public decimal Price { get; set; }
 }
 
 public class CheckSeatAvailabilityRequest
