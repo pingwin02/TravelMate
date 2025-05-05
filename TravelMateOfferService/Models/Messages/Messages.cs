@@ -5,7 +5,6 @@ namespace TravelMate.Models.Messages;
 public class CheckSeatAvailabilityRequest
 {
     public Guid CorrelationId { get; set; }
-    public Guid BookingId { get; set; }
     public Guid OfferId { get; set; }
     public SeatType SeatType { get; set; }
     public PassengerType PassengerType { get; set; }
@@ -14,7 +13,6 @@ public class CheckSeatAvailabilityRequest
 public class CheckSeatAvailabilityResponse
 {
     public Guid CorrelationId { get; set; }
-    public Guid BookingId { get; set; }
     public bool IsAvailable { get; set; }
     public decimal DynamicPrice { get; set; }
 }

@@ -36,7 +36,7 @@ public class OfferController(IOfferService offerService) : ControllerBase
         try
         {
             var result = await offerService.AddOffer(offer);
-            return Created($"/api/offer/{result}", result);
+            return Created($"/api/offers/{result}", result);
         }
         catch (KeyNotFoundException ex)
         {
