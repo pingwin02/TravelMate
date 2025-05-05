@@ -13,8 +13,8 @@ export class BookingService {
   constructor(private http: HttpClient) { }
 
   /* get user bookings */
-  getBookingsByUser(): Observable<Bookings[]>{
-    return this.http.get<Bookings[]>( '/rezerwacje/Bookings');
+  getBookingsByUser(): Observable<Booking[]>{
+    return this.http.get<Booking[]>( '/rezerwacje/Bookings');
   }
 
   /* create a booking */

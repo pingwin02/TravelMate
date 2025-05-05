@@ -6,17 +6,42 @@
   </div>
 
   <div *ngIf="bookings && bookings.length > 0">
-    <div class="col-12" *ngFor="let booking of bookings  | paginate: { id: 'bookings-pagination', itemsPerPage: 10, currentPage: pageBooking }">
+    <div class="col-12" *ngFor="let booking of bookings | paginate: { id: 'bookings-pagination', itemsPerPage: 10, currentPage: pageBooking }">
       <div class="card mb-3">
         <div class="card-body">
-          <h5 class="card-title">{{ booking.OfferId }} </h5>
+          <h5 class="card-title">
+            Reservation number {{ booking.id }}
+            <span class="ms-3 badge"
+                  [ngClass]="{
+                    'bg-secondary': booking.status === 0,
+                    'bg-success': booking.status === 1,
+                    'bg-danger': booking.status === 2
+                  }">
+              {{ bookingStatusLabels[booking.status] }}
+            </span>
+          </h5>
+
           <p class="card-text">
-<!--            TODO: proste informacje o ofercie wyswietlic-->
-            <strong>Seat Number:</strong> {{ booking.SeatNumber }}<br>
-            <strong>Seat Type:</strong> {{ booking.SeatType }}<br>
-            <strong>Passenger Name:</strong> {{ booking.PassengerName }}<br>
-            <strong>Passenger Type:</strong> {{ booking.PassengerType }}<br>
+            <strong>Seat Type:</strong> {{ seatTypeLabels[booking.seatType] }}<br>
+            <strong>Passenger Name:</strong> {{ booking.passengerName }}<br>
+            <strong>Passenger Type:</strong> {{ passengerTypeLabels[booking.passengerType] }}<br>
           </p>
+
+          <div *ngIf="getOffer(booking.offerId) as offer">
+            <hr>
+            <p class="card-text">
+              <strong>Flight Number:</strong> {{ offer.flightNumber }}<br>
+              <strong>Airline:</strong> {{ offer.airline.name }}<br>
+              <strong>Airplane:</strong> {{ offer.airplane.name }}<br>
+              <strong>From:</strong> {{ offer.departureAirport.code }}<br>
+              <strong>To:</strong> {{ offer.arrivalAirport.code }}<br>
+              <strong>Departure:</strong> {{ offer.departureTime | date:'short' }}<br>
+              <strong>Arrival:</strong> {{ offer.arrivalTime | date:'short' }}<br>
+            </p>
+          </div>
+          <div *ngIf="!getOffer(booking.offerId)">
+            <span class="text-muted">Loading offer details...</span>
+          </div>
         </div>
       </div>
     </div>
