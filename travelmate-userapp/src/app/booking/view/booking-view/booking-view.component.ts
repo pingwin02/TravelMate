@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { BookingService } from '../../service/booking.service';
 import { Offer } from '../../../offers/model/Offer';
 import { OffersService } from '../../../offers/service/offers.service';
-
+declare var bootstrap: any;
 @Component({
   selector: 'app-booking-view',
   templateUrl: './booking-view.component.html',
@@ -58,7 +58,19 @@ export class BookingViewComponent {
       },
       error: (err) => {
         console.error('Error creating booking:', err);
+
+        if(err.status === 400) {
+          this.showNoSeatsModal();
+        }
       },
     });
+  }
+
+  showNoSeatsModal() {
+    const modalElement = document.getElementById('noSeatsModal');
+    if (modalElement) {
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    }
   }
 }
