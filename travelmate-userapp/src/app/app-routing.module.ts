@@ -8,8 +8,11 @@ import { PaymentViewComponent } from './booking/view/payment-view/payment-view.c
 import { authGuard } from './auth/auth.guard';
 import { MyBookingsViewComponent } from './booking/view/my-bookings-view/my-bookings-view.component';
 import { PaymentConfirmationViewComponent } from './booking/view/payment-confirmation-view/payment-confirmation-view.component';
-
+import { HomeComponent } from './home/home.component';
 const routes: Routes = [
+  { 
+    path: '', 
+    component: HomeComponent },
   {
     path: 'offers',
     component: OffersViewComponent,
