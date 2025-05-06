@@ -74,6 +74,16 @@ services:
       - admin-mysql_default
       - RSWD_188597_network
 
+  travelmatesagaorchestrator:
+    container_name: TravelMateSagaOrchestrator
+    image: pingwin02/travelmatesagaorchestrator
+    expose:
+      - "8080"
+    depends_on:
+      - rabbitmq
+    networks:
+      - RSWD_188597_network
+
 networks:
   admin-mysql_default:
     external: true

@@ -41,7 +41,7 @@ Content-Type: application/json
 
 ###
 
-@offer_id = 08dd8bd7-1cfe-4741-82a7-e76e708b8ab8
+@offer_id = 08dd8cb2-4aec-4a1c-8464-e59915286f86
 
 GET {{offers_url}}/offers/{{offer_id}}
 

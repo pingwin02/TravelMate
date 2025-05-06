@@ -11,8 +11,6 @@ namespace TravelMateBookingService.Services;
 public class BookingService(
     IBookingRepository bookingRepository,
     IOptions<BookingsSettings> settings,
-    IRequestClient<CheckSeatAvailabilityRequest> seatAvailabilityRequest,
-    IRequestClient<PaymentCreationRequest> paymentRequest,
     IPublishEndpoint publishEndpoint,
     IBus bus)
     : IBookingService
@@ -22,7 +20,7 @@ public class BookingService(
         var correlationId = Guid.NewGuid();
         var bookingId = Guid.NewGuid();
         var task = new TaskCompletionSource<BookingSagaStatusResponse>();
-        var handle = bus.ConnectReceiveEndpoint($"booking-status-response-{correlationId}", e =>
+        bus.ConnectReceiveEndpoint($"booking-status-response-{correlationId}", e =>
         {
             e.Handler<BookingSagaStatusResponse>(context =>
             {
@@ -44,7 +42,8 @@ public class BookingService(
         Console.WriteLine($"Received payment result for {result.CorrelationId} {result.IsSuccessful}");
 
         if (!result.IsSuccessful)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(
+                $"Booking id {bookingId} failed. No available seats for offer {bookingRequestDto.OfferId}");
 
         var booking = new Booking
         {

@@ -47,17 +47,24 @@
 
           <div *ngIf="getOffer(booking.offerId) as offer">
             <hr />
-            <p class="card-text">
-              <strong>Flight Number:</strong> {{ offer.flightNumber }}<br />
-              <strong>Airline:</strong> {{ offer.airline.name }}<br />
-              <strong>Airplane:</strong> {{ offer.airplane.name }}<br />
-              <strong>From:</strong> {{ offer.departureAirport.code }}<br />
-              <strong>To:</strong> {{ offer.arrivalAirport.code }}<br />
-              <strong>Departure:</strong>
-              {{ offer.departureTime | date: "short" }}<br />
-              <strong>Arrival:</strong> {{ offer.arrivalTime | date: "short"
-              }}<br />
-            </p>
+            <div class="d-flex justify-content-between">
+              <div class="flight-details">
+                <p class="card-text">
+                  <strong>Flight Number:</strong> {{ offer.flightNumber }}<br />
+                  <strong>Airline:</strong> {{ offer.airline.name }}<br />
+                  <strong>Airplane:</strong> {{ offer.airplane.name }}<br />
+                  <strong>From:</strong> {{ offer.departureAirport.code }}<br />
+                  <strong>To:</strong> {{ offer.arrivalAirport.code }}<br />
+                  <strong>Departure:</strong> {{ offer.departureTime | date: "short" }}<br />
+                  <strong>Arrival:</strong> {{ offer.arrivalTime | date: "short" }}<br />
+                </p>
+              </div>
+              <div class="d-flex align-items-end" *ngIf="booking.status === 0">
+                <button class="btn btn-lg btn-success px-5 py-2" (click)="redirectToPayment(booking)">
+                  Pay Now
+                </button>
+              </div>
+            </div>
           </div>
           <div *ngIf="!getOffer(booking.offerId)">
             <span class="text-muted">Loading offer details...</span>
