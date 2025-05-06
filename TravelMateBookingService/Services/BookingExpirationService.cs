@@ -33,7 +33,7 @@ public class BookingExpirationService(IServiceProvider serviceProvider) : Backgr
                 return;
             }
 
-            var res = await bookingRepository.ChangeBookingStatus(bookingId, BookingStatus.Canceled);
+            await bookingRepository.ChangeBookingStatus(bookingId, BookingStatus.Canceled);
 
             await publishEndpoint.Publish(new BookingCancelledEvent
             {

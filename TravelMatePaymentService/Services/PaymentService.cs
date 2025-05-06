@@ -10,7 +10,6 @@ namespace TravelMatePaymentService.Services;
 public class PaymentService(
     IPaymentsRepository paymentsRepository,
     IOptions<PaymentsSettings> settings,
-    IRequestClient<BookingStatusUpdateRequest> bookingStatusUpdateRequest,
     IPublishEndpoint publishEndpoint)
     : IPaymentService
 {

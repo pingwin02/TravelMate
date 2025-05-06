@@ -10,6 +10,7 @@ declare -A SERVICES=(
   ["TravelMateAuthService"]="travelmateauthservice"
   ["TravelMateBookingService"]="travelmatebookingservice"
   ["TravelMatePaymentService"]="travelmatepaymentservice"
+  ["TravelMateSagaOrchestrator"]="travelmatesagaorchestrator"
 )
 
 echo "Building Docker images..."
