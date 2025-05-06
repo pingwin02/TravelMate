@@ -21,8 +21,8 @@ export class AuthService {
     return this.http.post<any>('auth/auth/login', user).pipe(
       tap((response) => {
         if (response.token) {
-          sessionStorage.setItem(this.token, response.token);
-          sessionStorage.setItem(this.user_name, user.Username);
+          localStorage.setItem(this.token, response.token);
+          localStorage.setItem(this.user_name, user.Username);
           this.loggedIn.next(true);
         }
       }),
@@ -36,8 +36,8 @@ export class AuthService {
   }
 
   logout(): void {
-    sessionStorage.removeItem(this.token);
-    sessionStorage.removeItem(this.user_name);
+    localStorage.removeItem(this.token);
+    localStorage.removeItem(this.user_name);
     this.loggedIn.next(false);
     this.router.navigate(['/login']);
   }
@@ -47,14 +47,14 @@ export class AuthService {
   }
 
   private hasToken(): boolean {
-    return !!sessionStorage.getItem(this.token);
+    return !!localStorage.getItem(this.token);
   }
 
   getToken(): string | null {
-    return sessionStorage.getItem(this.token);
+    return localStorage.getItem(this.token);
   }
 
   getUsername(): string | null {
-    return sessionStorage.getItem(this.user_name);
+    return localStorage.getItem(this.user_name);
   }
 }
