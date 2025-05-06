@@ -7,7 +7,7 @@ import { SeatTypeLabels } from '../../model/seat-type.enum';
 import { PassengerTypeLabels } from '../../model/passenger-type.enum';
 import { BookingStatus } from '../../model/booking-status.enum';
 import { PaymentStatusLabels } from '../../model/payment-status.enum';
-
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-my-bookings-view',
   templateUrl: './my-bookings-view.component.html',
@@ -26,6 +26,7 @@ export class MyBookingsViewComponent implements OnInit {
   constructor(
     private bookingService: BookingService,
     private offersService: OffersService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -34,6 +35,7 @@ export class MyBookingsViewComponent implements OnInit {
 
   loadOffers() {
     this.bookingService.getBookingsByUser().subscribe((bookings: Booking[]) => {
+      bookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       this.bookings = bookings;
 
       const offerIds = Array.from(new Set(bookings.map((b) => b.offerId)));
@@ -48,5 +50,10 @@ export class MyBookingsViewComponent implements OnInit {
 
   getOffer(offerId: string): Offer | undefined {
     return this.offersMap.get(offerId);
+  }
+
+  redirectToPayment(booking: Booking): void {
+
+    this.router.navigate(['/payment', booking.id]);
   }
 }
