@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { BookingService } from '../../service/booking.service';
 import { Offer } from '../../../offers/model/Offer';
 import { OffersService } from '../../../offers/service/offers.service';
+import { AuthService } from 'src/app/auth/service/auth.service';
 declare var bootstrap: any;
 @Component({
   selector: 'app-booking-view',
@@ -22,6 +23,7 @@ export class BookingViewComponent {
     private route: ActivatedRoute,
     private bookingService: BookingService,
     private offersService: OffersService,
+    private authService: AuthService
   ) {
     this.reservationForm = this.fb.group({
       name: ['', Validators.required],
@@ -61,6 +63,9 @@ export class BookingViewComponent {
 
         if(err.status === 400) {
           this.showNoSeatsModal();
+        }
+        else if (err.status === 401) {
+          this.authService.logout();
         }
       },
     });
