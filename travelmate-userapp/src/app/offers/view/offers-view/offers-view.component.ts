@@ -32,7 +32,11 @@ export class OffersViewComponent implements OnInit {
     this.loading = true;
     this.offersService.getAllOffers().subscribe({
       next: (data: OfferList[]) => {
-        this.offers = data;
+        this.offers = data.sort(
+          (a, b) =>
+            new Date(a.departureTime).getTime() -
+            new Date(b.departureTime).getTime(),
+        );
         this.applyFilters();
         this.loading = false;
       },
