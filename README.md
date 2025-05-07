@@ -122,3 +122,10 @@
    ```bash
    cd scraper && ./dump.sh --restore
    ```
+
+## Tests
+Selenium tests are located in `tests` folder. To run the tests, execute the following command:
+```bash
+pip install -r requirements.txt
+python main.py <num_of_bookings>
+```

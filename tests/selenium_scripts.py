@@ -19,68 +19,82 @@ def init():
 def login_user(driver):
     wait = WebDriverWait(driver, TIMEOUT)
 
-    login_button = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Log in")))
+    login_button = wait.until(
+        EC.element_to_be_clickable((By.LINK_TEXT, "Log in")))
     login_button.click()
 
-    wait.until(EC.visibility_of_element_located((By.NAME, "username"))).send_keys("admin")
+    wait.until(EC.visibility_of_element_located(
+        (By.NAME, "username"))).send_keys("admin")
     driver.find_element(By.NAME, "password").send_keys("admin")
     driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
     time.sleep(1)
 
 
 def make_reservation(driver, wait):
-    offers_link = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Offers")))
+    offers_link = wait.until(
+        EC.element_to_be_clickable((By.LINK_TEXT, "Offers")))
     offers_link.click()
 
-    cards = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "card")))
+    cards = wait.until(
+        EC.presence_of_all_elements_located((By.CLASS_NAME, "card")))
 
     random_card = random.choice(cards)
-    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", random_card)
+    driver.execute_script(
+        "arguments[0].scrollIntoView({block: 'center'});", random_card)
     time.sleep(1)
 
-    more_info_button = random_card.find_element(By.CSS_SELECTOR, "button.btn.btn-primary")
+    more_info_button = random_card.find_element(
+        By.CSS_SELECTOR, "button.btn.btn-primary")
     more_info_button.click()
 
-    book_button = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Book")))
+    book_button = wait.until(
+        EC.element_to_be_clickable((By.LINK_TEXT, "Book")))
     book_button.click()
 
-    wait.until(EC.presence_of_element_located((By.ID, "name"))).send_keys("Jan")
+    wait.until(EC.presence_of_element_located(
+        (By.ID, "name"))).send_keys("Jan")
     driver.find_element(By.ID, "surname").send_keys("Kowalski")
 
     driver.find_element(By.ID, "passenger_type").click()
-    passenger_type_options = driver.find_elements(By.CSS_SELECTOR, "#passenger_type option")
+    passenger_type_options = driver.find_elements(
+        By.CSS_SELECTOR, "#passenger_type option")
 
     random_passenger_type = random.choice(passenger_type_options)
     random_passenger_type.click()
 
-    no_seats_elements = driver.find_elements(By.XPATH, "//p[contains(text(), 'No seats available')]")
+    no_seats_elements = driver.find_elements(
+        By.XPATH, "//p[contains(text(), 'No seats available')]")
 
     if no_seats_elements:
         return False
     else:
         driver.find_element(By.ID, "seat_type").click()
-        seat_type_options = driver.find_elements(By.CSS_SELECTOR, "#seat_type option")
+        seat_type_options = driver.find_elements(
+            By.CSS_SELECTOR, "#seat_type option")
 
         random_seat_type = random.choice(seat_type_options)
         random_seat_type.click()
 
-        next_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Next')]")
+        next_button = driver.find_element(
+            By.XPATH, "//button[contains(text(), 'Next')]")
         next_button.click()
 
         return True
 
 
-def book_offers(driver, num_of_offers):
+def book_offers(driver, num_of_bookings):
     wait = WebDriverWait(driver, TIMEOUT)
 
-    for i in range(num_of_offers):
+    for i in range(num_of_bookings):
         reservation_completed = make_reservation(driver, wait)
 
         if reservation_completed:
-            pay_now = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Pay Now')]")))
+            pay_now = wait.until(EC.element_to_be_clickable(
+                (By.XPATH, "//button[contains(text(), 'Pay Now')]")))
             pay_now.click()
 
-            wait.until(EC.presence_of_element_located((By.CLASS_NAME, "container")))
+            wait.until(EC.presence_of_element_located(
+                (By.CLASS_NAME, "container")))
             time.sleep(2)
 
 
@@ -90,6 +104,7 @@ def book_offer_timeout(driver):
     make_reservation(driver, wait)
 
     time.sleep(60)
-    pay_now = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Pay Now')]")))
+    pay_now = wait.until(EC.element_to_be_clickable(
+        (By.XPATH, "//button[contains(text(), 'Pay Now')]")))
     pay_now.click()
     time.sleep(2)
