@@ -24,7 +24,7 @@ export class BookingViewComponent {
     private route: ActivatedRoute,
     private bookingService: BookingService,
     private offersService: OffersService,
-    private authService: AuthService
+    private authService: AuthService,
   ) {
     this.reservationForm = this.fb.group({
       name: ['', Validators.required],
@@ -46,7 +46,7 @@ export class BookingViewComponent {
   goToPayment() {
     if (this.reservationForm.invalid) return;
     this.loading = true;
-    console.log("loading" + this.loading)
+    console.log('loading' + this.loading);
     const form = this.reservationForm.value;
 
     const booking: BookingCreate = {
@@ -57,18 +57,17 @@ export class BookingViewComponent {
     };
     this.bookingService.createBooking(booking).subscribe({
       next: (createdBooking) => {
-        this.loading = false
+        this.loading = false;
         const bookingId = createdBooking.id;
         this.router.navigate(['/payment', bookingId]);
       },
       error: (err) => {
-        this.loading = false
+        this.loading = false;
         console.error('Error creating booking:', err);
 
-        if(err.status === 400) {
+        if (err.status === 400) {
           this.showNoSeatsModal();
-        }
-        else if (err.status === 401) {
+        } else if (err.status === 401) {
           this.authService.logout();
         }
       },

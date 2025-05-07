@@ -38,10 +38,9 @@ export class OffersViewComponent implements OnInit {
       },
       error: () => {
         this.loading = false;
-      }
+      },
     });
   }
-
 
   applyFilters() {
     this.filteredOffers = this.offers.filter((offer) => {
@@ -71,7 +70,7 @@ export class OffersViewComponent implements OnInit {
           offer.arrivalCity
             .toLowerCase()
             .includes(this.filter.arrivalCity.toLowerCase())) &&
-            new Date(offer.departureTime) > new Date()
+        new Date(offer.departureTime) > new Date()
       );
     });
   }

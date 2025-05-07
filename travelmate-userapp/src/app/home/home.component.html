@@ -1,27 +1,27 @@
 <div class="welcome-container">
-    <h1 class="welcome-title">Welcome in TravelMate</h1>
-    
-    <div class="cards-container">
-      <!-- Card for flight offers -->
-      <div class="card-custom" (click)="goToOffers()" style="cursor: pointer;">
-        <div class="card-image-container">
-          <img [src]="offerImage" alt="Flight offers" class="card-image">
-          <div class="gradient-overlay"></div>
-        </div>
-        <div class="card-content">
-            <h2 class="card-title">Check flight offers</h2>
-        </div>
+  <h1 class="welcome-title">Welcome in TravelMate</h1>
+
+  <div class="cards-container">
+    <!-- Card for flight offers -->
+    <div class="card-custom" (click)="goToOffers()" style="cursor: pointer">
+      <div class="card-image-container">
+        <img [src]="offerImage" alt="Flight offers" class="card-image" />
+        <div class="gradient-overlay"></div>
       </div>
-      
-      <!-- Card for bookings -->
-      <div class="card-custom"  (click)="goToBookings()" style="cursor: pointer;">
-        <div class="card-image-container">
-          <img [src]="bookingImage" alt="Your bookings" class="card-image">
-          <div class="gradient-overlay"></div>
-        </div>
-        <div class="card-content">
-          <h2 class="card-title">Check your bookings</h2>
-        </div>
+      <div class="card-content">
+        <h2 class="card-title">Check flight offers</h2>
+      </div>
+    </div>
+
+    <!-- Card for bookings -->
+    <div class="card-custom" (click)="goToBookings()" style="cursor: pointer">
+      <div class="card-image-container">
+        <img [src]="bookingImage" alt="Your bookings" class="card-image" />
+        <div class="gradient-overlay"></div>
+      </div>
+      <div class="card-content">
+        <h2 class="card-title">Check your bookings</h2>
       </div>
     </div>
   </div>
+</div>

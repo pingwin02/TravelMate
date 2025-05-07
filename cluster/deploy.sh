@@ -7,4 +7,5 @@ echo "Status of the stack..."
 docker stack ps RSWD_188597
 docker stack services RSWD_188597
 
+# docker service logs <id>
 # docker stack rm RSWD_188597

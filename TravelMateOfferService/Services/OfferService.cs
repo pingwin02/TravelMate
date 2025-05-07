@@ -23,7 +23,7 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
             .Map(dest => dest.DepartureAirport, src => src.DepartureAirport.Code)
             .Map(dest => dest.ArrivalAirport, src => src.ArrivalAirport.Code)
             .Map(dest => dest.DepartureCity, src => src.DepartureAirport.City)
-            .Map(dest => dest.ArrivalCity, src=>src.ArrivalAirport.City);
+            .Map(dest => dest.ArrivalCity, src => src.ArrivalAirport.City);
 
         return offers.Adapt<IEnumerable<OfferListDto>>(config);
     }
@@ -72,7 +72,7 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
         {
             var offer = await offerRepository.GetOffer(request.OfferId);
 
-            if(offer.DepartureTime < DateTime.Now)
+            if (offer.DepartureTime < DateTime.Now)
                 return false;
 
             switch (request.SeatType)
