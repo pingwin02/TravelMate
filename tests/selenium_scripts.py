@@ -103,7 +103,7 @@ def book_offer_timeout(driver):
 
     make_reservation(driver, wait)
 
-    time.sleep(60)
+    time.sleep(65)
     pay_now = wait.until(EC.element_to_be_clickable(
         (By.XPATH, "//button[contains(text(), 'Pay Now')]")))
     pay_now.click()
