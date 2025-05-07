@@ -45,7 +45,7 @@
       </ul>
 
       <a class="btn btn-secondary me-2" routerLink="/offers">Back to Offers</a>
-      <a class="btn btn-success" [routerLink]="['/booking', offer.id]">Book</a>
+      <a *ngIf="!isPastOffer(offer)" class="btn btn-success" [routerLink]="['/booking', offer.id]">Book</a>
     </div>
   </div>
 </div>

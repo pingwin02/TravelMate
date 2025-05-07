@@ -74,10 +74,13 @@
         <button
           type="submit"
           class="btn btn-primary"
-          [disabled]="reservationForm.invalid"
+          [disabled]="reservationForm.invalid || loading"
           (click)="goToPayment()"
         >
-          Next
+          <ng-container *ngIf="!loading">Next</ng-container>
+          <ng-container *ngIf="loading">
+            Processing...
+          </ng-container>
         </button>
       </form>
     </div>

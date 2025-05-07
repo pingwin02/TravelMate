@@ -16,6 +16,7 @@ declare var bootstrap: any;
 export class BookingViewComponent {
   reservationForm: FormGroup;
   offer!: Offer | null;
+  loading = false;
   private offerId: string = '';
   constructor(
     private fb: FormBuilder,
@@ -44,7 +45,8 @@ export class BookingViewComponent {
 
   goToPayment() {
     if (this.reservationForm.invalid) return;
-
+    this.loading = true;
+    console.log("loading" + this.loading)
     const form = this.reservationForm.value;
 
     const booking: BookingCreate = {
@@ -55,10 +57,12 @@ export class BookingViewComponent {
     };
     this.bookingService.createBooking(booking).subscribe({
       next: (createdBooking) => {
+        this.loading = false
         const bookingId = createdBooking.id;
         this.router.navigate(['/payment', bookingId]);
       },
       error: (err) => {
+        this.loading = false
         console.error('Error creating booking:', err);
 
         if(err.status === 400) {

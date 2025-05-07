@@ -72,6 +72,9 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
         {
             var offer = await offerRepository.GetOffer(request.OfferId);
 
+            if(offer.DepartureTime < DateTime.Now)
+                return false;
+
             switch (request.SeatType)
             {
                 case SeatType.Economy when offer.AvailableEconomySeats > 0:

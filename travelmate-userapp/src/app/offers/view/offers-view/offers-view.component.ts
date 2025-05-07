@@ -21,7 +21,7 @@ export class OffersViewComponent implements OnInit {
     departureCity: '',
   };
   pageOffer: number = 1;
-
+  loading = false;
   constructor(private offersService: OffersService) {}
 
   ngOnInit() {
@@ -29,11 +29,19 @@ export class OffersViewComponent implements OnInit {
   }
 
   loadOffers() {
-    this.offersService.getAllOffers().subscribe((offers: OfferList[]) => {
-      this.offers = offers;
-      this.applyFilters();
+    this.loading = true;
+    this.offersService.getAllOffers().subscribe({
+      next: (data: OfferList[]) => {
+        this.offers = data;
+        this.applyFilters();
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      }
     });
   }
+
 
   applyFilters() {
     this.filteredOffers = this.offers.filter((offer) => {
@@ -62,10 +70,8 @@ export class OffersViewComponent implements OnInit {
         (!this.filter.arrivalCity ||
           offer.arrivalCity
             .toLowerCase()
-            .includes(this.filter.arrivalCity.toLowerCase()))
-            
-
-          
+            .includes(this.filter.arrivalCity.toLowerCase())) &&
+            new Date(offer.departureTime) > new Date()
       );
     });
   }
