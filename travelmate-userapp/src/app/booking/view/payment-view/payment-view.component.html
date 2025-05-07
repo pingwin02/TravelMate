@@ -26,9 +26,9 @@
         <strong>Airplane:</strong> {{ offer.airplane.name }}<br />
         <strong>From:</strong> {{ offer.departureAirport.code }}<br />
         <strong>To:</strong> {{ offer.arrivalAirport.code }}<br />
-        <strong>Departure:</strong> {{ offer.departureTime | date: "short"
+        <strong>Departure:</strong> {{ offer.departureTime | europeanTime
         }}<br />
-        <strong>Arrival:</strong> {{ offer.arrivalTime | date: "short" }}<br />
+        <strong>Arrival:</strong> {{ offer.arrivalTime | europeanTime }}<br />
       </p>
     </div>
   </div>

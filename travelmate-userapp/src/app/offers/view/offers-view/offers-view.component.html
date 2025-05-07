@@ -76,9 +76,9 @@
           <p class="card-text">
             <strong>From:</strong> {{ offer.departureAirport }}<br />
             <strong>To:</strong> {{ offer.arrivalAirport }}<br />
-            <strong>Departure:</strong> {{ offer.departureTime | date: "short"
+            <strong>Departure:</strong> {{ offer.departureTime | europeanTime
             }}<br />
-            <strong>Arrival:</strong> {{ offer.arrivalTime | date: "short"
+            <strong>Arrival:</strong> {{ offer.arrivalTime | europeanTime
             }}<br />
             <strong>Price:</strong> {{ offer.basePrice }} PLN
           </p>

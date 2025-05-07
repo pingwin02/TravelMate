@@ -13,6 +13,7 @@ public class OfferRepository(DataContext context) : IOfferRepository
             .Include(x => x.Airline)
             .Include(x => x.ArrivalAirport)
             .Include(x => x.DepartureAirport)
+            .Where(x => x.DepartureTime > DateTime.Now)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (offer == null)
@@ -22,15 +23,18 @@ public class OfferRepository(DataContext context) : IOfferRepository
 
     public async Task<IEnumerable<Offer>> GetOffers()
     {
-        var offers = await context.Offers.Include(x => x.Airplane)
+        var offers = await context.Offers
+            .Include(x => x.Airplane)
             .Include(x => x.Airline)
             .Include(x => x.ArrivalAirport)
             .Include(x => x.DepartureAirport)
+            .Where(x => x.DepartureTime > DateTime.Now)
             .ToListAsync();
-        Console.WriteLine(offers.Count);
+        
+        
 
 
-        return await context.Offers.ToListAsync();
+        return offers;
     }
 
     public async Task<Airline> GetAirlineByName(string name)
