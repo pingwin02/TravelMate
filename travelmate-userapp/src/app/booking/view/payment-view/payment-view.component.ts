@@ -65,7 +65,6 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
             });
         },
         error: (err) => {
-          // console.error(err);
           this.router.navigate(['/offers']);
         },
       });
@@ -78,26 +77,18 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
     }
 
     const expiry = new Date(this.booking.reservedUntil).getTime();
-    const correctedExpiry = expiry + 2 * 60 * 60 * 1000;
-    this.timeLeft = Math.floor((correctedExpiry - Date.now()) / 1000);
+    this.timeLeft = Math.floor((expiry - Date.now()) / 1000);
 
     this.timerInterval = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
       } else {
         clearInterval(this.timerInterval);
-        // alert('Time expired. Redirecting...');
-        // this.router.navigate(['/offers']);
       }
     }, 1000);
   }
 
   payNow(): void {
-    // if (this.booking.paymentUrl) {
-    //   window.location.href = this.booking.paymentUrl;
-    // } else {
-    //   alert('Payment URL not available.');
-    // }
     this.router.navigate(['/payment-confirmation', this.booking.paymentId]);
   }
 

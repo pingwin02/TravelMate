@@ -31,7 +31,7 @@ services:
     build:
       context: ./travelmate-userapp
     ports:
-      - "4200:80"
+      - "18859:80"
     environment:
       OFFERS_API_URL: "http://travelmateofferservice:8080/api"
       AUTH_API_URL: "http://travelmateauthservice:8080/api"

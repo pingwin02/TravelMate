@@ -120,12 +120,10 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
         var basePrice = offer.BasePrice;
 
         if (offer.DepartureTime.DayOfWeek == DayOfWeek.Friday || offer.DepartureTime.DayOfWeek == DayOfWeek.Sunday)
-        {
             basePrice *= 1.2m;
-        }
 
         const int threshold = 10;
-        int availableSeats = request.SeatType switch
+        var availableSeats = request.SeatType switch
         {
             SeatType.Economy => offer.AvailableEconomySeats,
             SeatType.Business => offer.AvailableBusinessSeats,
@@ -133,10 +131,7 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        if (availableSeats < threshold)
-        {
-            basePrice *= 1.1m;
-        }
+        if (availableSeats < threshold) basePrice *= 1.1m;
 
         basePrice *= request.SeatType switch
         {
@@ -150,7 +145,7 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
         {
             PassengerType.Adult => 1.0m,
             PassengerType.Child => 0.75m,
-            PassengerType.Baby => 0.5m, 
+            PassengerType.Baby => 0.5m,
             _ => throw new ArgumentOutOfRangeException()
         };
 

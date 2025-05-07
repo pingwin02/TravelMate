@@ -13,10 +13,9 @@ public class OfferRepository(DataContext context) : IOfferRepository
             .Include(x => x.Airline)
             .Include(x => x.ArrivalAirport)
             .Include(x => x.DepartureAirport)
-            .Where(x => x.DepartureTime > DateTime.Now)
             .FirstOrDefaultAsync(x => x.Id == id);
 
-        if (offer == null)
+        if (offer == null || offer.DepartureTime < DateTime.Now)
             throw new KeyNotFoundException($"Offer with id {id} not found");
         return offer;
     }
@@ -28,13 +27,9 @@ public class OfferRepository(DataContext context) : IOfferRepository
             .Include(x => x.Airline)
             .Include(x => x.ArrivalAirport)
             .Include(x => x.DepartureAirport)
-            .Where(x => x.DepartureTime > DateTime.Now)
             .ToListAsync();
-        
-        
 
-
-        return offers;
+        return offers.Where(x => x.DepartureTime > DateTime.Now).ToList();
     }
 
     public async Task<Airline> GetAirlineByName(string name)

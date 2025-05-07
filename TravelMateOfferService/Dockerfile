@@ -1,4 +1,13 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+
+RUN apt-get update && \
+    apt-get install -y tzdata && \
+    ln -snf /usr/share/zoneinfo/Europe/Warsaw /etc/localtime && \
+    echo "Europe/Warsaw" > /etc/timezone && \
+    apt-get clean
+
+ENV TZ=Europe/Warsaw
+
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
