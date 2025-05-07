@@ -10,6 +10,7 @@ import random
 def init():
     driver = webdriver.Chrome()
 
+    driver.maximize_window()
     driver.get(WEB_URL)
 
     return driver
@@ -89,6 +90,6 @@ def book_offer_timeout(driver):
     make_reservation(driver, wait)
 
     time.sleep(60)
-    driver.find_element(By.LINK_TEXT, "Offers").click()
-    driver.back() 
+    pay_now = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Pay Now')]")))
+    pay_now.click()
     time.sleep(2)
