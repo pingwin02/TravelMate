@@ -17,6 +17,8 @@ export class OffersViewComponent implements OnInit {
     departure_date: '',
     arrival_date: '',
     airline: '',
+    arrivalCity: '',
+    departureCity: '',
   };
   pageOffer: number = 1;
 
@@ -52,7 +54,18 @@ export class OffersViewComponent implements OnInit {
           new Date(offer.departureTime) >=
             new Date(this.filter.departure_date)) &&
         (!this.filter.arrival_date ||
-          new Date(offer.arrivalTime) <= new Date(this.filter.arrival_date))
+          new Date(offer.arrivalTime) <= new Date(this.filter.arrival_date)) &&
+        (!this.filter.departureCity ||
+          offer.departureCity
+            .toLowerCase()
+            .includes(this.filter.departureCity.toLowerCase())) &&
+        (!this.filter.arrivalCity ||
+          offer.arrivalCity
+            .toLowerCase()
+            .includes(this.filter.arrivalCity.toLowerCase()))
+            
+
+          
       );
     });
   }

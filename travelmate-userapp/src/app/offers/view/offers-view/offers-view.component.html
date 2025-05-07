@@ -4,54 +4,75 @@
   <!-- filtering -->
   <div class="row mb-4">
     <!--    TODO: change to selection list -->
-    <div class="col-md-3">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Airline"
-        [(ngModel)]="filter.airline"
-        (ngModelChange)="onFilterChange()"
-      />
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <input
+          type="text"
+          class="form-control mb-2"
+          placeholder="Airline"
+          [(ngModel)]="filter.airline"
+          (ngModelChange)="onFilterChange()"
+        />
+    
+        <input
+          type="text"
+          class="form-control mb-2"
+          placeholder="Departure City"
+          [(ngModel)]="filter.departureCity"
+          (ngModelChange)="onFilterChange()"
+        />
+    
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Arrival City"
+          [(ngModel)]="filter.arrivalCity"
+          (ngModelChange)="onFilterChange()"
+        />
+      </div>
+    
+      <div class="col-md-6 text-end">
+        <input
+          type="text"
+          class="form-control mb-2"
+          maxlength="4"
+          placeholder="Departure IATA"
+          [(ngModel)]="filter.departure"
+          (ngModelChange)="onFilterChange()"
+        />
+    
+        <input
+          type="text"
+          maxlength="4"
+          class="form-control"
+          placeholder="Arrival IATA"
+          [(ngModel)]="filter.arrival"
+          (ngModelChange)="onFilterChange()"
+        />
+      </div>
     </div>
-    <div class="col-md-3">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Departure"
-        [(ngModel)]="filter.departure"
-        (ngModelChange)="onFilterChange()"
-      />
+    
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label>From:</label>
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="filter.departure_date"
+          (ngModelChange)="onFilterChange()"
+        />
+      </div>
+      <div class="col-md-6">
+        <label>To:</label>
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="filter.arrival_date"
+          (ngModelChange)="onFilterChange()"
+        />
+      </div>
     </div>
-    <div class="col-md-3">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Destination"
-        [(ngModel)]="filter.arrival"
-        (ngModelChange)="onFilterChange()"
-      />
-    </div>
-  </div>
-  <div class="row mb-4">
-    <div class="col-md-6">
-      <label>From:</label>
-      <input
-        type="date"
-        class="form-control"
-        [(ngModel)]="filter.departure_date"
-        (ngModelChange)="onFilterChange()"
-      />
-    </div>
-    <div class="col-md-6">
-      <label>To:</label>
-      <input
-        type="date"
-        class="form-control"
-        [(ngModel)]="filter.arrival_date"
-        (ngModelChange)="onFilterChange()"
-      />
-    </div>
-  </div>
 
   <!-- offers -->
   <div>
@@ -74,8 +95,8 @@
             {{ offer.arrivalAirport }}]
           </h5>
           <p class="card-text">
-            <strong>From:</strong> {{ offer.departureAirport }}<br />
-            <strong>To:</strong> {{ offer.arrivalAirport }}<br />
+            <strong>From:</strong> {{offer.departureCity}} ({{ offer.departureAirport }})<br />
+            <strong>To:</strong> {{offer.arrivalCity}} ({{ offer.arrivalAirport }})<br />
             <strong>Departure:</strong> {{ offer.departureTime | europeanTime
             }}<br />
             <strong>Arrival:</strong> {{ offer.arrivalTime | europeanTime

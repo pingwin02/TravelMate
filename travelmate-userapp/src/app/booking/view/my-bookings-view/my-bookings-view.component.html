@@ -38,6 +38,7 @@
           </h5>
 
           <p class="card-text">
+            <strong>Booking Date:</strong> {{ booking.createdAt | europeanTime }}<br />
             <strong>Seat Type:</strong> {{ seatTypeLabels[booking.seatType]
             }}<br />
             <strong>Passenger Name:</strong> {{ booking.passengerName }}<br />

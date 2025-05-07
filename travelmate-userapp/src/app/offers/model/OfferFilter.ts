@@ -4,4 +4,6 @@ export interface OfferFilter {
   departure_date: string;
   arrival_date: string;
   airline: string;
+  arrivalCity: string;
+  departureCity: string;
 }

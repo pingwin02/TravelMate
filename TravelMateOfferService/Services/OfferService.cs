@@ -21,7 +21,9 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
         config.NewConfig<Offer, OfferListDto>()
             .Map(dest => dest.AirlineName, src => src.Airline.Name)
             .Map(dest => dest.DepartureAirport, src => src.DepartureAirport.Code)
-            .Map(dest => dest.ArrivalAirport, src => src.ArrivalAirport.Code);
+            .Map(dest => dest.ArrivalAirport, src => src.ArrivalAirport.Code)
+            .Map(dest => dest.DepartureCity, src => src.DepartureAirport.City)
+            .Map(dest => dest.ArrivalCity, src=>src.ArrivalAirport.City);
 
         return offers.Adapt<IEnumerable<OfferListDto>>(config);
     }
@@ -149,6 +151,6 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        return basePrice;
+        return Math.Round(basePrice, 2, MidpointRounding.AwayFromZero);
     }
 }
