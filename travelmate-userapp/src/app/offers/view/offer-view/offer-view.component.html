@@ -26,10 +26,10 @@
       </p>
       <p>
         <strong>Departure Time:</strong>
-        {{ offer.departureTime | date: "short" }}
+        {{ offer.departureTime | europeanTime }}
       </p>
       <p>
-        <strong>Arrival Time:</strong> {{ offer.arrivalTime | date: "short" }}
+        <strong>Arrival Time:</strong> {{ offer.arrivalTime | europeanTime }}
       </p>
 
       <p><strong>Airline:</strong> {{ offer.airline.name }}</p>

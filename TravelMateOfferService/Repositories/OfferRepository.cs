@@ -15,22 +15,21 @@ public class OfferRepository(DataContext context) : IOfferRepository
             .Include(x => x.DepartureAirport)
             .FirstOrDefaultAsync(x => x.Id == id);
 
-        if (offer == null)
+        if (offer == null || offer.DepartureTime < DateTime.Now)
             throw new KeyNotFoundException($"Offer with id {id} not found");
         return offer;
     }
 
     public async Task<IEnumerable<Offer>> GetOffers()
     {
-        var offers = await context.Offers.Include(x => x.Airplane)
+        var offers = await context.Offers
+            .Include(x => x.Airplane)
             .Include(x => x.Airline)
             .Include(x => x.ArrivalAirport)
             .Include(x => x.DepartureAirport)
             .ToListAsync();
-        Console.WriteLine(offers.Count);
 
-
-        return await context.Offers.ToListAsync();
+        return offers.Where(x => x.DepartureTime > DateTime.Now).ToList();
     }
 
     public async Task<Airline> GetAirlineByName(string name)

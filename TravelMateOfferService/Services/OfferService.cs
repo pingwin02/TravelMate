@@ -119,19 +119,35 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
         var offer = await offerRepository.GetOffer(request.OfferId);
         var basePrice = offer.BasePrice;
 
-        switch (request.PassengerType)
+        if (offer.DepartureTime.DayOfWeek == DayOfWeek.Friday || offer.DepartureTime.DayOfWeek == DayOfWeek.Sunday)
+            basePrice *= 1.2m;
+
+        const int threshold = 10;
+        var availableSeats = request.SeatType switch
         {
-            // TODO: Add more complex logic for dynamic pricing
-            case PassengerType.Adult:
-                basePrice *= 1.2m; // Increase price for adults
-                break;
-            case PassengerType.Child:
-                basePrice *= 0.8m; // Decrease price for children
-                break;
-            case PassengerType.Baby:
-                basePrice *= 0.5m; // Decrease price for babies
-                break;
-        }
+            SeatType.Economy => offer.AvailableEconomySeats,
+            SeatType.Business => offer.AvailableBusinessSeats,
+            SeatType.FirstClass => offer.AvailableFirstClassSeats,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
+        if (availableSeats < threshold) basePrice *= 1.1m;
+
+        basePrice *= request.SeatType switch
+        {
+            SeatType.Economy => 1.0m,
+            SeatType.Business => 1.5m,
+            SeatType.FirstClass => 2.0m,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
+        basePrice *= request.PassengerType switch
+        {
+            PassengerType.Adult => 1.0m,
+            PassengerType.Child => 0.75m,
+            PassengerType.Baby => 0.5m,
+            _ => throw new ArgumentOutOfRangeException()
+        };
 
         return basePrice;
     }
