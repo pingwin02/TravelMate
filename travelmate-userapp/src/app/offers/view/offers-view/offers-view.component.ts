@@ -17,9 +17,11 @@ export class OffersViewComponent implements OnInit {
     departure_date: '',
     arrival_date: '',
     airline: '',
+    arrivalCity: '',
+    departureCity: '',
   };
   pageOffer: number = 1;
-
+  loading = false;
   constructor(private offersService: OffersService) {}
 
   ngOnInit() {
@@ -27,9 +29,20 @@ export class OffersViewComponent implements OnInit {
   }
 
   loadOffers() {
-    this.offersService.getAllOffers().subscribe((offers: OfferList[]) => {
-      this.offers = offers;
-      this.applyFilters();
+    this.loading = true;
+    this.offersService.getAllOffers().subscribe({
+      next: (data: OfferList[]) => {
+        this.offers = data.sort(
+          (a, b) =>
+            new Date(a.departureTime).getTime() -
+            new Date(b.departureTime).getTime(),
+        );
+        this.applyFilters();
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      },
     });
   }
 
@@ -52,7 +65,16 @@ export class OffersViewComponent implements OnInit {
           new Date(offer.departureTime) >=
             new Date(this.filter.departure_date)) &&
         (!this.filter.arrival_date ||
-          new Date(offer.arrivalTime) <= new Date(this.filter.arrival_date))
+          new Date(offer.arrivalTime) <= new Date(this.filter.arrival_date)) &&
+        (!this.filter.departureCity ||
+          offer.departureCity
+            .toLowerCase()
+            .includes(this.filter.departureCity.toLowerCase())) &&
+        (!this.filter.arrivalCity ||
+          offer.arrivalCity
+            .toLowerCase()
+            .includes(this.filter.arrivalCity.toLowerCase())) &&
+        new Date(offer.departureTime) > new Date()
       );
     });
   }

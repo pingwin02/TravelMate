@@ -17,6 +17,9 @@ export class LoginViewComponent {
     private router: Router,
   ) {}
 
+  ngOnInit(): void {
+    if (localStorage.getItem('auth_token')) this.router.navigate(['/']);
+  }
   onSubmit() {
     const user: User = {
       Username: this.username,

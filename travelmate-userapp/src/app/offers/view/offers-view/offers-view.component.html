@@ -4,95 +4,138 @@
   <!-- filtering -->
   <div class="row mb-4">
     <!--    TODO: change to selection list -->
-    <div class="col-md-3">
+
+    <div class="col-mb-6 mx-auto mb-3">
       <input
         type="text"
-        class="form-control"
+        class="form-control mb-2"
         placeholder="Airline"
         [(ngModel)]="filter.airline"
         (ngModelChange)="onFilterChange()"
       />
-    </div>
-    <div class="col-md-3">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Departure"
-        [(ngModel)]="filter.departure"
-        (ngModelChange)="onFilterChange()"
-      />
-    </div>
-    <div class="col-md-3">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Destination"
-        [(ngModel)]="filter.arrival"
-        (ngModelChange)="onFilterChange()"
-      />
-    </div>
-  </div>
-  <div class="row mb-4">
-    <div class="col-md-6">
-      <label>From:</label>
-      <input
-        type="date"
-        class="form-control"
-        [(ngModel)]="filter.departure_date"
-        (ngModelChange)="onFilterChange()"
-      />
-    </div>
-    <div class="col-md-6">
-      <label>To:</label>
-      <input
-        type="date"
-        class="form-control"
-        [(ngModel)]="filter.arrival_date"
-        (ngModelChange)="onFilterChange()"
-      />
-    </div>
-  </div>
 
-  <!-- offers -->
-  <div>
-    <div
-      class="col-12"
-      *ngFor="
-        let offer of filteredOffers
-          | paginate
-            : {
-                id: 'offers-pagination',
-                itemsPerPage: 10,
-                currentPage: pageOffer,
-              }
-      "
-    >
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">
-            {{ offer.flightNumber }} [{{ offer.departureAirport }} -
-            {{ offer.arrivalAirport }}]
-          </h5>
-          <p class="card-text">
-            <strong>From:</strong> {{ offer.departureAirport }}<br />
-            <strong>To:</strong> {{ offer.arrivalAirport }}<br />
-            <strong>Departure:</strong> {{ offer.departureTime | europeanTime
-            }}<br />
-            <strong>Arrival:</strong> {{ offer.arrivalTime | europeanTime
-            }}<br />
-            <strong>Price:</strong> {{ offer.basePrice }} PLN
-          </p>
-          <button class="btn btn-primary" [routerLink]="['/offer', offer.id]">
-            More Info
-          </button>
+      <div class="row mb-2">
+        <div class="col-6">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Departure City"
+            [(ngModel)]="filter.departureCity"
+            (ngModelChange)="onFilterChange()"
+          />
+        </div>
+        <div class="col-6">
+          <input
+            type="text"
+            class="form-control"
+            maxlength="4"
+            placeholder="Departure IATA"
+            [(ngModel)]="filter.departure"
+            (ngModelChange)="onFilterChange()"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Arrival City"
+            [(ngModel)]="filter.arrivalCity"
+            (ngModelChange)="onFilterChange()"
+          />
+        </div>
+        <div class="col-6">
+          <input
+            type="text"
+            maxlength="4"
+            class="form-control"
+            placeholder="Arrival IATA"
+            [(ngModel)]="filter.arrival"
+            (ngModelChange)="onFilterChange()"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <label>From:</label>
+          <input
+            type="date"
+            class="form-control"
+            [(ngModel)]="filter.departure_date"
+            (ngModelChange)="onFilterChange()"
+          />
+        </div>
+        <div class="col-md-6">
+          <label>To:</label>
+          <input
+            type="date"
+            class="form-control"
+            [(ngModel)]="filter.arrival_date"
+            (ngModelChange)="onFilterChange()"
+          />
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- pagination -->
-  <pagination-controls
-    id="offers-pagination"
-    (pageChange)="pageOffer = $event"
-  ></pagination-controls>
+    <!-- offers -->
+    <div *ngIf="loading" class="d-flex justify-content-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div *ngIf="!loading">
+      <div>
+        <div
+          class="col-12"
+          *ngFor="
+            let offer of filteredOffers
+              | paginate
+                : {
+                    id: 'offers-pagination',
+                    itemsPerPage: 10,
+                    currentPage: pageOffer,
+                  }
+          "
+        >
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">
+                {{ offer.flightNumber }} [{{ offer.departureAirport }} -
+                {{ offer.arrivalAirport }}]
+              </h5>
+              <p class="card-text">
+                <strong>From:</strong> {{ offer.departureCity }} ({{
+                  offer.departureAirport
+                }})<br />
+                <strong>To:</strong> {{ offer.arrivalCity }} ({{
+                  offer.arrivalAirport
+                }})<br />
+                <strong>Departure:</strong>
+                {{ offer.departureTime | europeanTime }}<br />
+                <strong>Arrival:</strong> {{ offer.arrivalTime | europeanTime
+                }}<br />
+                <strong>Price:</strong> {{ offer.basePrice }} PLN
+              </p>
+              <button
+                class="btn btn-primary"
+                [routerLink]="['/offer', offer.id]"
+              >
+                More Info
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- pagination -->
+      <pagination-controls
+        id="offers-pagination"
+        (pageChange)="pageOffer = $event"
+      ></pagination-controls>
+    </div>
+  </div>
 </div>

@@ -125,8 +125,18 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                     Console.WriteLine($"[Saga] Payment failed for correlation {context.Saga.CorrelationId}");
                     await PerformPaymentFailureCompensation(context);
                 })
-                .Finalize()
+                .Finalize(),
+            When(PaymentFinalizedEvent)
+                .If(context => context.Saga.CurrentState.Equals(Final.Name), then => then
+                    .Then(context =>
+                    {
+                        Console.WriteLine(
+                            $"{context.Saga.CurrentState} state reached. Booking finalized - skipping incoming events.");
+                    })
+                    .Finalize()
+                )
         );
+
 
         SetCompletedWhenFinalized();
     }

@@ -4,6 +4,8 @@ export interface OfferList {
   flightNumber: string;
   departureAirport: string;
   arrivalAirport: string;
+  departureCity: string;
+  arrivalCity: string;
   departureTime: string;
   arrivalTime: string;
   basePrice: number;
