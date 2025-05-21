@@ -17,6 +17,7 @@ export class BookingViewComponent {
   reservationForm: FormGroup;
   offer!: Offer | null;
   loading = false;
+  paymentTimeout = false;
   private offerId: string = '';
   constructor(
     private fb: FormBuilder,
@@ -104,6 +105,7 @@ export class BookingViewComponent {
             if (attempts >= maxAttempts) {
               clearInterval(polling);
               this.loading = false;
+              this.paymentTimeout = true;
               this.showPaymentTimeoutModal();
             }
           }
@@ -115,5 +117,9 @@ export class BookingViewComponent {
         },
       });
     }, time);
+  }
+
+  goBackToOffers() {
+    this.router.navigate(['/offers']);
   }
 }

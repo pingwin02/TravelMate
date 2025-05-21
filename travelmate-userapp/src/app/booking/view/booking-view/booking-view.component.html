@@ -72,6 +72,7 @@
         </div>
 
         <button
+          *ngIf="!paymentTimeout"
           type="submit"
           class="btn btn-primary"
           [disabled]="reservationForm.invalid || loading"
@@ -80,6 +81,15 @@
           <ng-container *ngIf="!loading">Next</ng-container>
           <ng-container *ngIf="loading"> Processing... </ng-container>
         </button>
+
+        <button
+          *ngIf="paymentTimeout"
+          class="btn btn-secondary"
+          (click)="goBackToOffers()"
+        >
+          Go back to offers
+        </button>
+
       </form>
     </div>
   </div>
