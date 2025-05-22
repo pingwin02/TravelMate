@@ -17,6 +17,7 @@ export class BookingViewComponent {
   reservationForm: FormGroup;
   offer!: Offer | null;
   loading = false;
+  paymentTimeout = false;
   private offerId: string = '';
   constructor(
     private fb: FormBuilder,
@@ -46,7 +47,6 @@ export class BookingViewComponent {
   goToPayment() {
     if (this.reservationForm.invalid) return;
     this.loading = true;
-    console.log('loading' + this.loading);
     const form = this.reservationForm.value;
 
     const booking: BookingCreate = {
@@ -57,9 +57,8 @@ export class BookingViewComponent {
     };
     this.bookingService.createBooking(booking).subscribe({
       next: (createdBooking) => {
-        this.loading = false;
         const bookingId = createdBooking.id;
-        this.router.navigate(['/payment', bookingId]);
+        this.pollForPaymentId(bookingId);
       },
       error: (err) => {
         this.loading = false;
@@ -80,5 +79,47 @@ export class BookingViewComponent {
       const modal = new bootstrap.Modal(modalElement);
       modal.show();
     }
+  }
+  showPaymentTimeoutModal() {
+    const modalElement = document.getElementById('paymentTimeoutModal');
+    if (modalElement) {
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
+
+  pollForPaymentId(bookingId: string) {
+    const time = 1000;
+    const maxAttempts = 10;
+    let attempts = 0;
+
+    const polling = setInterval(() => {
+      this.bookingService.getBookingById(bookingId).subscribe({
+        next: (booking) => {
+          if (booking.paymentId) {
+            clearInterval(polling);
+            this.loading = false;
+            this.router.navigate(['/payment', bookingId]);
+          } else {
+            attempts++;
+            if (attempts >= maxAttempts) {
+              clearInterval(polling);
+              this.loading = false;
+              this.paymentTimeout = true;
+              this.showPaymentTimeoutModal();
+            }
+          }
+        },
+        error: (err) => {
+          clearInterval(polling);
+          this.loading = false;
+          console.error('Error polling for paymentId:', err);
+        },
+      });
+    }, time);
+  }
+
+  goBackToOffers() {
+    this.router.navigate(['/offers']);
   }
 }
