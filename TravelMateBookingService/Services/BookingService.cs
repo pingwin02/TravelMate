@@ -11,34 +11,25 @@ namespace TravelMateBookingService.Services;
 public class BookingService(
     IBookingRepository bookingRepository,
     IOptions<BookingsSettings> settings,
-    IPublishEndpoint publishEndpoint,
+    IRequestClient<BookingStartedEvent> bookingRequestClient,
     IBus bus)
     : IBookingService
 {
     public async Task<BookingDto> CreateBooking(Guid userId, BookingRequestDto bookingRequestDto)
     {
-        var correlationId = Guid.NewGuid();
         var bookingId = Guid.NewGuid();
-        var task = new TaskCompletionSource<BookingSagaStatusResponse>();
-        bus.ConnectReceiveEndpoint($"booking-status-response-{correlationId}", e =>
-        {
-            e.Handler<BookingSagaStatusResponse>(context =>
+        var correlationId = Guid.NewGuid();
+        var response = await bookingRequestClient.GetResponse<BookingSagaStatusResponse>(
+            new BookingStartedEvent
             {
-                task.TrySetResult(context.Message);
-                return Task.CompletedTask;
+                CorrelationId = correlationId,
+                OfferId = bookingRequestDto.OfferId,
+                BookingId = bookingId,
+                SeatType = bookingRequestDto.SeatType,
+                PassengerType = bookingRequestDto.PassengerType
             });
-        });
-        await publishEndpoint.Publish(new BookingStartedEvent
-        {
-            CorrelationId = correlationId,
-            OfferId = bookingRequestDto.OfferId,
-            BookingId = bookingId,
-            SeatType = bookingRequestDto.SeatType,
-            PassengerType = bookingRequestDto.PassengerType
-        });
 
-
-        var result = await task.Task;
+        var result = response.Message;
         Console.WriteLine($"Received payment result for {result.CorrelationId} {result.IsSuccessful}");
 
         if (!result.IsSuccessful)
