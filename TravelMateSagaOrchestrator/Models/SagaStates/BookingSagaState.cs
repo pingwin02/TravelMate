@@ -16,5 +16,5 @@ public class BookingSagaState : SagaStateMachineInstance
     public Guid CorrelationId { get; set; }
 
     public Guid? RequestId { get; set; }
-    public Uri ResponseAddress { get; set; }
+    public Uri? ResponseAddress { get; set; }
 }

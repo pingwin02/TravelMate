@@ -22,17 +22,3 @@ public class Offer
     public int AvailableFirstClassSeats { get; set; }
     public DateTime CreatedAt { get; set; }
 }
-
-public enum SeatType
-{
-    Economy,
-    Business,
-    FirstClass
-}
-
-public enum PassengerType
-{
-    Adult,
-    Child,
-    Baby
-}
