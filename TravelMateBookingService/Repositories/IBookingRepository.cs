@@ -1,4 +1,5 @@
-﻿using TravelMateBookingService.Models.Bookings;
+﻿using TravelMate.Models.Messages;
+using TravelMateBookingService.Models.Bookings;
 
 namespace TravelMateBookingService.Repositories;
 

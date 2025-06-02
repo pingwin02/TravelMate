@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TravelMate.Models.Messages;
 
 namespace TravelMateBookingService.Models.Bookings;
 
@@ -19,25 +20,4 @@ public class Booking
     public string PassengerName { get; set; }
     public PassengerType PassengerType { get; set; }
     public DateTime CreatedAt { get; set; }
-}
-
-public enum BookingStatus
-{
-    Pending,
-    Confirmed,
-    Canceled
-}
-
-public enum SeatType
-{
-    Economy,
-    Business,
-    FirstClass
-}
-
-public enum PassengerType
-{
-    Adult,
-    Child,
-    Baby
 }

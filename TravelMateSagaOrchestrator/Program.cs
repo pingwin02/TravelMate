@@ -10,7 +10,8 @@ var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
 builder.Services.AddMassTransit(x =>
 {
     x.AddSagaStateMachine<BookingSaga, BookingSagaState>()
-        .InMemoryRepository();
+        .InMemoryRepository()
+        .Endpoint(e => e.Name = "create-booking");
 
     x.UsingRabbitMq((context, cfg) =>
     {

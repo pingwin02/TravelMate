@@ -30,6 +30,7 @@ builder.Services.AddHostedService(sp => sp.GetRequiredService<BookingExpirationS
 var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
 builder.Services.AddMassTransit(busConfig =>
 {
+    busConfig.AddRequestClient<BookingStartedEvent>(new Uri("queue:create-booking"));
     busConfig.AddRequestClient<CheckSeatAvailabilityRequest>(new Uri("queue:check-seat-availability-queue"));
     busConfig.AddRequestClient<PaymentCreationRequest>(new Uri("queue:payment-queue"));
     busConfig.AddConsumer<BookingStatusUpdateConsumer>();

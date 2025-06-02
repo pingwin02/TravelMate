@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TravelMate.Models.Messages;
 using TravelMateBookingService.Data;
 using TravelMateBookingService.Models.Bookings;
 
