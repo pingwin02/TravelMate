@@ -1,6 +1,5 @@
 ﻿using MassTransit;
 using TravelMate.Models.Messages;
-using TravelMateBookingService.Models.Bookings;
 using TravelMateBookingService.Services;
 
 namespace TravelMateBookingService.Consumers;

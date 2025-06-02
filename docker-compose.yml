@@ -45,8 +45,9 @@ services:
 
   travelmateofferservice:
     container_name: TravelMateOfferService
-    build:
-      context: ./TravelMateOfferService
+    build: 
+      context: .
+      dockerfile: TravelMateOfferService/Dockerfile
     ports:
       - "5000:8080"
     depends_on:
@@ -57,8 +58,9 @@ services:
 
   travelmateauthservice:
     container_name: TravelMateAuthService
-    build:
-      context: ./TravelMateAuthService
+    build: 
+      context: .
+      dockerfile: TravelMateAuthService/Dockerfile
     ports:
       - "5001:8080"
     depends_on:
@@ -69,8 +71,9 @@ services:
 
   travelmatebookingservice:
     container_name: TravelMateBookingService
-    build:
-      context: ./TravelMateBookingService
+    build: 
+      context: .
+      dockerfile: TravelMateBookingService/Dockerfile
     ports:
       - "5002:8080"
     depends_on:
@@ -82,7 +85,8 @@ services:
   travelmatepaymentservice:
     container_name: TravelMatePaymentService
     build:
-      context: ./TravelMatePaymentService
+      context: .
+      dockerfile: TravelMatePaymentService/Dockerfile
     ports:
       - "5003:8080"
     depends_on:
@@ -93,8 +97,9 @@ services:
 
   travelmatesagaorchestrator:
     container_name: TravelMateSagaOrchestrator
-    build:
-      context: ./TravelMateSagaOrchestrator
+    build: 
+      context: .
+      dockerfile: TravelMateSagaOrchestrator/Dockerfile
     ports:
       - "5004:8080"
     depends_on:

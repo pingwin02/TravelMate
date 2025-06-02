@@ -13,8 +13,8 @@ public class BookingSagaState : SagaStateMachineInstance
     public DateTime Created { get; set; }
     public decimal Price { get; set; }
     public Guid OfferId { get; set; }
-    public Guid CorrelationId { get; set; }
 
     public Guid? RequestId { get; set; }
     public Uri? ResponseAddress { get; set; }
+    public Guid CorrelationId { get; set; }
 }

@@ -30,7 +30,8 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                     context.Saga.RequestId = context.RequestId;
                     context.Saga.ResponseAddress = context.ResponseAddress;
                     Console.WriteLine($"[Saga] Booking started with ID {context.Saga.BookingId}");
-                    Console.WriteLine($"[Saga] Received from ResponseAddress: {context.Saga.ResponseAddress}, RequestId: {context.Saga.RequestId}");
+                    Console.WriteLine(
+                        $"[Saga] Received from ResponseAddress: {context.Saga.ResponseAddress}, RequestId: {context.Saga.RequestId}");
                 })
                 .SendAsync(new Uri("queue:check-seat-availability-queue"), context =>
                     Task.FromResult(new CheckSeatAvailabilityRequest
@@ -67,19 +68,15 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                         })
                         .ThenAsync(async context =>
                         {
-                            Console.WriteLine($"[Saga] sending to ResponseAddress: {context.Saga.ResponseAddress}, RequestId: {context.Saga.RequestId}");
+                            Console.WriteLine(
+                                $"[Saga] sending to ResponseAddress: {context.Saga.ResponseAddress}, RequestId: {context.Saga.RequestId}");
                             if (context.Saga.ResponseAddress != null && context.Saga.RequestId.HasValue)
-                            {
                                 await context.Send(context.Saga.ResponseAddress, new BookingSagaStatusResponse
                                 {
                                     CorrelationId = context.Saga.CorrelationId,
                                     PaymentId = context.Saga.PaymentId,
                                     IsSuccessful = false
-                                }, sendContext =>
-                                {
-                                    sendContext.RequestId = context.Saga.RequestId.Value;
-                                });
-                            }
+                                }, sendContext => { sendContext.RequestId = context.Saga.RequestId.Value; });
                         })
                         .Finalize()
                 )
@@ -92,21 +89,17 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                     context.Saga.PaymentId = context.Message.PaymentId;
                     Console.WriteLine($"[Saga] Payment created: {context.Saga.PaymentId}");
                 })
-                 .ThenAsync(async context =>
+                .ThenAsync(async context =>
+                {
+                    Console.WriteLine(
+                        $"[Saga] sending to ResponseAddress: {context.Saga.ResponseAddress}, RequestId: {context.Saga.RequestId}");
+                    if (context.Saga.ResponseAddress != null && context.Saga.RequestId.HasValue)
+                        await context.Send(context.Saga.ResponseAddress, new BookingSagaStatusResponse
                         {
-                            Console.WriteLine($"[Saga] sending to ResponseAddress: {context.Saga.ResponseAddress}, RequestId: {context.Saga.RequestId}");
-                            if (context.Saga.ResponseAddress != null && context.Saga.RequestId.HasValue)
-                            {
-                                await context.Send(context.Saga.ResponseAddress, new BookingSagaStatusResponse
-                                {
-                                    CorrelationId = context.Saga.CorrelationId,
-                                    PaymentId = context.Saga.PaymentId,
-                                    IsSuccessful = true
-                                }, sendContext =>
-                                {
-                                    sendContext.RequestId = context.Saga.RequestId.Value;
-                                });
-                            }
+                            CorrelationId = context.Saga.CorrelationId,
+                            PaymentId = context.Saga.PaymentId,
+                            IsSuccessful = true
+                        }, sendContext => { sendContext.RequestId = context.Saga.RequestId.Value; });
                 })
                 .TransitionTo(PaymentCreated)
         );

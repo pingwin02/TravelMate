@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace TravelMate.Models.Messages;
 
 public class BookingStartedEvent
@@ -45,7 +40,7 @@ public class CancelReservationResponse
 
 public class PaymentCreationRequest
 {
-    public Guid CorrelationId {get;set;}
+    public Guid CorrelationId { get; set; }
     public Guid BookingId { get; set; }
     public decimal Price { get; set; }
 }
@@ -85,6 +80,7 @@ public class CancelBookingCommand
     public Guid CorrelationId { get; set; }
     public Guid BookingId { get; set; }
 }
+
 public class CancelPaymentCommand
 {
     public Guid CorrelationId { get; set; }
@@ -115,7 +111,6 @@ public class PaymentFinalizedEvent
     public Guid CorrelationId { get; set; }
     public bool IsSuccess { get; set; }
 }
-
 
 public class PaymentFailedEvent
 {

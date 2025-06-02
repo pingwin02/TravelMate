@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMatePaymentService", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateSagaOrchestrator", "TravelMateSagaOrchestrator\TravelMateSagaOrchestrator.csproj", "{26C6D0BA-DBE9-4A3B-849D-FBD6BAA433AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMate.Messages", "TravelMate.Messages\TravelMate.Messages.csproj", "{DBBAC282-3C4A-4F82-9BE0-D580EDA75972}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateMessages", "TravelMateMessages\TravelMateMessages.csproj", "{DBBAC282-3C4A-4F82-9BE0-D580EDA75972}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
