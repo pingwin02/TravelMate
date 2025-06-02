@@ -1,4 +1,6 @@
-﻿namespace TravelMateBookingService.Models.Bookings.DTO;
+﻿using TravelMate.Models.Messages;
+
+namespace TravelMateBookingService.Models.Bookings.DTO;
 
 public class BookingRequestDto
 {

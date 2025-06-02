@@ -1,4 +1,6 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+﻿ARG PROJECT_NAME=TravelMateAuthService
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 
 RUN apt-get update && \
     apt-get install -y tzdata && \
@@ -14,20 +16,25 @@ EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
+ARG PROJECT_NAME
 WORKDIR /src
 RUN dotnet tool install --global dotnet-ef
 ENV PATH="$PATH:/root/.dotnet/tools"
-COPY ["TravelMateAuthService.csproj", "./"]
-RUN dotnet restore "TravelMateAuthService.csproj"
-COPY . .
+COPY TravelMateMessages ../TravelMateMessages
+COPY ${PROJECT_NAME} .
+RUN dotnet restore "${PROJECT_NAME}.csproj"
 RUN dotnet-ef migrations add InitialCreate
-RUN dotnet build "./TravelMateAuthService.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "${PROJECT_NAME}.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./TravelMateAuthService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+ARG PROJECT_NAME
+RUN dotnet publish "${PROJECT_NAME}.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "TravelMateAuthService.dll"]
+
+ARG PROJECT_NAME
+ENV PROJECT_NAME=${PROJECT_NAME}
+ENTRYPOINT ["sh", "-c", "dotnet ${PROJECT_NAME}.dll"]

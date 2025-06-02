@@ -1,4 +1,4 @@
-﻿namespace TravelMate.Models.Messages;
+namespace TravelMate.Models.Messages;
 
 public class BookingStartedEvent
 {
@@ -25,16 +25,17 @@ public class CheckSeatAvailabilityResponse
     public decimal DynamicPrice { get; set; }
 }
 
-public class PaymentFinalizedEvent
+public class CancelReservationRequest
 {
     public Guid CorrelationId { get; set; }
-    public bool IsSuccess { get; set; }
+    public Guid OfferId { get; set; }
+    public SeatType SeatType { get; set; }
 }
 
-public class PaymentCreatedEvent
+public class CancelReservationResponse
 {
     public Guid CorrelationId { get; set; }
-    public Guid PaymentId { get; set; }
+    public bool IsCanceled { get; set; }
 }
 
 public class PaymentCreationRequest
@@ -44,11 +45,21 @@ public class PaymentCreationRequest
     public decimal Price { get; set; }
 }
 
+public class PaymentCreationResponse
+{
+    public Guid PaymentId { get; set; }
+}
+
 public class BookingStatusUpdateRequest
 {
     public Guid CorrelationId { get; set; }
     public Guid BookingId { get; set; }
     public BookingStatus Status { get; set; }
+}
+
+public class BookingStatusUpdateResponse
+{
+    public bool IsUpdated { get; set; }
 }
 
 public class BookingSagaStatusResponse
@@ -59,6 +70,12 @@ public class BookingSagaStatusResponse
 }
 
 public class BookingCancelledEvent
+{
+    public Guid CorrelationId { get; set; }
+    public Guid BookingId { get; set; }
+}
+
+public class CancelBookingCommand
 {
     public Guid CorrelationId { get; set; }
     public Guid BookingId { get; set; }
@@ -77,10 +94,22 @@ public class CancelSeatAvailabilityCommand
     public SeatType SeatType { get; set; }
 }
 
-public class CancelBookingCommand
+public class PaymentCreatedEvent
 {
     public Guid CorrelationId { get; set; }
-    public Guid BookingId { get; set; }
+    public Guid PaymentId { get; set; }
+}
+
+public class PaymentCreationEvent
+{
+    public Guid CorrelationId { get; set; }
+    public Guid PaymentId { get; set; }
+}
+
+public class PaymentFinalizedEvent
+{
+    public Guid CorrelationId { get; set; }
+    public bool IsSuccess { get; set; }
 }
 
 public class PaymentFailedEvent

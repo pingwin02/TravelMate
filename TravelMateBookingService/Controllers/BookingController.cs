@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TravelMateBookingService.Models.Bookings;
+using TravelMate.Models.Messages;
 using TravelMateBookingService.Models.Bookings.DTO;
 using TravelMateBookingService.Services;
 
