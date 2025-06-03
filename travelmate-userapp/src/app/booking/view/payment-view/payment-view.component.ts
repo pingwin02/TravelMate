@@ -42,27 +42,23 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
       this.bookingService.getBookingById(this.bookingId).subscribe({
         next: (booking) => {
           this.booking = booking;
-          this.offersService
-            .getOfferById(this.booking.offerId)
-            .subscribe((offer: Offer) => {
-              this.offer = offer;
-              if (this.booking.status === BookingStatus.Canceled) {
-                this.isCanceled = true;
-              } else if (this.booking.status === BookingStatus.Confirmed) {
-                this.isConfirmed = true;
-              } else {
-                this.isCanceled = false;
-                this.isCanceled = false;
-                this.paymentService
-                  .getPaymentById(this.booking.paymentId!)
-                  .subscribe({
-                    next: (payment) => {
-                      this.payment = payment;
-                    },
-                  });
-                this.initTimer();
-              }
-            });
+          this.offersService.getOfferById(this.booking.offerId).subscribe((offer: Offer) => {
+            this.offer = offer;
+            if (this.booking.status === BookingStatus.Canceled) {
+              this.isCanceled = true;
+            } else if (this.booking.status === BookingStatus.Confirmed) {
+              this.isConfirmed = true;
+            } else {
+              this.isCanceled = false;
+              this.isCanceled = false;
+              this.paymentService.getPaymentById(this.booking.paymentId!).subscribe({
+                next: (payment) => {
+                  this.payment = payment;
+                },
+              });
+              this.initTimer();
+            }
+          });
         },
         error: (err) => {
           this.router.navigate(['/offers']);

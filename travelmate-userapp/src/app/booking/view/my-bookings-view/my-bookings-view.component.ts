@@ -35,10 +35,7 @@ export class MyBookingsViewComponent implements OnInit {
 
   loadOffers() {
     this.bookingService.getBookingsByUser().subscribe((bookings: Booking[]) => {
-      bookings.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      );
+      bookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       this.bookings = bookings;
 
       const offerIds = Array.from(new Set(bookings.map((b) => b.offerId)));

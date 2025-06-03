@@ -14,23 +14,13 @@
 
   <div class="card">
     <div class="card-body">
-      <p>
-        <strong>From:</strong> {{ offer.departureAirport.city }} [{{
-          offer.departureAirport.code
-        }}]
-      </p>
-      <p>
-        <strong>To:</strong> {{ offer.arrivalAirport.city }} [{{
-          offer.arrivalAirport.code
-        }}]
-      </p>
+      <p><strong>From:</strong> {{ offer.departureAirport.city }} [{{ offer.departureAirport.code }}]</p>
+      <p><strong>To:</strong> {{ offer.arrivalAirport.city }} [{{ offer.arrivalAirport.code }}]</p>
       <p>
         <strong>Departure Time:</strong>
         {{ offer.departureTime | europeanTime }}
       </p>
-      <p>
-        <strong>Arrival Time:</strong> {{ offer.arrivalTime | europeanTime }}
-      </p>
+      <p><strong>Arrival Time:</strong> {{ offer.arrivalTime | europeanTime }}</p>
 
       <p><strong>Airline:</strong> {{ offer.airline.name }}</p>
       <p><strong>Plane:</strong> {{ offer.airplane.name }}</p>
@@ -45,12 +35,7 @@
       </ul>
 
       <a class="btn btn-secondary me-2" routerLink="/offers">Back to Offers</a>
-      <a
-        *ngIf="!isPastOffer(offer)"
-        class="btn btn-success"
-        [routerLink]="['/booking', offer.id]"
-        >Book</a
-      >
+      <a *ngIf="!isPastOffer(offer)" class="btn btn-success" [routerLink]="['/booking', offer.id]">Book</a>
     </div>
   </div>
 </div>

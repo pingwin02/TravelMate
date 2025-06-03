@@ -43,12 +43,10 @@ export class PaymentConfirmationViewComponent implements OnInit {
                 this.isConfirmed = false;
                 this.isCanceled = false;
 
-                this.paymentService
-                  .payPayment(this.payment.id)
-                  .subscribe((result) => {
-                    this.paymentResult = result.success;
-                    this.paymentText = result.message;
-                  });
+                this.paymentService.payPayment(this.payment.id).subscribe((result) => {
+                  this.paymentResult = result.success;
+                  this.paymentText = result.message;
+                });
               }
             },
           });

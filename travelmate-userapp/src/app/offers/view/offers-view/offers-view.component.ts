@@ -32,11 +32,7 @@ export class OffersViewComponent implements OnInit {
     this.loading = true;
     this.offersService.getAllOffers().subscribe({
       next: (data: OfferList[]) => {
-        this.offers = data.sort(
-          (a, b) =>
-            new Date(a.departureTime).getTime() -
-            new Date(b.departureTime).getTime(),
-        );
+        this.offers = data.sort((a, b) => new Date(a.departureTime).getTime() - new Date(b.departureTime).getTime());
         this.applyFilters();
         this.loading = false;
       },
@@ -49,31 +45,15 @@ export class OffersViewComponent implements OnInit {
   applyFilters() {
     this.filteredOffers = this.offers.filter((offer) => {
       return (
-        (!this.filter.airline ||
-          offer.airlineName
-            .toLowerCase()
-            .includes(this.filter.airline.toLowerCase())) &&
+        (!this.filter.airline || offer.airlineName.toLowerCase().includes(this.filter.airline.toLowerCase())) &&
         (!this.filter.departure ||
-          offer.departureAirport
-            .toLowerCase()
-            .includes(this.filter.departure.toLowerCase())) &&
-        (!this.filter.arrival ||
-          offer.arrivalAirport
-            .toLowerCase()
-            .includes(this.filter.arrival.toLowerCase())) &&
-        (!this.filter.departure_date ||
-          new Date(offer.departureTime) >=
-            new Date(this.filter.departure_date)) &&
-        (!this.filter.arrival_date ||
-          new Date(offer.arrivalTime) <= new Date(this.filter.arrival_date)) &&
+          offer.departureAirport.toLowerCase().includes(this.filter.departure.toLowerCase())) &&
+        (!this.filter.arrival || offer.arrivalAirport.toLowerCase().includes(this.filter.arrival.toLowerCase())) &&
+        (!this.filter.departure_date || new Date(offer.departureTime) >= new Date(this.filter.departure_date)) &&
+        (!this.filter.arrival_date || new Date(offer.arrivalTime) <= new Date(this.filter.arrival_date)) &&
         (!this.filter.departureCity ||
-          offer.departureCity
-            .toLowerCase()
-            .includes(this.filter.departureCity.toLowerCase())) &&
-        (!this.filter.arrivalCity ||
-          offer.arrivalCity
-            .toLowerCase()
-            .includes(this.filter.arrivalCity.toLowerCase())) &&
+          offer.departureCity.toLowerCase().includes(this.filter.departureCity.toLowerCase())) &&
+        (!this.filter.arrivalCity || offer.arrivalCity.toLowerCase().includes(this.filter.arrivalCity.toLowerCase())) &&
         new Date(offer.departureTime) > new Date()
       );
     });

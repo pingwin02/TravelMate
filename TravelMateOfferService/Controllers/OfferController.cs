@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using TravelMateOfferService.Hubs;
 using TravelMateOfferService.Models;
 using TravelMateOfferService.Models.DTO;
 using TravelMateOfferService.Services;
@@ -7,7 +9,7 @@ namespace TravelMateOfferService.Controllers;
 
 [ApiController]
 [Route("api/[controller]s")]
-public class OfferController(IOfferService offerService) : ControllerBase
+public class OfferController(IOfferService offerService, IHubContext<OfferHub> hubContext) : ControllerBase
 {
     [HttpGet("{id}")]
     public async Task<IActionResult> GetOffer(Guid id)
@@ -36,6 +38,7 @@ public class OfferController(IOfferService offerService) : ControllerBase
         try
         {
             var result = await offerService.AddOffer(offer);
+            await hubContext.Clients.All.SendAsync("OfferAdded", offer);
             return Created($"/api/offers/{result}", result);
         }
         catch (KeyNotFoundException ex)
@@ -49,7 +52,13 @@ public class OfferController(IOfferService offerService) : ControllerBase
     {
         try
         {
+            var changeDto = new OfferChangeDto
+            {
+                OldOffer = await offerService.GetOffer(offer.Id),
+                NewOffer = offer
+            };
             await offerService.UpdateOffer(offer);
+            await hubContext.Clients.All.SendAsync("OfferUpdated", changeDto);
             return NoContent();
         }
         catch (KeyNotFoundException ex)
@@ -64,6 +73,7 @@ public class OfferController(IOfferService offerService) : ControllerBase
         try
         {
             await offerService.DeleteOffer(id);
+            await hubContext.Clients.All.SendAsync("OfferDeleted", id);
             return Ok();
         }
         catch (KeyNotFoundException ex)

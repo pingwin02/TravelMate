@@ -9,6 +9,7 @@ import { authGuard } from './auth/auth.guard';
 import { MyBookingsViewComponent } from './booking/view/my-bookings-view/my-bookings-view.component';
 import { PaymentConfirmationViewComponent } from './booking/view/payment-confirmation-view/payment-confirmation-view.component';
 import { HomeComponent } from './home/home.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 const routes: Routes = [
   {
     path: '',
@@ -25,6 +26,10 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginViewComponent,
+  },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
   },
   {
     path: 'booking/:id',

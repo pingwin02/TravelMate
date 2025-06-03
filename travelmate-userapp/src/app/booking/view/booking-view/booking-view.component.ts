@@ -36,11 +36,9 @@ export class BookingViewComponent {
 
     this.route.paramMap.subscribe((params) => {
       this.offerId = params.get('id') || '';
-      this.offersService
-        .getOfferById(this.offerId)
-        .subscribe((offer: Offer) => {
-          this.offer = offer;
-        });
+      this.offersService.getOfferById(this.offerId).subscribe((offer: Offer) => {
+        this.offer = offer;
+      });
     });
   }
 

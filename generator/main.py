@@ -13,7 +13,7 @@ def fetch_offers():
 
 
 def update_offer_partial(offer):
-    response = requests.get(f"{BASE_URL}/60fe9f55-1345-442c-9a63-5295621e8b01")
+    response = requests.get(f"{BASE_URL}/{offer['id']}")
     response.raise_for_status()
     full_offer = response.json()
 

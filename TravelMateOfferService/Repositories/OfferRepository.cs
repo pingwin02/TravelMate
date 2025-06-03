@@ -13,6 +13,7 @@ public class OfferRepository(DataContext context) : IOfferRepository
             .Include(x => x.Airline)
             .Include(x => x.ArrivalAirport)
             .Include(x => x.DepartureAirport)
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (offer == null)

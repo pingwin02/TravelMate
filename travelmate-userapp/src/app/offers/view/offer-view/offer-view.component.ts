@@ -25,11 +25,9 @@ export class OfferViewComponent implements OnInit {
   ngOnInit() {
     //const offerId = Number(this.route.snapshot.paramMap.get('id'));
     this.route.params.subscribe((params) => {
-      this.offersService
-        .getOfferById(params['id'])
-        .subscribe((offer: Offer) => {
-          this.offer = offer;
-        });
+      this.offersService.getOfferById(params['id']).subscribe((offer: Offer) => {
+        this.offer = offer;
+      });
     });
   }
 }
