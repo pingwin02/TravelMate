@@ -59,39 +59,39 @@ export class DashboardComponent implements OnInit {
     if (!change.oldOffer || !change.newOffer) return [];
 
     const diffs: OfferDifference[] = [];
-    const oldObj = change.oldOffer;
-    const newObj = change.newOffer;
 
-    const fieldsToCompare = [
-      { key: 'flightNumber', label: 'Flight Number' },
-      { key: 'departureTime', label: 'Departure Time' },
-      { key: 'arrivalTime', label: 'Arrival Time' },
-      { key: 'basePrice', label: 'Base Price' },
-      { key: 'availableEconomySeats', label: 'Economy Seats' },
-      { key: 'availableBusinessSeats', label: 'Business Seats' },
-      { key: 'availableFirstClassSeats', label: 'First Class Seats' }
-    ];
+    const compareObjects = (oldObj: any, newObj: any, prefix = '') => {
+      const keys = new Set([...Object.keys(oldObj || {}), ...Object.keys(newObj || {})]);
 
-    for (const field of fieldsToCompare) {
-      const oldVal = oldObj[field.key];
-      const newVal = newObj[field.key];
+      keys.forEach((key) => {
+        const fullKey = prefix ? `${prefix}.${key}` : key;
+        const oldVal = oldObj?.[key];
+        const newVal = newObj?.[key];
 
-      if (field.key === 'departureTime' || field.key === 'arrivalTime') {
-        if (oldVal !== newVal) {
+        const isDateField = /Time|Date|createdAt|updatedAt/i.test(key);
+        if (isDateField) {
+          const oldDate = oldVal ? new Date(oldVal).toLocaleString() : undefined;
+          const newDate = newVal ? new Date(newVal).toLocaleString() : undefined;
+          if (oldDate !== newDate) {
+            diffs.push({
+              field: fullKey,
+              oldValue: oldDate,
+              newValue: newDate
+            });
+          }
+        } else if (typeof oldVal === 'object' && oldVal !== null && typeof newVal === 'object' && newVal !== null) {
+          compareObjects(oldVal, newVal, fullKey);
+        } else if (oldVal !== newVal) {
           diffs.push({
-            field: field.label,
-            oldValue: new Date(oldVal).toLocaleString(),
-            newValue: new Date(newVal).toLocaleString()
+            field: fullKey,
+            oldValue: oldVal,
+            newValue: newVal
           });
         }
-      } else if (oldVal !== newVal) {
-        diffs.push({
-          field: field.label,
-          oldValue: oldVal,
-          newValue: newVal
-        });
-      }
-    }
+      });
+    };
+
+    compareObjects(change.oldOffer, change.newOffer);
 
     return diffs;
   }
