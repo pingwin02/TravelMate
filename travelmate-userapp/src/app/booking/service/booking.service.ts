@@ -6,7 +6,7 @@ import { BookingCreate } from '../model/BookingCreate';
 import { Booking } from '../model/Booking';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class BookingService {
   constructor(private http: HttpClient) {}

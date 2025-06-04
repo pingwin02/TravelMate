@@ -8,7 +8,7 @@ import { Payment } from '../../model/Payment';
 @Component({
   selector: 'app-payment-confirmation-view',
   templateUrl: './payment-confirmation-view.component.html',
-  styleUrls: ['./payment-confirmation-view.component.css'],
+  styleUrls: ['./payment-confirmation-view.component.css']
 })
 export class PaymentConfirmationViewComponent implements OnInit {
   private paymentId: string | null;
@@ -22,7 +22,7 @@ export class PaymentConfirmationViewComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private paymentService: PaymentService,
-    private bookingService: BookingService,
+    private bookingService: BookingService
   ) {
     this.paymentId = this.route.snapshot.paramMap.get('id');
   }
@@ -43,16 +43,14 @@ export class PaymentConfirmationViewComponent implements OnInit {
                 this.isConfirmed = false;
                 this.isCanceled = false;
 
-                this.paymentService
-                  .payPayment(this.payment.id)
-                  .subscribe((result) => {
-                    this.paymentResult = result.success;
-                    this.paymentText = result.message;
-                  });
+                this.paymentService.payPayment(this.payment.id).subscribe((result) => {
+                  this.paymentResult = result.success;
+                  this.paymentText = result.message;
+                });
               }
-            },
+            }
           });
-        },
+        }
       });
     }
   }

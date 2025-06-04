@@ -1,10 +1,7 @@
 <div class="container mt-4" *ngIf="booking && offer">
   <h2>Payment</h2>
 
-  <div
-    *ngIf="!isCanceled && !isConfirmed"
-    class="d-flex justify-content-end mb-3"
-  >
+  <div *ngIf="!isCanceled && !isConfirmed" class="d-flex justify-content-end mb-3">
     <div class="timer-box bg-light p-2 rounded shadow-sm">
       Time left: <strong>{{ timeLeft }}s</strong>
     </div>
@@ -26,17 +23,14 @@
         <strong>Airplane:</strong> {{ offer.airplane.name }}<br />
         <strong>From:</strong> {{ offer.departureAirport.code }}<br />
         <strong>To:</strong> {{ offer.arrivalAirport.code }}<br />
-        <strong>Departure:</strong> {{ offer.departureTime | europeanTime
-        }}<br />
+        <strong>Departure:</strong> {{ offer.departureTime | europeanTime }}<br />
         <strong>Arrival:</strong> {{ offer.arrivalTime | europeanTime }}<br />
       </p>
     </div>
   </div>
 
   <div *ngIf="!isCanceled && !isConfirmed" class="text-center mt-4">
-    <button class="btn btn-lg btn-success px-5 py-2" (click)="payNow()">
-      Pay Now
-    </button>
+    <button class="btn btn-lg btn-success px-5 py-2" (click)="payNow()">Pay Now</button>
   </div>
 </div>
 

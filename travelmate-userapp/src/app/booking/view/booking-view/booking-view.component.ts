@@ -11,7 +11,7 @@ declare var bootstrap: any;
 @Component({
   selector: 'app-booking-view',
   templateUrl: './booking-view.component.html',
-  styleUrls: ['./booking-view.component.css'],
+  styleUrls: ['./booking-view.component.css']
 })
 export class BookingViewComponent {
   reservationForm: FormGroup;
@@ -25,22 +25,20 @@ export class BookingViewComponent {
     private route: ActivatedRoute,
     private bookingService: BookingService,
     private offersService: OffersService,
-    private authService: AuthService,
+    private authService: AuthService
   ) {
     this.reservationForm = this.fb.group({
       name: ['', Validators.required],
       surname: ['', Validators.required],
       passenger_type: ['', Validators.required],
-      seat_type: ['', Validators.required],
+      seat_type: ['', Validators.required]
     });
 
     this.route.paramMap.subscribe((params) => {
       this.offerId = params.get('id') || '';
-      this.offersService
-        .getOfferById(this.offerId)
-        .subscribe((offer: Offer) => {
-          this.offer = offer;
-        });
+      this.offersService.getOfferById(this.offerId).subscribe((offer: Offer) => {
+        this.offer = offer;
+      });
     });
   }
 
@@ -53,7 +51,7 @@ export class BookingViewComponent {
       OfferId: this.offerId,
       SeatType: +form.seat_type,
       PassengerName: `${form.name} ${form.surname}`,
-      PassengerType: +form.passenger_type,
+      PassengerType: +form.passenger_type
     };
     this.bookingService.createBooking(booking).subscribe({
       next: (createdBooking) => {
@@ -69,7 +67,7 @@ export class BookingViewComponent {
         } else if (err.status === 401) {
           this.authService.logout();
         }
-      },
+      }
     });
   }
 
@@ -114,7 +112,7 @@ export class BookingViewComponent {
           clearInterval(polling);
           this.loading = false;
           console.error('Error polling for paymentId:', err);
-        },
+        }
       });
     }, time);
   }

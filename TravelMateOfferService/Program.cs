@@ -2,6 +2,7 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using TravelMateOfferService.Consumers;
 using TravelMateOfferService.Data;
+using TravelMateOfferService.Hubs;
 using TravelMateOfferService.Repositories;
 using TravelMateOfferService.Services;
 
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddScoped<IOfferRepository, OfferRepository>();
 builder.Services.AddScoped<IOfferService, OfferService>();
 builder.Services.AddScoped<CheckSeatAvailabilityConsumer>();
+
+builder.Services.AddSignalR();
 
 var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
 builder.Services.AddMassTransit(busConfig =>
@@ -45,6 +48,8 @@ app.MapOpenApi();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseSwagger();
+
+app.MapHub<OfferHub>("/api/offerHub");
 
 app.UseSwaggerUI(c =>
 {

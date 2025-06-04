@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-my-bookings-view',
   templateUrl: './my-bookings-view.component.html',
-  styleUrls: ['./my-bookings-view.component.css'],
+  styleUrls: ['./my-bookings-view.component.css']
 })
 export class MyBookingsViewComponent implements OnInit {
   bookings: Booking[] = [];
@@ -26,7 +26,7 @@ export class MyBookingsViewComponent implements OnInit {
   constructor(
     private bookingService: BookingService,
     private offersService: OffersService,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -35,10 +35,7 @@ export class MyBookingsViewComponent implements OnInit {
 
   loadOffers() {
     this.bookingService.getBookingsByUser().subscribe((bookings: Booking[]) => {
-      bookings.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      );
+      bookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       this.bookings = bookings;
 
       const offerIds = Array.from(new Set(bookings.map((b) => b.offerId)));

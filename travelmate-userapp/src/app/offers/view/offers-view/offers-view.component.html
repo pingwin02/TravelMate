@@ -97,45 +97,31 @@
                 : {
                     id: 'offers-pagination',
                     itemsPerPage: 10,
-                    currentPage: pageOffer,
+                    currentPage: pageOffer
                   }
           "
         >
           <div class="card mb-3">
             <div class="card-body">
               <h5 class="card-title">
-                {{ offer.flightNumber }} [{{ offer.departureAirport }} -
-                {{ offer.arrivalAirport }}]
+                {{ offer.flightNumber }} [{{ offer.departureAirport }} - {{ offer.arrivalAirport }}]
               </h5>
               <p class="card-text">
-                <strong>From:</strong> {{ offer.departureCity }} ({{
-                  offer.departureAirport
-                }})<br />
-                <strong>To:</strong> {{ offer.arrivalCity }} ({{
-                  offer.arrivalAirport
-                }})<br />
+                <strong>From:</strong> {{ offer.departureCity }} ({{ offer.departureAirport }})<br />
+                <strong>To:</strong> {{ offer.arrivalCity }} ({{ offer.arrivalAirport }})<br />
                 <strong>Departure:</strong>
                 {{ offer.departureTime | europeanTime }}<br />
-                <strong>Arrival:</strong> {{ offer.arrivalTime | europeanTime
-                }}<br />
+                <strong>Arrival:</strong> {{ offer.arrivalTime | europeanTime }}<br />
                 <strong>Price:</strong> {{ offer.basePrice }} PLN
               </p>
-              <button
-                class="btn btn-primary"
-                [routerLink]="['/offer', offer.id]"
-              >
-                More Info
-              </button>
+              <button class="btn btn-primary" [routerLink]="['/offer', offer.id]">More Info</button>
             </div>
           </div>
         </div>
       </div>
 
       <!-- pagination -->
-      <pagination-controls
-        id="offers-pagination"
-        (pageChange)="pageOffer = $event"
-      ></pagination-controls>
+      <pagination-controls id="offers-pagination" (pageChange)="pageOffer = $event"></pagination-controls>
     </div>
   </div>
 </div>

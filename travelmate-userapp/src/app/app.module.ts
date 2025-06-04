@@ -15,6 +15,7 @@ import { MyBookingsViewComponent } from './booking/view/my-bookings-view/my-book
 import { PaymentConfirmationViewComponent } from './booking/view/payment-confirmation-view/payment-confirmation-view.component';
 import { HomeComponent } from './home/home.component';
 import { EuropeanTimePipe } from './pipes/european-time.pipe';
+import { DashboardComponent } from './dashboard/dashboard.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,22 +28,16 @@ import { EuropeanTimePipe } from './pipes/european-time.pipe';
     PaymentConfirmationViewComponent,
     HomeComponent,
     EuropeanTimePipe,
+    DashboardComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    FormsModule,
-    NgxPaginationModule,
-    ReactiveFormsModule,
-  ],
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule, NgxPaginationModule, ReactiveFormsModule],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
-      multi: true,
-    },
+      multi: true
+    }
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

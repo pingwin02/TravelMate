@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OfferViewComponent } from './offer-view.component';
+import { DashboardComponent } from './dashboard.component';
 
-describe('OfferViewComponent', () => {
-  let component: OfferViewComponent;
-  let fixture: ComponentFixture<OfferViewComponent>;
+describe('DashboardComponent', () => {
+  let component: DashboardComponent;
+  let fixture: ComponentFixture<DashboardComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [OfferViewComponent]
+      declarations: [DashboardComponent]
     });
-    fixture = TestBed.createComponent(OfferViewComponent);
+    fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

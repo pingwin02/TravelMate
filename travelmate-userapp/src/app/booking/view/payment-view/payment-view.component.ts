@@ -13,7 +13,7 @@ import { OffersService } from '../../../offers/service/offers.service';
 @Component({
   selector: 'app-payment-view',
   templateUrl: './payment-view.component.html',
-  styleUrls: ['./payment-view.component.css'],
+  styleUrls: ['./payment-view.component.css']
 })
 export class PaymentViewComponent implements OnInit, OnDestroy {
   booking!: Booking;
@@ -32,7 +32,7 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
     private bookingService: BookingService,
     private paymentService: PaymentService,
     private offersService: OffersService,
-    private router: Router,
+    private router: Router
   ) {
     this.bookingId = this.route.snapshot.paramMap.get('id');
   }
@@ -42,31 +42,27 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
       this.bookingService.getBookingById(this.bookingId).subscribe({
         next: (booking) => {
           this.booking = booking;
-          this.offersService
-            .getOfferById(this.booking.offerId)
-            .subscribe((offer: Offer) => {
-              this.offer = offer;
-              if (this.booking.status === BookingStatus.Canceled) {
-                this.isCanceled = true;
-              } else if (this.booking.status === BookingStatus.Confirmed) {
-                this.isConfirmed = true;
-              } else {
-                this.isCanceled = false;
-                this.isCanceled = false;
-                this.paymentService
-                  .getPaymentById(this.booking.paymentId!)
-                  .subscribe({
-                    next: (payment) => {
-                      this.payment = payment;
-                    },
-                  });
-                this.initTimer();
-              }
-            });
+          this.offersService.getOfferById(this.booking.offerId).subscribe((offer: Offer) => {
+            this.offer = offer;
+            if (this.booking.status === BookingStatus.Canceled) {
+              this.isCanceled = true;
+            } else if (this.booking.status === BookingStatus.Confirmed) {
+              this.isConfirmed = true;
+            } else {
+              this.isCanceled = false;
+              this.isCanceled = false;
+              this.paymentService.getPaymentById(this.booking.paymentId!).subscribe({
+                next: (payment) => {
+                  this.payment = payment;
+                }
+              });
+              this.initTimer();
+            }
+          });
         },
         error: (err) => {
           this.router.navigate(['/offers']);
-        },
+        }
       });
     }
   }
