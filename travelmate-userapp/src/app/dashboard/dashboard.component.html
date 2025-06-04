@@ -1,34 +1,54 @@
-<h2>Recent Offer Changes</h2>
-<ul>
-  <li *ngFor="let change of recentChanges">
-    <strong>{{ change.type | titlecase }}:</strong>
+<div class="container mt-5">
+  <h2 class="mb-4">Recent Offer Changes</h2>
 
-    <ng-container [ngSwitch]="change.type">
-      <ng-container *ngSwitchCase="'added'">
-        New offer:
-        <a [routerLink]="['/offer', change.newOffer?.id]"> Flight {{ change.newOffer?.flightNumber }} </a>, Departure:
-        {{ change.newOffer?.departureTime | date: "short" }}, Price: {{ change.newOffer?.basePrice | currency }}
-      </ng-container>
+  <ng-container *ngIf="recentChanges.length > 0; else noChanges">
+    <div *ngFor="let change of recentChanges" class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title text-capitalize">{{ change.type }} Offer</h5>
 
-      <ng-container *ngSwitchCase="'deleted'">
-        Deleted offer with ID:
-        <a [routerLink]="['/offer', change.oldOffer?.id]">
-          {{ change.oldOffer?.id }}
-        </a>
-      </ng-container>
+        <ng-container [ngSwitch]="change.type">
+          <ng-container *ngSwitchCase="'added'">
+            <p class="card-text">
+              New offer:
+              <a [routerLink]="['/offer', change.newOffer?.id]" class="link-primary fw-semibold">
+                Flight {{ change.newOffer?.flightNumber }} </a
+              ><br />
+              <strong>Departure:</strong> {{ change.newOffer?.departureTime | date: "short" }}<br />
+              <strong>Price:</strong> {{ change.newOffer?.basePrice | currency }}
+            </p>
+          </ng-container>
 
-      <ng-container *ngSwitchCase="'updated'">
-        Updated offer ID:
-        <a [routerLink]="['/offer', change.newOffer?.id]">
-          {{ change.newOffer?.id }}
-        </a>
-        <ul>
-          <li *ngFor="let diff of getDifferences(change)">
-            {{ diff.field }}: <del>{{ diff.oldValue }}</del> →
-            <strong>{{ diff.newValue }}</strong>
-          </li>
-        </ul>
-      </ng-container>
-    </ng-container>
-  </li>
-</ul>
+          <ng-container *ngSwitchCase="'deleted'">
+            <p class="card-text">
+              Deleted offer with ID:
+              <a [routerLink]="['/offer', change.oldOffer?.id]" class="link-danger fw-semibold">
+                {{ change.oldOffer?.id }}
+              </a>
+            </p>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'updated'">
+            <p class="card-text mb-2">
+              Updated offer ID:
+              <a [routerLink]="['/offer', change.newOffer?.id]" class="link-primary fw-semibold">
+                {{ change.newOffer?.id }}
+              </a>
+            </p>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item py-2 px-3" *ngFor="let diff of getDifferences(change)">
+                <strong>{{ diff.field }}: </strong>
+                <span class="text-muted text-decoration-line-through me-1">{{ diff.oldValue }}</span>
+                <span class="mx-1">→</span>
+                <span class="fw-bold">{{ diff.newValue }}</span>
+              </li>
+            </ul>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #noChanges>
+    <div class="alert alert-info text-center">No recent offer changes found.</div>
+  </ng-template>
+</div>
