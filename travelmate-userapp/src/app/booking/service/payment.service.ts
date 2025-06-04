@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { error } from '@angular/compiler-cli/src/transformers/util';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class PaymentService {
   constructor(private http: HttpClient) {}
@@ -22,19 +22,19 @@ export class PaymentService {
     return this.http.get(`/platnosci/Payments/${id}/pay`, { responseType: 'text' }).pipe(
       map((responseText: string) => ({
         success: true,
-        message: responseText,
+        message: responseText
       })),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 400) {
           const errorMessage = typeof error.error === 'string' ? error.error : 'Failed reservation';
           return of({
             success: false,
-            message: errorMessage,
+            message: errorMessage
           });
         } else {
           return throwError(() => error);
         }
-      }),
+      })
     );
   }
 }

@@ -28,16 +28,16 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     PaymentConfirmationViewComponent,
     HomeComponent,
     EuropeanTimePipe,
-    DashboardComponent,
+    DashboardComponent
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule, NgxPaginationModule, ReactiveFormsModule],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
-      multi: true,
-    },
+      multi: true
+    }
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

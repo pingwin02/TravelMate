@@ -16,7 +16,7 @@ interface OfferDifference {
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css'],
+  styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
   private hubConnection!: signalR.HubConnection;
@@ -38,7 +38,7 @@ export class DashboardComponent implements OnInit {
       this.pushChange({
         type: 'updated',
         oldOffer: change.oldOffer,
-        newOffer: change.newOffer,
+        newOffer: change.newOffer
       });
     });
 
@@ -62,7 +62,6 @@ export class DashboardComponent implements OnInit {
     const oldObj = change.oldOffer;
     const newObj = change.newOffer;
 
-    // Pola do porównania, możesz dodać więcej jeśli chcesz
     const fieldsToCompare = [
       { key: 'flightNumber', label: 'Flight Number' },
       { key: 'departureTime', label: 'Departure Time' },
@@ -70,27 +69,26 @@ export class DashboardComponent implements OnInit {
       { key: 'basePrice', label: 'Base Price' },
       { key: 'availableEconomySeats', label: 'Economy Seats' },
       { key: 'availableBusinessSeats', label: 'Business Seats' },
-      { key: 'availableFirstClassSeats', label: 'First Class Seats' },
+      { key: 'availableFirstClassSeats', label: 'First Class Seats' }
     ];
 
     for (const field of fieldsToCompare) {
       const oldVal = oldObj[field.key];
       const newVal = newObj[field.key];
 
-      // Formatowanie dat na czytelne stringi
       if (field.key === 'departureTime' || field.key === 'arrivalTime') {
         if (oldVal !== newVal) {
           diffs.push({
             field: field.label,
             oldValue: new Date(oldVal).toLocaleString(),
-            newValue: new Date(newVal).toLocaleString(),
+            newValue: new Date(newVal).toLocaleString()
           });
         }
       } else if (oldVal !== newVal) {
         diffs.push({
           field: field.label,
           oldValue: oldVal,
-          newValue: newVal,
+          newValue: newVal
         });
       }
     }

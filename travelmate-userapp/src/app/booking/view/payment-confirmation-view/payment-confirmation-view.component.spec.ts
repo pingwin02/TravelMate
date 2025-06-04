@@ -8,7 +8,7 @@ describe('PaymentConfirmationViewComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [PaymentConfirmationViewComponent],
+      declarations: [PaymentConfirmationViewComponent]
     });
     fixture = TestBed.createComponent(PaymentConfirmationViewComponent);
     component = fixture.componentInstance;

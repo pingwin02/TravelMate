@@ -14,7 +14,7 @@
             : {
                 id: 'bookings-pagination',
                 itemsPerPage: 10,
-                currentPage: pageBooking,
+                currentPage: pageBooking
               }
       "
     >
@@ -27,7 +27,7 @@
               [ngClass]="{
                 'bg-secondary': booking.status === 0,
                 'bg-success': booking.status === 1,
-                'bg-danger': booking.status === 2,
+                'bg-danger': booking.status === 2
               }"
             >
               {{ bookingStatusLabels[booking.status] }}

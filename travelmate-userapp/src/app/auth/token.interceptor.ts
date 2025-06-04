@@ -8,7 +8,7 @@ import { AuthService } from './service/auth.service';
 export class TokenInterceptor implements HttpInterceptor {
   constructor(
     private authService: AuthService,
-    private router: Router,
+    private router: Router
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -16,8 +16,8 @@ export class TokenInterceptor implements HttpInterceptor {
     if (token) {
       request = request.clone({
         setHeaders: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       });
     }
     return next.handle(request);

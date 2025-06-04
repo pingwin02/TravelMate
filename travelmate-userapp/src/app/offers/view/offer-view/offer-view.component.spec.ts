@@ -8,7 +8,7 @@ describe('OfferViewComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [OfferViewComponent],
+      declarations: [OfferViewComponent]
     });
     fixture = TestBed.createComponent(OfferViewComponent);
     component = fixture.componentInstance;

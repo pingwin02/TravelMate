@@ -5,7 +5,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
   private token = 'auth_token';
@@ -14,7 +14,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private router: Router,
+    private router: Router
   ) {}
 
   login(user: User): Observable<any> {
@@ -31,7 +31,7 @@ export class AuthService {
           return throwError(() => new Error('Invalid username or password.'));
         }
         return throwError(() => error);
-      }),
+      })
     );
   }
 

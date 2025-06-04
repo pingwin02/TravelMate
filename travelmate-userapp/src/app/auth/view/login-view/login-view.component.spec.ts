@@ -8,7 +8,7 @@ describe('LoginViewComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [LoginViewComponent],
+      declarations: [LoginViewComponent]
     });
     fixture = TestBed.createComponent(LoginViewComponent);
     component = fixture.componentInstance;

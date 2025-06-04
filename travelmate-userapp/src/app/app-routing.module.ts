@@ -13,48 +13,48 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 const routes: Routes = [
   {
     path: '',
-    component: HomeComponent,
+    component: HomeComponent
   },
   {
     path: 'offers',
-    component: OffersViewComponent,
+    component: OffersViewComponent
   },
   {
     path: 'offer/:id',
-    component: OfferViewComponent,
+    component: OfferViewComponent
   },
   {
     path: 'login',
-    component: LoginViewComponent,
+    component: LoginViewComponent
   },
   {
     path: 'dashboard',
-    component: DashboardComponent,
+    component: DashboardComponent
   },
   {
     path: 'booking/:id',
     component: BookingViewComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard]
   },
   {
     path: 'payment-confirmation/:id',
     component: PaymentConfirmationViewComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard]
   },
   {
     path: 'payment/:id',
     component: PaymentViewComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard]
   },
   {
     path: 'my-bookings',
     component: MyBookingsViewComponent,
-    canActivate: [authGuard],
-  },
+    canActivate: [authGuard]
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 export class AppRoutingModule {}

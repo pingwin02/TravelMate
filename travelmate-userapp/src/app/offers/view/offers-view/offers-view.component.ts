@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { OfferFilter } from '../../model/OfferFilter';
 import { OffersService } from '../../service/offers.service';
 import { OfferList } from '../../model/OfferList';
+import * as signalR from '@microsoft/signalr';
 
 @Component({
   selector: 'app-offers-view',
   templateUrl: './offers-view.component.html',
-  styleUrls: ['./offers-view.component.css'],
+  styleUrls: ['./offers-view.component.css']
 })
-export class OffersViewComponent implements OnInit {
+export class OffersViewComponent implements OnInit, OnDestroy {
   private offers: OfferList[] = [];
   filteredOffers: OfferList[] = [];
   filter: OfferFilter = {
@@ -18,17 +19,26 @@ export class OffersViewComponent implements OnInit {
     arrival_date: '',
     airline: '',
     arrivalCity: '',
-    departureCity: '',
+    departureCity: ''
   };
-  pageOffer: number = 1;
+  pageOffer = 1;
   loading = false;
+  private hubConnection!: signalR.HubConnection;
+
   constructor(private offersService: OffersService) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadOffers();
+    this.initSignalR();
   }
 
-  loadOffers() {
+  ngOnDestroy(): void {
+    if (this.hubConnection) {
+      this.hubConnection.stop();
+    }
+  }
+
+  loadOffers(): void {
     this.loading = true;
     this.offersService.getAllOffers().subscribe({
       next: (data: OfferList[]) => {
@@ -38,28 +48,89 @@ export class OffersViewComponent implements OnInit {
       },
       error: () => {
         this.loading = false;
-      },
+      }
     });
   }
 
-  applyFilters() {
+  applyFilters(): void {
+    const { airline, departure, arrival, departure_date, arrival_date, departureCity, arrivalCity } = this.filter;
+
     this.filteredOffers = this.offers.filter((offer) => {
+      const depTime = new Date(offer.departureTime);
+      const arrTime = new Date(offer.arrivalTime);
+
       return (
-        (!this.filter.airline || offer.airlineName.toLowerCase().includes(this.filter.airline.toLowerCase())) &&
-        (!this.filter.departure ||
-          offer.departureAirport.toLowerCase().includes(this.filter.departure.toLowerCase())) &&
-        (!this.filter.arrival || offer.arrivalAirport.toLowerCase().includes(this.filter.arrival.toLowerCase())) &&
-        (!this.filter.departure_date || new Date(offer.departureTime) >= new Date(this.filter.departure_date)) &&
-        (!this.filter.arrival_date || new Date(offer.arrivalTime) <= new Date(this.filter.arrival_date)) &&
-        (!this.filter.departureCity ||
-          offer.departureCity.toLowerCase().includes(this.filter.departureCity.toLowerCase())) &&
-        (!this.filter.arrivalCity || offer.arrivalCity.toLowerCase().includes(this.filter.arrivalCity.toLowerCase())) &&
-        new Date(offer.departureTime) > new Date()
+        (!airline || offer.airlineName.toLowerCase().includes(airline.toLowerCase())) &&
+        (!departure || offer.departureAirport.toLowerCase().includes(departure.toLowerCase())) &&
+        (!arrival || offer.arrivalAirport.toLowerCase().includes(arrival.toLowerCase())) &&
+        (!departure_date || depTime >= new Date(departure_date)) &&
+        (!arrival_date || arrTime <= new Date(arrival_date)) &&
+        (!departureCity || offer.departureCity.toLowerCase().includes(departureCity.toLowerCase())) &&
+        (!arrivalCity || offer.arrivalCity.toLowerCase().includes(arrivalCity.toLowerCase())) &&
+        depTime > new Date()
       );
     });
+
+    const maxPages = Math.ceil(this.filteredOffers.length / 10);
+    if (this.pageOffer > maxPages) {
+      this.pageOffer = 1;
+    }
   }
 
-  onFilterChange() {
+  onFilterChange(): void {
     this.applyFilters();
   }
+
+  private initSignalR(): void {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl('/oferty/offerHub')
+      .withAutomaticReconnect()
+      .build();
+
+    this.hubConnection.start().catch((err) => console.error('SignalR connection error:', err));
+
+    this.hubConnection.on('OfferAdded', (fullOffer: any) => {
+      const offer = mapFullOfferToOfferList(fullOffer);
+      this.offers.unshift(offer);
+      this.sortOffers();
+      this.applyFilters();
+      console.log('Offer added and list updated');
+    });
+
+    this.hubConnection.on('OfferUpdated', (change: { oldOffer: any; newOffer: any }) => {
+      const updated = mapFullOfferToOfferList(change.newOffer);
+      const index = this.offers.findIndex((o) => o.id === updated.id);
+      if (index !== -1) {
+        this.offers[index] = updated;
+        this.sortOffers();
+        this.applyFilters();
+        console.log('Offer updated and list refreshed');
+      }
+    });
+
+    this.hubConnection.on('OfferDeleted', (deletedId: string) => {
+      this.offers = this.offers.filter((o) => o.id !== deletedId);
+      this.applyFilters();
+      console.log('Offer deleted and list refreshed');
+    });
+  }
+
+  private sortOffers(): void {
+    this.offers.sort((a, b) => new Date(a.departureTime).getTime() - new Date(b.departureTime).getTime());
+  }
+}
+
+function mapFullOfferToOfferList(full: any): OfferList {
+  return {
+    id: full.id,
+    airlineName: full.airline?.name || '',
+    flightNumber: full.flightNumber || '',
+    departureAirport: full.departureAirport?.code || '',
+    arrivalAirport: full.arrivalAirport?.code || '',
+    departureCity: full.departureAirport?.city || '',
+    arrivalCity: full.arrivalAirport?.city || '',
+    departureTime: full.departureTime,
+    arrivalTime: full.arrivalTime,
+    basePrice: full.basePrice
+  };
 }

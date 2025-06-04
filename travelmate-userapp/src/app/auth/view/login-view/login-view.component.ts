@@ -6,7 +6,7 @@ import { AuthService } from '../../service/auth.service';
 @Component({
   selector: 'app-login-view',
   templateUrl: './login-view.component.html',
-  styleUrls: ['./login-view.component.css'],
+  styleUrls: ['./login-view.component.css']
 })
 export class LoginViewComponent {
   username = '';
@@ -14,7 +14,7 @@ export class LoginViewComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -23,7 +23,7 @@ export class LoginViewComponent {
   onSubmit() {
     const user: User = {
       Username: this.username,
-      Password: this.password,
+      Password: this.password
     };
     this.authService.login(user).subscribe({
       next: () => {
@@ -37,7 +37,7 @@ export class LoginViewComponent {
       },
       error: (error) => {
         alert(error.message);
-      },
+      }
     });
   }
 }

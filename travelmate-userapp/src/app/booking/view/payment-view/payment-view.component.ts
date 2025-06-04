@@ -13,7 +13,7 @@ import { OffersService } from '../../../offers/service/offers.service';
 @Component({
   selector: 'app-payment-view',
   templateUrl: './payment-view.component.html',
-  styleUrls: ['./payment-view.component.css'],
+  styleUrls: ['./payment-view.component.css']
 })
 export class PaymentViewComponent implements OnInit, OnDestroy {
   booking!: Booking;
@@ -32,7 +32,7 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
     private bookingService: BookingService,
     private paymentService: PaymentService,
     private offersService: OffersService,
-    private router: Router,
+    private router: Router
   ) {
     this.bookingId = this.route.snapshot.paramMap.get('id');
   }
@@ -54,7 +54,7 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
               this.paymentService.getPaymentById(this.booking.paymentId!).subscribe({
                 next: (payment) => {
                   this.payment = payment;
-                },
+                }
               });
               this.initTimer();
             }
@@ -62,7 +62,7 @@ export class PaymentViewComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.router.navigate(['/offers']);
-        },
+        }
       });
     }
   }
