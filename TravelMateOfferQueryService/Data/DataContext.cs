@@ -7,7 +7,7 @@ public class DataContext
 
     public DataContext()
     {
-        var connectionString = "mongodb://localhost:27017";
+        var connectionString = "mongodb://admin:password@mongodb-container:27017";
         var client = new MongoClient(connectionString);
         _database = client.GetDatabase("TravelMateOfferQueryDatabase");
     }

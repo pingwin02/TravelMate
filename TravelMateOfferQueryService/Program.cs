@@ -16,12 +16,13 @@ builder.Services.AddScoped<IOfferQueryService, OfferQueryService>();
 var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
 builder.Services.AddMassTransit(busConfig =>
 {
+    busConfig.AddConsumer<AddOfferEventConsumer>();
+    busConfig.AddConsumer<UpdateOfferEventConsumer>();
+    busConfig.AddConsumer<DeleteOfferEventConsumer>();
     busConfig.SetKebabCaseEndpointNameFormatter();
     busConfig.UsingRabbitMq((context, cfg) =>
     {
-        busConfig.AddConsumer<AddOfferEventConsumer>();
-        busConfig.AddConsumer<UpdateOfferEventConsumer>();
-        busConfig.AddConsumer<DeleteOfferEventConsumer>();
+        
         cfg.Host(rabbitMqSettings["Host"], h =>
         {
             h.Username(rabbitMqSettings["Username"]);
@@ -54,7 +55,7 @@ app.MapHub<OfferHub>("/api/offerHub");
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "TravelMateOfferCommandService API v1");
-    c.DocumentTitle = "TravelMate Offers Command API";
+    c.DocumentTitle = "TravelMate Offers Query API";
 });
 
 app.UseAuthorization();

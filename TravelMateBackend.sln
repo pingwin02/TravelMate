@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateAuthService", "TravelMateAuthService\TravelMateAuthService.csproj", "{C38D1699-2DDE-4E39-8117-0EDFC33C3285}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateBookingService", "TravelMateBookingService\TravelMateBookingService.csproj", "{DD0D73BB-17E1-4106-8042-8592BDF30309}"
@@ -13,8 +16,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateMessages", "TravelMateMessages\TravelMateMessages.csproj", "{DBBAC282-3C4A-4F82-9BE0-D580EDA75972}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateOfferQueryService", "TravelMateOfferQueryService\TravelMateOfferQueryService.csproj", "{E41219CE-57FD-48E0-BAD4-F23FC64F02CF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateOfferCommandService", "TravelMateOfferCommandService\TravelMateOfferCommandService.csproj", "{A73E04E0-0B5C-4A47-B798-C889FE782C85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -110,18 +111,6 @@ Global
 		{E41219CE-57FD-48E0-BAD4-F23FC64F02CF}.Release|x64.Build.0 = Release|Any CPU
 		{E41219CE-57FD-48E0-BAD4-F23FC64F02CF}.Release|x86.ActiveCfg = Release|Any CPU
 		{E41219CE-57FD-48E0-BAD4-F23FC64F02CF}.Release|x86.Build.0 = Release|Any CPU
-		{A73E04E0-0B5C-4A47-B798-C889FE782C85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A73E04E0-0B5C-4A47-B798-C889FE782C85}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A73E04E0-0B5C-4A47-B798-C889FE782C85}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{A73E04E0-0B5C-4A47-B798-C889FE782C85}.Debug|x64.Build.0 = Debug|Any CPU
-		{A73E04E0-0B5C-4A47-B798-C889FE782C85}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A73E04E0-0B5C-4A47-B798-C889FE782C85}.Debug|x86.Build.0 = Debug|Any CPU
-		{A73E04E0-0B5C-4A47-B798-C889FE782C85}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A73E04E0-0B5C-4A47-B798-C889FE782C85}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A73E04E0-0B5C-4A47-B798-C889FE782C85}.Release|x64.ActiveCfg = Release|Any CPU
-		{A73E04E0-0B5C-4A47-B798-C889FE782C85}.Release|x64.Build.0 = Release|Any CPU
-		{A73E04E0-0B5C-4A47-B798-C889FE782C85}.Release|x86.ActiveCfg = Release|Any CPU
-		{A73E04E0-0B5C-4A47-B798-C889FE782C85}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

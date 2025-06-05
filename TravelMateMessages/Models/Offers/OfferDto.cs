@@ -10,7 +10,7 @@ namespace TravelMate.Models.Offers;
 public class OfferDto
 {
     [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
+    [BsonRepresentation(BsonType.String)]
     public Guid Id { get; set; }
     public string AirplaneName { get; set; }
     public string AirlineName { get; set; }
