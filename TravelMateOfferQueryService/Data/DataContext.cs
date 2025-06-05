@@ -1,15 +1,35 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using TravelMate.Models.Offers;
-using TravelMateOfferQueryService.Models.Offers;
 
-namespace TravelMateOfferQueryService.Data
+public class DataContext
 {
-    public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
+    private readonly IMongoDatabase _database;
+
+    public DataContext()
     {
-        public DbSet<OfferDto> Offers { get; set; }
+        var connectionString = "mongodb://localhost:27017";
+        var client = new MongoClient(connectionString);
+        _database = client.GetDatabase("TravelMateOfferQueryDatabase");
+    }
+
+
+    public IMongoDatabase Database => _database;
+    public IMongoCollection<OfferDto> Offers => _database.GetCollection<OfferDto>("Offers");
+}
+
+public class MongoDbInitializer
+{
+public static async Task InitializeMongoDbAsync(DataContext context)
+    {
+
+        var collectionNames = await context.Database.ListCollectionNamesAsync();
+        var collections = await collectionNames.ToListAsync();
+
+
+        if (!collections.Contains("Offers"))
+        {
+            await context.Database.CreateCollectionAsync("Offers");
+            Console.WriteLine("Created 'Offers' collection.");
+        }
     }
 }

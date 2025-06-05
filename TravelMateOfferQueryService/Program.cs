@@ -1,7 +1,6 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using TravelMateOfferQueryService.Consumers;
-using TravelMateOfferQueryService.Data;
 using TravelMateOfferQueryService.Hubs;
 using TravelMateOfferQueryService.Repositories;
 using TravelMateOfferQueryService.Services;
@@ -9,10 +8,8 @@ using TravelMateOfferQueryService.Services;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-builder.Services.AddDbContext<DataContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("DefaultDbConnection"),
-        ServerVersion.Parse("11.7.2-mariadb")));
-
+builder.Services.AddSingleton<DataContext>();
+builder.Services.AddSignalR();
 builder.Services.AddScoped<IOfferQueryRepository, OfferQueryRepository>();
 builder.Services.AddScoped<IOfferQueryService, OfferQueryService>();
 
@@ -22,6 +19,9 @@ builder.Services.AddMassTransit(busConfig =>
     busConfig.SetKebabCaseEndpointNameFormatter();
     busConfig.UsingRabbitMq((context, cfg) =>
     {
+        busConfig.AddConsumer<AddOfferEventConsumer>();
+        busConfig.AddConsumer<UpdateOfferEventConsumer>();
+        busConfig.AddConsumer<DeleteOfferEventConsumer>();
         cfg.Host(rabbitMqSettings["Host"], h =>
         {
             h.Username(rabbitMqSettings["Username"]);
@@ -62,14 +62,15 @@ app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+    // Initialize MongoDB
+    var mongoContext = scope.ServiceProvider.GetRequiredService<DataContext>();
     try
     {
-        db.Database.Migrate();
+        await MongoDbInitializer.InitializeMongoDbAsync(mongoContext);
     }
     catch (Exception ex)
     {
-        Console.WriteLine("An error occurred while migrating the database: " + ex.Message);
+        Console.WriteLine("An error occurred while initializing MongoDB: " + ex.Message);
     }
 }
 

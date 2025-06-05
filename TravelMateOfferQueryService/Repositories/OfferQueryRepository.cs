@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using TravelMate.Models.Offers;
-using TravelMateOfferQueryService.Data;
 
 
 namespace TravelMateOfferQueryService.Repositories
@@ -18,8 +18,7 @@ namespace TravelMateOfferQueryService.Repositories
                 throw new ArgumentNullException(nameof(offer), "Offer cannot be null");
             }
 
-            context.Offers.Add(offer);
-            await context.SaveChangesAsync();
+            await context.Offers.InsertOneAsync(offer);
         }
 
         public Task DeleteOffer(Guid id)
@@ -29,15 +28,16 @@ namespace TravelMateOfferQueryService.Repositories
 
         public async Task<OfferDto> GetOffer(Guid id)
         {
-            return await context.Offers
-                .FirstOrDefaultAsync(x => x.Id == id)
+            return await context.Offers.Find(x => x.Id == id)
+                .FirstOrDefaultAsync()
                 ?? throw new KeyNotFoundException($"Offer with id {id} not found");
         }
 
         public async Task<IEnumerable<OfferListDto>> GetOffers()
         {
             var offers = await context.Offers
-                .Select(x => new OfferListDto
+                .Find(_ => true) 
+                .Project(x => new OfferListDto
                 {
                     Id = x.Id,
                     AirlineName = x.AirlineName,
@@ -52,7 +52,7 @@ namespace TravelMateOfferQueryService.Repositories
                 })
                 .ToListAsync();
 
-        return offers;
+            return offers;
         }
 
         public async Task<bool> UpdateOffer(OfferDto offerDto)
@@ -61,12 +61,15 @@ namespace TravelMateOfferQueryService.Repositories
             {
                 throw new ArgumentNullException(nameof(offerDto), "Offer cannot be null");
             }
-            context.Offers.Update(offerDto);
-            await context.SaveChangesAsync();
-            if (context.Entry(offerDto).State != EntityState.Modified)
+
+            var filter = Builders<OfferDto>.Filter.Eq(o => o.Id, offerDto.Id);
+            var result = await context.Offers.ReplaceOneAsync(filter, offerDto);
+
+            if (result.ModifiedCount == 0)
             {
                 throw new InvalidOperationException($"Failed to update offer with id {offerDto.Id}");
             }
+
             return true;
         }
     }
