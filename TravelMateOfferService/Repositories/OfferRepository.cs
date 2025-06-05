@@ -82,6 +82,8 @@ public class OfferRepository(DataContext context, IHubContext<OfferHub> hubConte
             OldOffer = oldOffer,
             NewOffer = offer
         };
+        //tutaj musi byc publish do OfferQueryService, zeby zaktualizowac oferte w bazie danych
+        //await bus.Publish(changeDto);
 
         await hubContext.Clients.All.SendAsync("OfferUpdated", changeDto);
     }
