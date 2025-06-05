@@ -9,26 +9,6 @@ namespace TravelMateOfferService.Controllers;
 [Route("api/[controller]s")]
 public class OfferController(IOfferService offerService) : ControllerBase
 {
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetOffer(Guid id)
-    {
-        try
-        {
-            var offer = await offerService.GetOffer(id);
-            return Ok(offer);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> GetOffers()
-    {
-        var offers = await offerService.GetOffers();
-        return Ok(offers);
-    }
 
     [HttpPost]
     public async Task<IActionResult> AddOffer([FromBody] OfferRequestDto offer)

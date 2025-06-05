@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 namespace TravelMate.Models.Offers;
 
 public class OfferDto
 {
-    [Key]
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
     public Guid Id { get; set; }
     public string AirplaneName { get; set; }
     public string AirlineName { get; set; }

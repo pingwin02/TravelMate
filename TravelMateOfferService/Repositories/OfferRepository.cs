@@ -24,17 +24,6 @@ public class OfferRepository(DataContext context, IHubContext<OfferHub> hubConte
         return offer;
     }
 
-    public async Task<IEnumerable<Offer>> GetOffers()
-    {
-        var offers = await context.Offers
-            .Include(x => x.Airplane)
-            .Include(x => x.Airline)
-            .Include(x => x.ArrivalAirport)
-            .Include(x => x.DepartureAirport)
-            .ToListAsync();
-
-        return offers;
-    }
 
     public async Task<Airline> GetAirlineByName(string name)
     {
