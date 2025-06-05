@@ -1,5 +1,6 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using TravelMateOfferQueryService.Consumers;
 using TravelMateOfferQueryService.Data;
 using TravelMateOfferQueryService.Hubs;
 using TravelMateOfferQueryService.Repositories;
@@ -25,6 +26,18 @@ builder.Services.AddMassTransit(busConfig =>
         {
             h.Username(rabbitMqSettings["Username"]);
             h.Password(rabbitMqSettings["Password"]);
+        });
+        cfg.ReceiveEndpoint("add-offer-queue", e =>
+        {
+            e.ConfigureConsumer<AddOfferEventConsumer>(context);
+        });
+        cfg.ReceiveEndpoint("update-offer-queue", e =>
+        {
+            e.ConfigureConsumer<UpdateOfferEventConsumer>(context);
+        });
+        cfg.ReceiveEndpoint("delete-offer-queue", e =>
+        {
+            e.ConfigureConsumer<DeleteOfferEventConsumer>(context);
         });
     });
 });

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TravelMate.Models.Offers;
-using TravelMateOfferQueryService.Models.Offers;
 
 namespace TravelMateOfferQueryService.Repositories
 {
@@ -13,7 +12,7 @@ namespace TravelMateOfferQueryService.Repositories
         Task<IEnumerable<OfferListDto>> GetOffers();
 
         // methods for consumers to update the query db
-        Task CreateOffer(OfferDto offer);
+        Task AddOffer(OfferDto offer);
         Task<bool> UpdateOffer(OfferDto offer);
         Task DeleteOffer(Guid id);
     }

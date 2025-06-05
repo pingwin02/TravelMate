@@ -5,16 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using TravelMate.Models.Offers;
 using TravelMateOfferQueryService.Hubs;
-using TravelMateOfferQueryService.Models.Offers;
 using TravelMateOfferQueryService.Repositories;
 
 namespace TravelMateOfferQueryService.Services
 {
     public class OfferQueryService(IOfferQueryRepository offerQueryRepository, IHubContext<OfferHub> hubContext) : IOfferQueryService
     {
-        public Task CreateOffer(OfferDto offer)
+        public Task AddOffer(OfferDto offer)
         {
-            throw new NotImplementedException();
+            if (offer == null)
+            {
+                throw new ArgumentNullException(nameof(offer), "Offer cannot be null");
+            }
+
+            return offerQueryRepository.AddOffer(offer);
         }
 
         public Task DeleteOffer(Guid id)

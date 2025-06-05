@@ -1,32 +1,15 @@
 ﻿using Mapster;
+using MassTransit;
 using TravelMate.Models.Messages;
+using TravelMate.Models.Offers;
 using TravelMateOfferService.Models;
 using TravelMateOfferService.Models.DTO;
 using TravelMateOfferService.Repositories;
 
 namespace TravelMateOfferService.Services;
 
-public class OfferService(IOfferRepository offerRepository) : IOfferService
+public class OfferService(IOfferRepository offerRepository,IPublishEndpoint _publishEndpoint) : IOfferService
 {
-    public async Task<Offer> GetOffer(Guid id)
-    {
-        return await offerRepository.GetOffer(id);
-    }
-
-    public async Task<IEnumerable<OfferListDto>> GetOffers()
-    {
-        var offers = await offerRepository.GetOffers();
-
-        var config = new TypeAdapterConfig();
-        config.NewConfig<Offer, OfferListDto>()
-            .Map(dest => dest.AirlineName, src => src.Airline.Name)
-            .Map(dest => dest.DepartureAirport, src => src.DepartureAirport.Code)
-            .Map(dest => dest.ArrivalAirport, src => src.ArrivalAirport.Code)
-            .Map(dest => dest.DepartureCity, src => src.DepartureAirport.City)
-            .Map(dest => dest.ArrivalCity, src => src.ArrivalAirport.City);
-
-        return offers.Adapt<IEnumerable<OfferListDto>>(config);
-    }
 
     public async Task<Guid> AddOffer(OfferRequestDto newOffer)
     {
@@ -52,17 +35,77 @@ public class OfferService(IOfferRepository offerRepository) : IOfferService
         };
 
         var savedOffer = await offerRepository.AddOffer(offer);
+        
+        var config = new TypeAdapterConfig();
+        config.NewConfig<Offer, OfferDto>()
+            .Map(dest => dest.AirplaneName, src => src.Airplane.Name)
+            .Map(dest => dest.AirlineName, src => src.Airline.Name)
+            .Map(dest => dest.AirlineIconUrl, src => src.Airline.IconUrl)
+            .Map(dest => dest.DepartureAirportCode, src => src.DepartureAirport.Code)
+            .Map(dest => dest.DepartureAirportName, src => src.DepartureAirport.Name)
+            .Map(dest => dest.DepartureAirportCity, src => src.DepartureAirport.City)
+            .Map(dest => dest.DepartureAirportCountry, src => src.DepartureAirport.Country)
+            .Map(dest => dest.ArrivalAirportCode, src => src.ArrivalAirport.Code)
+            .Map(dest => dest.ArrivalAirportName, src => src.ArrivalAirport.Name)
+            .Map(dest => dest.ArrivalAirportCity, src => src.ArrivalAirport.City)
+            .Map(dest => dest.ArrivalAirportCountry, src => src.ArrivalAirport.Country)
+            .Map(dest => dest.FlightNumber, src => src.FlightNumber)
+            .Map(dest => dest.DepartureTime, src => src.DepartureTime)
+            .Map(dest => dest.ArrivalTime, src => src.ArrivalTime)
+            .Map(dest => dest.BasePrice, src => src.BasePrice)
+            .Map(dest => dest.AvailableEconomySeats, src => src.AvailableEconomySeats)
+            .Map(dest => dest.AvailableBusinessSeats, src => src.AvailableBusinessSeats)
+            .Map(dest => dest.AvailableFirstClassSeats, src => src.AvailableFirstClassSeats)
+            .Map(dest => dest.CreatedAt, src => src.CreatedAt);
+
+        var offerDto = savedOffer.Adapt<OfferDto>(config);
+        await _publishEndpoint.Publish(new AddOfferEvent
+        {
+            Offer = offerDto
+        });
         return savedOffer.Id;
     }
 
     public async Task UpdateOffer(Offer offer)
     {
         await offerRepository.UpdateOffer(offer);
+        var config = new TypeAdapterConfig();
+        config.NewConfig<Offer, OfferDto>()
+            .Map(dest => dest.AirplaneName, src => src.Airplane.Name)
+            .Map(dest => dest.AirlineName, src => src.Airline.Name)
+            .Map(dest => dest.AirlineIconUrl, src => src.Airline.IconUrl)
+            .Map(dest => dest.DepartureAirportCode, src => src.DepartureAirport.Code)
+            .Map(dest => dest.DepartureAirportName, src => src.DepartureAirport.Name)
+            .Map(dest => dest.DepartureAirportCity, src => src.DepartureAirport.City)
+            .Map(dest => dest.DepartureAirportCountry, src => src.DepartureAirport.Country)
+            .Map(dest => dest.ArrivalAirportCode, src => src.ArrivalAirport.Code)
+            .Map(dest => dest.ArrivalAirportName, src => src.ArrivalAirport.Name)
+            .Map(dest => dest.ArrivalAirportCity, src => src.ArrivalAirport.City)
+            .Map(dest => dest.ArrivalAirportCountry, src => src.ArrivalAirport.Country)
+            .Map(dest => dest.FlightNumber, src => src.FlightNumber)
+            .Map(dest => dest.DepartureTime, src => src.DepartureTime)
+            .Map(dest => dest.ArrivalTime, src => src.ArrivalTime)
+            .Map(dest => dest.BasePrice, src => src.BasePrice)
+            .Map(dest => dest.AvailableEconomySeats, src => src.AvailableEconomySeats)
+            .Map(dest => dest.AvailableBusinessSeats, src => src.AvailableBusinessSeats)
+            .Map(dest => dest.AvailableFirstClassSeats, src => src.AvailableFirstClassSeats)
+            .Map(dest => dest.CreatedAt, src => src.CreatedAt);
+
+        var offerDto = offer.Adapt<OfferDto>(config);
+        await _publishEndpoint.Publish(new UpdateOfferEvent
+        {
+            Offer = offerDto
+        });
     }
 
     public async Task DeleteOffer(Guid id)
     {
         await offerRepository.DeleteOffer(id);
+        await _publishEndpoint.Publish(new DeleteOfferEvent
+        {
+            OfferId = id
+        });
+
     }
 
 

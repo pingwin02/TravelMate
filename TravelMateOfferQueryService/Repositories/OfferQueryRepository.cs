@@ -5,15 +5,21 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TravelMate.Models.Offers;
 using TravelMateOfferQueryService.Data;
-using TravelMateOfferQueryService.Models.Offers;
+
 
 namespace TravelMateOfferQueryService.Repositories
 {
     public class OfferQueryRepository(DataContext context) : IOfferQueryRepository
     {
-        public Task CreateOffer(OfferDto offer)
+        public async Task AddOffer(OfferDto offer)
         {
-            throw new NotImplementedException();
+            if (offer == null)
+            {
+                throw new ArgumentNullException(nameof(offer), "Offer cannot be null");
+            }
+
+            context.Offers.Add(offer);
+            await context.SaveChangesAsync();
         }
 
         public Task DeleteOffer(Guid id)
@@ -21,16 +27,32 @@ namespace TravelMateOfferQueryService.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<OfferDto> GetOffer(Guid id)
+        public async Task<OfferDto> GetOffer(Guid id)
         {
-            return context.Offers
+            return await context.Offers
                 .FirstOrDefaultAsync(x => x.Id == id)
                 ?? throw new KeyNotFoundException($"Offer with id {id} not found");
         }
 
-        public Task<IEnumerable<OfferListDto>> GetOffers()
+        public async Task<IEnumerable<OfferListDto>> GetOffers()
         {
-            throw new NotImplementedException();
+            var offers = await context.Offers
+                .Select(x => new OfferListDto
+                {
+                    Id = x.Id,
+                    AirlineName = x.AirlineName,
+                    FlightNumber = x.FlightNumber,
+                    DepartureAirport = x.DepartureAirportCode,
+                    ArrivalAirport = x.ArrivalAirportCode,
+                    DepartureCity = x.DepartureAirportCity,
+                    ArrivalCity = x.ArrivalAirportCity,
+                    DepartureTime = x.DepartureTime,
+                    ArrivalTime = x.ArrivalTime,
+                    BasePrice = x.BasePrice
+                })
+                .ToListAsync();
+
+        return offers;
         }
 
         public async Task<bool> UpdateOffer(OfferDto offerDto)

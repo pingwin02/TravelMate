@@ -119,14 +119,18 @@ public class PaymentFailedEvent
     public Guid CorrelationId { get; set; }
 }
 
-public class AddOffer
+public class AddOfferEvent
 {
-
+ public OfferDto Offer { get; set; }
 }
 
 public class UpdateOfferEvent
 {
-   public OfferDto Offer { get; set; }
+    public OfferDto Offer { get; set; }
+}
+public class DeleteOfferEvent
+{
+    public Guid OfferId { get; set; }
 }
 
 public enum BookingStatus
