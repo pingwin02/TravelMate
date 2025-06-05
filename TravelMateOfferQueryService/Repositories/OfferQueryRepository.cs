@@ -1,94 +1,75 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using TravelMate.Models.Offers;
 using TravelMateOfferQueryService.Hubs;
 
+namespace TravelMateOfferQueryService.Repositories;
 
-namespace TravelMateOfferQueryService.Repositories
+public class OfferQueryRepository(DataContext context, IHubContext<OfferHub> hubContext) : IOfferQueryRepository
 {
-    public class OfferQueryRepository(DataContext context, IHubContext<OfferHub> hubContext) : IOfferQueryRepository
+    public async Task AddOffer(OfferDto offer)
     {
-        public async Task AddOffer(OfferDto offer)
-        {
-            if (offer == null)
-            {
-                throw new ArgumentNullException(nameof(offer), "Offer cannot be null");
-            }
+        if (offer == null) throw new ArgumentNullException(nameof(offer), "Offer cannot be null");
 
-            await context.Offers.InsertOneAsync(offer);
-            await hubContext.Clients.All.SendAsync("OfferAdded", offer);
-        }
+        await context.Offers.InsertOneAsync(offer);
+        await hubContext.Clients.All.SendAsync("OfferAdded", offer);
+    }
 
-        public async Task DeleteOffer(Guid id)
-        {
-            var filter = Builders<OfferDto>.Filter.Eq(o => o.Id, id);
-            var result = await context.Offers.DeleteOneAsync(filter);
+    public async Task DeleteOffer(Guid id)
+    {
+        var filter = Builders<OfferDto>.Filter.Eq(o => o.Id, id);
+        var result = await context.Offers.DeleteOneAsync(filter);
 
-            if (result.DeletedCount > 0)
-            {
-                await hubContext.Clients.All.SendAsync("OfferDeleted", id);
-            }
-            else
-            {
-                throw new Exception($"Offer with ID {id} was not found.");
-            }
+        if (result.DeletedCount > 0)
             await hubContext.Clients.All.SendAsync("OfferDeleted", id);
-        }
+        else
+            throw new Exception($"Offer with ID {id} was not found.");
+        await hubContext.Clients.All.SendAsync("OfferDeleted", id);
+    }
 
-        public async Task<OfferDto> GetOffer(Guid id)
-        {
-            return await context.Offers.Find(x => x.Id == id)
-                .FirstOrDefaultAsync()
-                ?? throw new KeyNotFoundException($"Offer with id {id} not found");
-        }
+    public async Task<OfferDto> GetOffer(Guid id)
+    {
+        return await context.Offers.Find(x => x.Id == id)
+                   .FirstOrDefaultAsync()
+               ?? throw new KeyNotFoundException($"Offer with id {id} not found");
+    }
 
-        public async Task<IEnumerable<OfferListDto>> GetOffers()
-        {
-            var offers = await context.Offers
-                .Find(_ => true) 
-                .Project(x => new OfferListDto
-                {
-                    Id = x.Id,
-                    AirlineName = x.AirlineName,
-                    FlightNumber = x.FlightNumber,
-                    DepartureAirport = x.DepartureAirportCode,
-                    ArrivalAirport = x.ArrivalAirportCode,
-                    DepartureCity = x.DepartureAirportCity,
-                    ArrivalCity = x.ArrivalAirportCity,
-                    DepartureTime = x.DepartureTime,
-                    ArrivalTime = x.ArrivalTime,
-                    BasePrice = x.BasePrice
-                })
-                .ToListAsync();
-
-            return offers;
-        }
-
-        public async Task<bool> UpdateOffer(OfferDto offerDto)
-        {
-            if (offerDto == null)
+    public async Task<IEnumerable<OfferListDto>> GetOffers()
+    {
+        var offers = await context.Offers
+            .Find(_ => true)
+            .Project(x => new OfferListDto
             {
-                throw new ArgumentNullException(nameof(offerDto), "Offer cannot be null");
-            }
-            var oldOffer = await GetOffer(offerDto.Id);
-            var filter = Builders<OfferDto>.Filter.Eq(o => o.Id, offerDto.Id);
-            var result = await context.Offers.ReplaceOneAsync(filter, offerDto);
+                Id = x.Id,
+                AirlineName = x.AirlineName,
+                FlightNumber = x.FlightNumber,
+                DepartureAirport = x.DepartureAirportCode,
+                ArrivalAirport = x.ArrivalAirportCode,
+                DepartureCity = x.DepartureAirportCity,
+                ArrivalCity = x.ArrivalAirportCity,
+                DepartureTime = x.DepartureTime,
+                ArrivalTime = x.ArrivalTime,
+                BasePrice = x.BasePrice
+            })
+            .ToListAsync();
 
-            if (result.ModifiedCount == 0)
-            {
-                throw new InvalidOperationException($"Failed to update offer with id {offerDto.Id}");
-            }
-            await hubContext.Clients.All.SendAsync("OfferUpdated", new OfferChangeDto
-            {
-                OldOffer = oldOffer,
-                NewOffer = offerDto
-            });
-            return true;
-        }
+        return offers;
+    }
+
+    public async Task<bool> UpdateOffer(OfferDto offerDto)
+    {
+        if (offerDto == null) throw new ArgumentNullException(nameof(offerDto), "Offer cannot be null");
+        var oldOffer = await GetOffer(offerDto.Id);
+        var filter = Builders<OfferDto>.Filter.Eq(o => o.Id, offerDto.Id);
+        var result = await context.Offers.ReplaceOneAsync(filter, offerDto);
+
+        if (result.ModifiedCount == 0)
+            throw new InvalidOperationException($"Failed to update offer with id {offerDto.Id}");
+        await hubContext.Clients.All.SendAsync("OfferUpdated", new OfferChangeDto
+        {
+            OldOffer = oldOffer,
+            NewOffer = offerDto
+        });
+        return true;
     }
 }

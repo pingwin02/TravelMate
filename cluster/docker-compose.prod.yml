@@ -17,12 +17,14 @@ services:
     ports:
       - "18859:80"
     environment:
-      OFFERS_API_URL: "http://travelmateofferservice:8080/api"
+      OFFERS_COMMAND_API_URL: "http://travelmateoffercommandservice:8080/api"
+      OFFERS_QUERY_API_URL: "http://travelmateofferqueryservice:8080/api"
       AUTH_API_URL: "http://travelmateauthservice:8080/api"
       BOOKING_API_URL: "http://travelmatebookingservice:8080/api"
       PAYMENT_API_URL: "http://travelmatepaymentservice:8080/api"
     depends_on:
-      - travelmateofferservice
+      - travelmateoffercommandservice
+      - travelmateofferqueryservice
       - travelmateauthservice
       - travelmatebookingservice
       - travelmatepaymentservice
@@ -30,9 +32,20 @@ services:
       - admin-mysql_default
       - RSWD_188597_network
 
-  travelmateofferservice:
-    container_name: TravelMateOfferService
-    image: pingwin02/travelmateofferservice
+  travelmateoffercommandservice:
+    container_name: TravelMateOfferCommandService
+    image: pingwin02/travelmateoffercommandservice
+    expose:
+      - "8080"
+    depends_on:
+      - rabbitmq
+    networks:
+      - admin-mysql_default
+      - RSWD_188597_network
+
+  travelmateofferqueryservice:
+    container_name: TravelMateOfferQueryService
+    image: pingwin02/travelmateofferqueryservice
     expose:
       - "8080"
     depends_on:

@@ -5,8 +5,9 @@ set -e
 REGISTRY=pingwin02
 
 declare -A SERVICES=(
-  ["travelmate-userapp"]="travelmatefrontend"
-  ["TravelMateOfferService"]="travelmateofferservice"
+  ["TravelMateFrontend"]="travelmatefrontend"
+  ["TravelMateOfferCommandService"]="travelmateoffercommandservice"
+  ["TravelMateOfferQueryService"]="travelmateofferqueryservice"
   ["TravelMateAuthService"]="travelmateauthservice"
   ["TravelMateBookingService"]="travelmatebookingservice"
   ["TravelMatePaymentService"]="travelmatepaymentservice"

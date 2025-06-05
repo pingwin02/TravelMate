@@ -1,19 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TravelMate.Models.Offers;
 
-namespace TravelMateOfferQueryService.Repositories
-{
-    public interface IOfferQueryRepository
-    {
-        Task<OfferDto> GetOffer(Guid id);
-        Task<IEnumerable<OfferListDto>> GetOffers();
+namespace TravelMateOfferQueryService.Repositories;
 
-        // methods for consumers to update the query db
-        Task AddOffer(OfferDto offer);
-        Task<bool> UpdateOffer(OfferDto offer);
-        Task DeleteOffer(Guid id);
-    }
+public interface IOfferQueryRepository
+{
+    Task<OfferDto> GetOffer(Guid id);
+    Task<IEnumerable<OfferListDto>> GetOffers();
+
+    // methods for consumers to update the query db
+    Task AddOffer(OfferDto offer);
+    Task<bool> UpdateOffer(OfferDto offer);
+    Task DeleteOffer(Guid id);
 }

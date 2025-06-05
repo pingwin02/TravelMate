@@ -3,25 +3,25 @@ using TravelMate.Models.Offers;
 
 public class DataContext
 {
-    private readonly IMongoDatabase _database;
-
-    public DataContext()
+    public DataContext(IConfiguration configuration)
     {
-        var connectionString = "mongodb://admin:password@mongodb-container:27017";
+        var connectionString = configuration["MongoDB:ConnectionString"];
+        var databaseName = configuration["MongoDB:DatabaseName"];
+
         var client = new MongoClient(connectionString);
-        _database = client.GetDatabase("TravelMateOfferQueryDatabase");
+        Database = client.GetDatabase(databaseName);
     }
 
 
-    public IMongoDatabase Database => _database;
-    public IMongoCollection<OfferDto> Offers => _database.GetCollection<OfferDto>("Offers");
+    public IMongoDatabase Database { get; }
+
+    public IMongoCollection<OfferDto> Offers => Database.GetCollection<OfferDto>("Offers");
 }
 
 public class MongoDbInitializer
 {
-public static async Task InitializeMongoDbAsync(DataContext context)
+    public static async Task InitializeMongoDbAsync(DataContext context)
     {
-
         var collectionNames = await context.Database.ListCollectionNamesAsync();
         var collections = await collectionNames.ToListAsync();
 

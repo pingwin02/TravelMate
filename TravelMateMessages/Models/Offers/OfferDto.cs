@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+
 namespace TravelMate.Models.Offers;
 
 public class OfferDto
@@ -12,6 +8,7 @@ public class OfferDto
     [BsonId]
     [BsonRepresentation(BsonType.String)]
     public Guid Id { get; set; }
+
     public string AirplaneName { get; set; }
     public string AirlineName { get; set; }
     public string AirlineIconUrl { get; set; }

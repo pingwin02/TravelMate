@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateAuthService", "Tr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateBookingService", "TravelMateBookingService\TravelMateBookingService.csproj", "{DD0D73BB-17E1-4106-8042-8592BDF30309}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateOfferService", "TravelMateOfferService\TravelMateOfferService.csproj", "{A66780A1-F6B0-4E37-BE3D-7DA49B1629E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMateOfferCommandService", "TravelMateOfferCommandService\TravelMateOfferCommandService.csproj", "{A66780A1-F6B0-4E37-BE3D-7DA49B1629E5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelMatePaymentService", "TravelMatePaymentService\TravelMatePaymentService.csproj", "{73719C7E-FE26-450B-8D07-B49B61014090}"
 EndProject

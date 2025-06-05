@@ -1,24 +1,35 @@
 #!/bin/bash
 
-# Script to dump or import multiple databases from/to a Docker container
+# Script to dump or import multiple MySQL and MongoDB databases from/to Docker containers
 
-CONTAINER_NAME="admin-mysql_db"
-DB_USER="root"
-DB_PASSWORD="student"
-DB_NAMES=($(grep -oP 'CREATE DATABASE \K\w+' ../init.sql))
+# === MySQL configuration ===
+MYSQL_CONTAINER="admin-mysql_db"
+MYSQL_USER="root"
+MYSQL_PASSWORD="student"
+MYSQL_DB_NAMES=($(grep -oP 'CREATE DATABASE \K\w+' ../init.sql))
+
+# === MongoDB configuration ===
+MONGO_CONTAINER="mongodb"
+MONGO_URI="mongodb://root:student@mongodb:27017/?authSource=admin"
+MONGO_DATABASE_NAME="RSWD_188597_offersquerydb"
+
+# === Common ===
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 DUMP_DIR="./dumps"
-
 IMPORT_MODE=false
+
 if [[ "$1" == "--restore" ]]; then
     IMPORT_MODE=true
 fi
 
 mkdir -p "$DUMP_DIR"
 
+### === IMPORT MODE ===
 if [ "$IMPORT_MODE" = true ]; then
-    echo "Import mode enabled. Importing databases from dump files..."
-    for DB_NAME in "${DB_NAMES[@]}"; do
+    echo "=== Import mode enabled ==="
+
+    echo "📥 Importing MySQL databases..."
+    for DB_NAME in "${MYSQL_DB_NAMES[@]}"; do
         DUMP_FILE=$(ls -t "${DUMP_DIR}/dump_${DB_NAME}_"*.sql 2>/dev/null | head -n 1)
 
         if [ -z "$DUMP_FILE" ]; then
@@ -27,7 +38,7 @@ if [ "$IMPORT_MODE" = true ]; then
         fi
 
         echo "✅ Importing $DB_NAME from $DUMP_FILE..."
-        docker exec -i "$CONTAINER_NAME" mariadb -u"$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < "$DUMP_FILE"
+        docker exec -i "$MYSQL_CONTAINER" mariadb -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$DB_NAME" < "$DUMP_FILE"
 
         if [ $? -eq 0 ]; then
             echo "✅ Import successful: $DB_NAME"
@@ -36,13 +47,34 @@ if [ "$IMPORT_MODE" = true ]; then
             exit 1
         fi
     done
+
+    echo "📥 Importing MongoDB database..."
+    MONGO_ARCHIVE=$(ls -t "$DUMP_DIR/mongo_${MONGO_DATABASE_NAME}_"*.archive 2>/dev/null | head -n 1)
+
+    if [ -z "$MONGO_ARCHIVE" ]; then
+        echo "❌ No MongoDB archive found for $MONGO_DATABASE_NAME"
+        exit 1
+    fi
+
+    cat "$MONGO_ARCHIVE" | docker exec -i "$MONGO_CONTAINER" mongorestore --uri="$MONGO_URI" --archive --nsFrom="${MONGO_DATABASE_NAME}.*" --nsTo="${MONGO_DATABASE_NAME}.*"
+
+    if [ $? -eq 0 ]; then
+        echo "✅ MongoDB restore successful"
+    else
+        echo "❌ MongoDB restore failed"
+        exit 1
+    fi
+
+### === DUMP MODE ===
 else
-    echo "Dump mode. Dumping databases..."
-    for DB_NAME in "${DB_NAMES[@]}"; do
+    echo "=== Dump mode enabled ==="
+
+    echo "📤 Dumping MySQL databases..."
+    for DB_NAME in "${MYSQL_DB_NAMES[@]}"; do
         DUMP_FILE="${DUMP_DIR}/dump_${DB_NAME}_${TIMESTAMP}.sql"
 
         echo "🔄 Dumping database: $DB_NAME..."
-        docker exec "$CONTAINER_NAME" mariadb-dump -u"$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" > "$DUMP_FILE"
+        docker exec "$MYSQL_CONTAINER" mariadb-dump -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$DB_NAME" > "$DUMP_FILE"
 
         if [ $? -eq 0 ]; then
             echo "✅ Database dump successful: $DUMP_FILE"
@@ -52,4 +84,17 @@ else
             exit 1
         fi
     done
+
+    echo "📤 Dumping MongoDB database (all collections)..."
+    MONGO_ARCHIVE="${DUMP_DIR}/mongo_${MONGO_DATABASE_NAME}_${TIMESTAMP}.archive"
+
+    docker exec "$MONGO_CONTAINER" mongodump --uri="$MONGO_URI" --archive --db="$MONGO_DATABASE_NAME" > "$MONGO_ARCHIVE"
+
+    if [ $? -eq 0 ]; then
+        echo "✅ MongoDB dump successful: $MONGO_ARCHIVE"
+    else
+        echo "❌ MongoDB dump failed"
+        rm "$MONGO_ARCHIVE"
+        exit 1
+    fi
 fi

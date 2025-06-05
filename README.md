@@ -18,7 +18,7 @@
 2. Run docker compose command:
 
    ```bash
-   docker compose up -d mariadb rabbitmq
+   docker compose up -d mariadb mongodb rabbitmq
    ```
 
 3. Create migrations and update the database for all services:

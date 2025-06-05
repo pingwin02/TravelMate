@@ -121,13 +121,14 @@ public class PaymentFailedEvent
 
 public class AddOfferEvent
 {
- public OfferDto Offer { get; set; }
+    public OfferDto Offer { get; set; }
 }
 
 public class UpdateOfferEvent
 {
     public OfferDto Offer { get; set; }
 }
+
 public class DeleteOfferEvent
 {
     public Guid OfferId { get; set; }

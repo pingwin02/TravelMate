@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TravelMate.Models.Offers;
+﻿namespace TravelMate.Models.Offers;
 
 public class OfferChangeDto
 {
