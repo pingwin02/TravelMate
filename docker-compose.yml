@@ -25,29 +25,55 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+  
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: student 
 
   travelmatefrontend:
     container_name: TravelMateFrontend
     build:
-      context: ./travelmate-userapp
+      context: ./TravelMateFrontend
     ports:
       - "18859:80"
     environment:
-      OFFERS_API_URL: "http://travelmateofferservice:8080/api"
+      OFFERS_COMMAND_API_URL: "http://travelmateoffercommandservice:8080/api"
+      OFFERS_QUERY_API_URL: "http://travelmateofferqueryservice:8080/api"
       AUTH_API_URL: "http://travelmateauthservice:8080/api"
       BOOKING_API_URL: "http://travelmatebookingservice:8080/api"
       PAYMENT_API_URL: "http://travelmatepaymentservice:8080/api"
     depends_on:
-      - travelmateofferservice
+      - travelmateofferqueryservice
+      - travelmateoffercommandservice
       - travelmateauthservice
       - travelmatebookingservice
       - travelmatepaymentservice
 
-  travelmateofferservice:
-    container_name: TravelMateOfferService
+  travelmateofferqueryservice:
+    container_name: TravelMateOfferQueryService
+    build:
+      context: .
+      dockerfile: TravelMateOfferQueryService/Dockerfile
+    ports:
+      - "5005:8080"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+
+  travelmateoffercommandservice:
+    container_name: TravelMateOfferCommandService
     build: 
       context: .
-      dockerfile: TravelMateOfferService/Dockerfile
+      dockerfile: TravelMateOfferCommandService/Dockerfile
     ports:
       - "5000:8080"
     depends_on:
@@ -110,3 +136,4 @@ services:
 
 volumes:
   mariadb_data:
+  mongodb-data:

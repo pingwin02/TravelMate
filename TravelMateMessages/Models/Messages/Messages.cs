@@ -1,3 +1,5 @@
+using TravelMate.Models.Offers;
+
 namespace TravelMate.Models.Messages;
 
 public class BookingStartedEvent
@@ -115,6 +117,21 @@ public class PaymentFinalizedEvent
 public class PaymentFailedEvent
 {
     public Guid CorrelationId { get; set; }
+}
+
+public class AddOfferEvent
+{
+    public OfferDto Offer { get; set; }
+}
+
+public class UpdateOfferEvent
+{
+    public OfferDto Offer { get; set; }
+}
+
+public class DeleteOfferEvent
+{
+    public Guid OfferId { get; set; }
 }
 
 public enum BookingStatus

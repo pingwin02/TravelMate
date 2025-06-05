@@ -1,6 +1,7 @@
 import requests
 import time
 import random
+import argparse
 from datetime import datetime, timedelta
 
 BASE_URL = "http://localhost:18859/oferty/offers"
@@ -51,7 +52,7 @@ def update_offer_partial(offer):
         )
 
 
-def main_loop():
+def main_loop(specific_id=None):
     offers = fetch_offers()
     if not offers:
         print("No offers found.")
@@ -59,10 +60,21 @@ def main_loop():
 
     print("Starting update loop...")
     while True:
-        offer = random.choice(offers)
+        if specific_id:
+            offer = next((o for o in offers if o["id"] == specific_id), None)
+            if not offer:
+                print(f"No offer found with ID: {specific_id}")
+                return
+        else:
+            offer = random.choice(offers)
+
         update_offer_partial(offer)
         time.sleep(3)
 
 
 if __name__ == "__main__":
-    main_loop()
+    parser = argparse.ArgumentParser(description="Update flight offers")
+    parser.add_argument("--id", type=str, help="Specific offer UUID to update")
+    args = parser.parse_args()
+
+    main_loop(specific_id=args.id)

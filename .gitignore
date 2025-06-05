@@ -6,6 +6,6 @@
 **/__pycache__
 **/.vscode
 **/results
-**/dumps
+**/backups
 **/Migrations
 **/*DotSettings*
