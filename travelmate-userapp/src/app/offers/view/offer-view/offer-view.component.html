@@ -1,29 +1,36 @@
 <div class="container mt-4" *ngIf="offer">
   <h2 class="d-flex align-items-center gap-2">
     <img
-      *ngIf="offer.airline.iconUrl"
-      [src]="offer.airline.iconUrl"
-      [alt]="offer.airline.name + ' logo'"
+      *ngIf="offer.airlineIconUrl"
+      [src]="offer.airlineIconUrl"
+      [alt]="offer.airlineName + ' logo'"
       width="50"
       height="50"
       style="object-fit: contain"
     />
-    {{ offer.flightNumber }} | {{ offer.departureAirport.city }} &#10132;
-    {{ offer.arrivalAirport.city }}
+    {{ offer.flightNumber }} | {{ offer.departureAirportCity }} &#10132;
+    {{ offer.arrivalAirportCity }}
   </h2>
 
   <div class="card">
     <div class="card-body">
-      <p><strong>From:</strong> {{ offer.departureAirport.city }} [{{ offer.departureAirport.code }}]</p>
-      <p><strong>To:</strong> {{ offer.arrivalAirport.city }} [{{ offer.arrivalAirport.code }}]</p>
+      <p>
+        <strong>From:</strong> {{ offer.departureAirportCity }} [{{ offer.departureAirportCode }}]
+      </p>
+      <p>
+        <strong>To:</strong> {{ offer.arrivalAirportCity }} [{{ offer.arrivalAirportCode }}]
+      </p>
       <p>
         <strong>Departure Time:</strong>
         {{ offer.departureTime | europeanTime }}
       </p>
-      <p><strong>Arrival Time:</strong> {{ offer.arrivalTime | europeanTime }}</p>
+      <p>
+        <strong>Arrival Time:</strong>
+        {{ offer.arrivalTime | europeanTime }}
+      </p>
 
-      <p><strong>Airline:</strong> {{ offer.airline.name }}</p>
-      <p><strong>Plane:</strong> {{ offer.airplane.name }}</p>
+      <p><strong>Airline:</strong> {{ offer.airlineName }}</p>
+      <p><strong>Plane:</strong> {{ offer.airplaneName }}</p>
 
       <p><strong>Base Price:</strong> {{ offer.basePrice }} PLN</p>
 

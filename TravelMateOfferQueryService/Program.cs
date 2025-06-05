@@ -54,7 +54,7 @@ app.UseSwagger();
 app.MapHub<OfferHub>("/api/offerHub");
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TravelMateOfferCommandService API v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TravelMateOfferQueryService API v1");
     c.DocumentTitle = "TravelMate Offers Query API";
 });
 

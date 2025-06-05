@@ -83,7 +83,7 @@ export class OffersViewComponent implements OnInit, OnDestroy {
 
   private initSignalR(): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('/oferty/offerHub')
+      .withUrl('/ofertyqueries/offerHub')
       .withAutomaticReconnect()
       .build();
 

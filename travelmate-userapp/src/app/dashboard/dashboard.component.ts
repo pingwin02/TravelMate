@@ -24,7 +24,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('/oferty/offerHub')
+      .withUrl('/ofertyqueries/offerHub')
       .withAutomaticReconnect()
       .build();
 

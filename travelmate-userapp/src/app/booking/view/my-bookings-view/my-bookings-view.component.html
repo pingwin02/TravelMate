@@ -48,10 +48,10 @@
               <div class="flight-details">
                 <p class="card-text">
                   <strong>Flight Number:</strong> {{ offer.flightNumber }}<br />
-                  <strong>Airline:</strong> {{ offer.airline.name }}<br />
-                  <strong>Airplane:</strong> {{ offer.airplane.name }}<br />
-                  <strong>From:</strong> {{ offer.departureAirport.code }}<br />
-                  <strong>To:</strong> {{ offer.arrivalAirport.code }}<br />
+                  <strong>Airline:</strong> {{ offer.airlineName }}<br />
+                  <strong>Airplane:</strong> {{ offer.airplaneName }}<br />
+                  <strong>From:</strong> {{ offer.departureAirportCode }}<br />
+                  <strong>To:</strong> {{ offer.arrivalAirportCode }}<br />
                   <strong>Departure:</strong>
                   {{ offer.departureTime | europeanTime }}<br />
                   <strong>Arrival:</strong> {{ offer.arrivalTime | europeanTime }}<br />

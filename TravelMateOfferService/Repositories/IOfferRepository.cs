@@ -1,10 +1,12 @@
-﻿using TravelMateOfferService.Models;
+﻿using TravelMate.Models.Offers;
+using TravelMateOfferService.Models;
 
 namespace TravelMateOfferService.Repositories;
 
 public interface IOfferRepository
 {
     Task<Offer> GetOffer(Guid id);
+    Task<IEnumerable<Offer>> GetOffers();
     Task<Airline> GetAirlineByName(string name);
     Task<Airplane> GetAirplaneById(Guid id);
     Task<Airport> GetAirportByCode(string code);

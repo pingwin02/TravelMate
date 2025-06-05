@@ -7,6 +7,8 @@ namespace TravelMateOfferService.Services;
 
 public interface IOfferService
 {
+    Task<IEnumerable<OfferListDto>> GetOffers();
+    Task<Offer> GetOffer(Guid id);
     Task<Guid> AddOffer(OfferRequestDto offer);
     Task UpdateOffer(Offer offer);
     Task DeleteOffer(Guid id);

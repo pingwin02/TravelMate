@@ -10,7 +10,24 @@ namespace TravelMateOfferService.Services;
 
 public class OfferService(IOfferRepository offerRepository,IPublishEndpoint _publishEndpoint) : IOfferService
 {
+    public async Task<Offer> GetOffer(Guid id)
+    {
+        return await offerRepository.GetOffer(id);
+    }
+    public async Task<IEnumerable<OfferListDto>> GetOffers()
+    {
+        var offers = await offerRepository.GetOffers();
 
+        var config = new TypeAdapterConfig();
+        config.NewConfig<Offer, OfferListDto>()
+            .Map(dest => dest.AirlineName, src => src.Airline.Name)
+            .Map(dest => dest.DepartureAirport, src => src.DepartureAirport.Code)
+            .Map(dest => dest.ArrivalAirport, src => src.ArrivalAirport.Code)
+            .Map(dest => dest.DepartureCity, src => src.DepartureAirport.City)
+            .Map(dest => dest.ArrivalCity, src => src.ArrivalAirport.City);
+
+        return offers.Adapt<IEnumerable<OfferListDto>>(config);
+    }
     public async Task<Guid> AddOffer(OfferRequestDto newOffer)
     {
         var airplane = await offerRepository.GetAirplaneById(newOffer.AirplaneId);

@@ -2,14 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using TravelMate.Models.Offers;
+using TravelMateOfferQueryService.Hubs;
 
 
 namespace TravelMateOfferQueryService.Repositories
 {
-    public class OfferQueryRepository(DataContext context) : IOfferQueryRepository
+    public class OfferQueryRepository(DataContext context, IHubContext<OfferHub> hubContext) : IOfferQueryRepository
     {
         public async Task AddOffer(OfferDto offer)
         {
@@ -19,11 +21,23 @@ namespace TravelMateOfferQueryService.Repositories
             }
 
             await context.Offers.InsertOneAsync(offer);
+            await hubContext.Clients.All.SendAsync("OfferAdded", offer);
         }
 
-        public Task DeleteOffer(Guid id)
+        public async Task DeleteOffer(Guid id)
         {
-            throw new NotImplementedException();
+            var filter = Builders<OfferDto>.Filter.Eq(o => o.Id, id);
+            var result = await context.Offers.DeleteOneAsync(filter);
+
+            if (result.DeletedCount > 0)
+            {
+                await hubContext.Clients.All.SendAsync("OfferDeleted", id);
+            }
+            else
+            {
+                throw new Exception($"Offer with ID {id} was not found.");
+            }
+            await hubContext.Clients.All.SendAsync("OfferDeleted", id);
         }
 
         public async Task<OfferDto> GetOffer(Guid id)
@@ -61,7 +75,7 @@ namespace TravelMateOfferQueryService.Repositories
             {
                 throw new ArgumentNullException(nameof(offerDto), "Offer cannot be null");
             }
-
+            var oldOffer = await GetOffer(offerDto.Id);
             var filter = Builders<OfferDto>.Filter.Eq(o => o.Id, offerDto.Id);
             var result = await context.Offers.ReplaceOneAsync(filter, offerDto);
 
@@ -69,7 +83,11 @@ namespace TravelMateOfferQueryService.Repositories
             {
                 throw new InvalidOperationException($"Failed to update offer with id {offerDto.Id}");
             }
-
+            await hubContext.Clients.All.SendAsync("OfferUpdated", new OfferChangeDto
+            {
+                OldOffer = oldOffer,
+                NewOffer = offerDto
+            });
             return true;
         }
     }

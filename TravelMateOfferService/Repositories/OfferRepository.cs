@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using TravelMate.Models.Offers;
 using TravelMateOfferService.Data;
 using TravelMateOfferService.Hubs;
 using TravelMateOfferService.Models;
@@ -9,6 +10,18 @@ namespace TravelMateOfferService.Repositories;
 
 public class OfferRepository(DataContext context, IHubContext<OfferHub> hubContext) : IOfferRepository
 {
+    public async Task<IEnumerable<Offer>> GetOffers()
+    {
+        var offers = await context.Offers
+            .Include(x => x.Airplane)
+            .Include(x => x.Airline)
+            .Include(x => x.ArrivalAirport)
+            .Include(x => x.DepartureAirport)
+            .ToListAsync();
+
+        return offers;
+    }
+
     public async Task<Offer> GetOffer(Guid id)
     {
         var offer = await context.Offers
@@ -53,9 +66,6 @@ public class OfferRepository(DataContext context, IHubContext<OfferHub> hubConte
     {
         await context.Offers.AddAsync(offer);
         await context.SaveChangesAsync();
-
-        await hubContext.Clients.All.SendAsync("OfferAdded", offer);
-
         return offer;
     }
 
@@ -66,15 +76,6 @@ public class OfferRepository(DataContext context, IHubContext<OfferHub> hubConte
         context.Entry(offer).State = EntityState.Modified;
         await context.SaveChangesAsync();
 
-        var changeDto = new OfferChangeDto
-        {
-            OldOffer = oldOffer,
-            NewOffer = offer
-        };
-        //tutaj musi byc publish do OfferQueryService, zeby zaktualizowac oferte w bazie danych
-        //await bus.Publish(changeDto);
-
-        await hubContext.Clients.All.SendAsync("OfferUpdated", changeDto);
     }
 
     public async Task DeleteOffer(Guid id)
@@ -84,7 +85,5 @@ public class OfferRepository(DataContext context, IHubContext<OfferHub> hubConte
             throw new KeyNotFoundException($"Offer with id {id} not found");
         context.Offers.Remove(offer);
         await context.SaveChangesAsync();
-
-        await hubContext.Clients.All.SendAsync("OfferDeleted", id);
     }
 }

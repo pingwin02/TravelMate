@@ -9,7 +9,7 @@ using TravelMateOfferQueryService.Repositories;
 
 namespace TravelMateOfferQueryService.Services
 {
-    public class OfferQueryService(IOfferQueryRepository offerQueryRepository, IHubContext<OfferHub> hubContext) : IOfferQueryService
+    public class OfferQueryService(IOfferQueryRepository offerQueryRepository) : IOfferQueryService
     {
         public Task AddOffer(OfferDto offer)
         {
@@ -21,9 +21,9 @@ namespace TravelMateOfferQueryService.Services
             return offerQueryRepository.AddOffer(offer);
         }
 
-        public Task DeleteOffer(Guid id)
+        public async Task DeleteOffer(Guid id)
         {
-            throw new NotImplementedException();
+            await offerQueryRepository.DeleteOffer(id);
         }
 
         public async Task<OfferDto> GetOffer(Guid id)
@@ -48,7 +48,7 @@ namespace TravelMateOfferQueryService.Services
             {
                 throw new InvalidOperationException($"Failed to update offer with id {offer.Id}");
             }
-            await hubContext.Clients.All.SendAsync("OfferUpdated", offer);
+          
         }
     }
 }

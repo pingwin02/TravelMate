@@ -4,16 +4,23 @@ import { Airport } from '../../models/Airport';
 
 export interface Offer {
   id: string;
-  airplane: Airplane;
-  airline: Airline;
-  departureAirport: Airport;
-  arrivalAirport: Airport;
+  airplaneName: string;
+  airlineName: string;
+  airlineIconUrl: string;
+  departureAirportCode: string;
+  departureAirportName?: string;
+  departureAirportCity: string;
+  departureAirportCountry?: string; 
+  arrivalAirportCode: string;
+  arrivalAirportName?: string;
+  arrivalAirportCity: string;
+  arrivalAirportCountry?: string;
   flightNumber: string;
   departureTime: string;
-  arrivalTime: string;
+  arrivalTime: string; 
   basePrice: number;
   availableEconomySeats: number;
   availableBusinessSeats: number;
   availableFirstClassSeats: number;
-  createdAt: string;
+  createdAt: string; 
 }

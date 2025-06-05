@@ -12,11 +12,11 @@ export class OffersService {
 
   /* get offers list */
   getAllOffers(): Observable<OfferList[]> {
-    return this.http.get<OfferList[]>('/oferty/Offers');
+    return this.http.get<OfferList[]>('/ofertyqueries/OfferQuery');
   }
 
   /* get offer by id */
   getOfferById(id: string): Observable<Offer> {
-    return this.http.get<Offer>('/oferty/Offers/' + id);
+    return this.http.get<Offer>('/ofertyqueries/OfferQuery/' + id);
   }
 }

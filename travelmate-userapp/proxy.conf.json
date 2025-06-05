@@ -9,6 +9,16 @@
       "^/oferty": ""
     }
   },
+  "/ofertyqueries": {
+    "target": "http://localhost:5005/api",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "ws": true,
+    "pathRewrite": {
+      "^/ofertyqueries": ""
+    }
+  },
   "/auth": {
     "target": "http://localhost:5001/api",
     "secure": false,
