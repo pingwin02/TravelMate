@@ -5,7 +5,7 @@
 CONTAINER_NAME="admin-mysql_db.1.yhrq2g4gbtxntksxvqyvnpzit"
 DB_USER="root"
 DB_PASSWORD="student"
-DUMP_DIR="./dumps"
+DUMP_DIR="./backups"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 
 sed -i 's/utf8mb4_uca1400_ai_ci/utf8mb4_general_ci/g' "$DUMP_DIR"/dump_*.sql

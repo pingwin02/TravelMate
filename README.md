@@ -112,13 +112,13 @@
 
 ### Alternative way to insert data into the database
 
-1. Make dumps of the database tables using `dump.sh` script. This script will create a dump of the database tables
-   and save them in the `dumps` folder. The dumps will be in the form of `.sql` files.
-2. To create dumps, run the following command:
+1. Make backups of the database tables using `dump.sh` script. This script will create a dump of the database tables
+   and save them in the `backups` folder. The backups will be in the form of `.sql` files.
+2. To create backups, run the following command:
    ```bash
    cd scraper && ./dump.sh
    ```
-3. To restore the dumps, run the following command:
+3. To restore the backups, run the following command:
    ```bash
    cd scraper && ./dump.sh --restore
    ```

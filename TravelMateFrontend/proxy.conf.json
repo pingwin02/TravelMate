@@ -1,14 +1,4 @@
 {
-  "/oferty": {
-    "target": "http://localhost:5000/api",
-    "secure": false,
-    "changeOrigin": true,
-    "logLevel": "debug",
-    "ws": true,
-    "pathRewrite": {
-      "^/oferty": ""
-    }
-  },
   "/ofertyqueries": {
     "target": "http://localhost:5005/api",
     "secure": false,
@@ -17,6 +7,15 @@
     "ws": true,
     "pathRewrite": {
       "^/ofertyqueries": ""
+    }
+  },
+  "/oferty": {
+    "target": "http://localhost:5000/api",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/oferty": ""
     }
   },
   "/auth": {

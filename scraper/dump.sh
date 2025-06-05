@@ -15,7 +15,7 @@ MONGO_DATABASE_NAME="RSWD_188597_offersquerydb"
 
 # === Common ===
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-DUMP_DIR="./dumps"
+DUMP_DIR="./backups"
 IMPORT_MODE=false
 
 if [[ "$1" == "--restore" ]]; then
