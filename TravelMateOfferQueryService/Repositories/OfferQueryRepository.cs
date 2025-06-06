@@ -12,7 +12,8 @@ public class OfferQueryRepository(DataContext context, IHubContext<OfferHub> hub
         if (offer == null) throw new ArgumentNullException(nameof(offer), "Offer cannot be null");
 
         await context.Offers.InsertOneAsync(offer);
-        await hubContext.Clients.All.SendAsync("OfferAdded", offer);
+        await hubContext.Clients.Group(offer.Id.ToString())
+            .SendAsync("OfferAdded", offer);
     }
 
     public async Task DeleteOffer(Guid id)
@@ -21,10 +22,10 @@ public class OfferQueryRepository(DataContext context, IHubContext<OfferHub> hub
         var result = await context.Offers.DeleteOneAsync(filter);
 
         if (result.DeletedCount > 0)
-            await hubContext.Clients.All.SendAsync("OfferDeleted", id);
+            await hubContext.Clients.Group(id.ToString())
+                .SendAsync("OfferDeleted", id);
         else
             throw new Exception($"Offer with ID {id} was not found.");
-        await hubContext.Clients.All.SendAsync("OfferDeleted", id);
     }
 
     public async Task<OfferDto> GetOffer(Guid id)
@@ -65,11 +66,13 @@ public class OfferQueryRepository(DataContext context, IHubContext<OfferHub> hub
 
         if (result.ModifiedCount == 0)
             throw new InvalidOperationException($"Failed to update offer with id {offerDto.Id}");
-        await hubContext.Clients.All.SendAsync("OfferUpdated", new OfferChangeDto
-        {
-            OldOffer = oldOffer,
-            NewOffer = offerDto
-        });
+            
+        await hubContext.Clients.Group(offerDto.Id.ToString())
+            .SendAsync("OfferUpdated", new OfferChangeDto
+            {
+                OldOffer = oldOffer,
+                NewOffer = offerDto
+            });
         return true;
     }
 }

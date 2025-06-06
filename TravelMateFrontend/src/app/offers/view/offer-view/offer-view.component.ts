@@ -35,9 +35,12 @@ export class OfferViewComponent implements OnInit, OnDestroy {
     this.initSignalR();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (this.hubConnection) {
-      this.hubConnection.stop();
+      this.hubConnection
+        .invoke('LeaveOfferGroup', this.offerId)
+        .then(() => console.log(`Left group for offer ${this.offerId}`))
+        .catch((err) => console.error('Error leaving group:', err));
     }
   }
 
@@ -48,12 +51,15 @@ export class OfferViewComponent implements OnInit, OnDestroy {
   }
 
   private initSignalR() {
-    this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('/ofertyqueries/offerHub')
-      .withAutomaticReconnect()
-      .build();
-
-    this.hubConnection.start().catch((err) => console.error('SignalR connection error:', err));
+    this.hubConnection
+      .start()
+      .then(() => {
+        this.hubConnection
+          .invoke('JoinOfferGroup', this.offerId)
+          .then(() => console.log(`Joined group for offer ${this.offerId}`))
+          .catch((err) => console.error('Error joining group:', err));
+      })
+      .catch((err) => console.error('SignalR connection error:', err));
 
     this.hubConnection.on('OfferUpdated', (change: { oldOffer: Offer; newOffer: Offer }) => {
       if (change.newOffer.id === this.offerId) {
@@ -68,5 +74,9 @@ export class OfferViewComponent implements OnInit, OnDestroy {
         this.router.navigate(['/offers']);
       }
     });
+
+    this.hubConnection.on('OfferPurchased',()=>{
+        console.log("someone purchased this offer");
+      });
   }
 }
