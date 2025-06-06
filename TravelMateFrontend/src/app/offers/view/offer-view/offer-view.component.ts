@@ -3,7 +3,10 @@ import { Offer } from '../../model/Offer';
 import { OffersService } from '../../service/offers.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
-
+interface Alert {
+  id: number;
+  message: string;
+}
 @Component({
   selector: 'app-offer-view',
   templateUrl: './offer-view.component.html',
@@ -13,7 +16,8 @@ export class OfferViewComponent implements OnInit, OnDestroy {
   offer!: Offer | null;
   private offerId!: string;
   private hubConnection!: signalR.HubConnection;
-
+  alerts: Alert[] = [];
+  private alertIdCounter = 0;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -51,6 +55,11 @@ export class OfferViewComponent implements OnInit, OnDestroy {
   }
 
   private initSignalR() {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl('/ofertyqueries/offerHub')
+      .withAutomaticReconnect()
+      .build();
+
     this.hubConnection
       .start()
       .then(() => {
@@ -76,7 +85,20 @@ export class OfferViewComponent implements OnInit, OnDestroy {
     });
 
     this.hubConnection.on('OfferPurchased',()=>{
-        console.log("someone purchased this offer");
+        this.showAlert('Someone just purchased this offer!');
       });
+  }
+
+  showAlert(message: string) {
+    const id = ++this.alertIdCounter;
+    this.alerts.push({ id, message });
+
+    setTimeout(() => {
+      this.closeAlert(id);
+    }, 5000);
+  }
+
+  closeAlert(id: number) {
+    this.alerts = this.alerts.filter(alert => alert.id !== id);
   }
 }
