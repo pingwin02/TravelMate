@@ -8,7 +8,8 @@ public class OfferHub : Hub
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, offerId);
         await Clients.Group(offerId).SendAsync("UserJoined");
-    }   
+    }
+
     public async Task LeaveOfferGroup(string offerId)
     {
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, offerId);

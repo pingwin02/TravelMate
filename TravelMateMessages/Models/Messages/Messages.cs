@@ -133,11 +133,13 @@ public class DeleteOfferEvent
 {
     public Guid OfferId { get; set; }
 }
+
 public class PurchaseNotificationEvent
 {
     public Guid CorrelationId { get; set; }
     public Guid OfferId { get; set; }
 }
+
 public enum BookingStatus
 {
     Pending,

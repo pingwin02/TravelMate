@@ -66,7 +66,7 @@ public class OfferQueryRepository(DataContext context, IHubContext<OfferHub> hub
 
         if (result.ModifiedCount == 0)
             throw new InvalidOperationException($"Failed to update offer with id {offerDto.Id}");
-            
+
         await hubContext.Clients.Group(offerDto.Id.ToString())
             .SendAsync("OfferUpdated", new OfferChangeDto
             {

@@ -31,7 +31,8 @@ builder.Services.AddMassTransit(busConfig =>
         cfg.ReceiveEndpoint("add-offer-queue", e => { e.ConfigureConsumer<AddOfferEventConsumer>(context); });
         cfg.ReceiveEndpoint("update-offer-queue", e => { e.ConfigureConsumer<UpdateOfferEventConsumer>(context); });
         cfg.ReceiveEndpoint("delete-offer-queue", e => { e.ConfigureConsumer<DeleteOfferEventConsumer>(context); });
-        cfg.ReceiveEndpoint("purchase-notification-queue", e => { e.ConfigureConsumer<PurchaseNotificationEventConsumer>(context); });
+        cfg.ReceiveEndpoint("purchase-notification-queue",
+            e => { e.ConfigureConsumer<PurchaseNotificationEventConsumer>(context); });
     });
 });
 

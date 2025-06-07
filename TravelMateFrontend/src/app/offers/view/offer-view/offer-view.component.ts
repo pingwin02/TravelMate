@@ -84,9 +84,9 @@ export class OfferViewComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.hubConnection.on('OfferPurchased',()=>{
-        this.showAlert('Someone just purchased this offer!');
-      });
+    this.hubConnection.on('OfferPurchased', () => {
+      this.showAlert('Someone just purchased this offer!');
+    });
   }
 
   showAlert(message: string) {
@@ -99,6 +99,6 @@ export class OfferViewComponent implements OnInit, OnDestroy {
   }
 
   closeAlert(id: number) {
-    this.alerts = this.alerts.filter(alert => alert.id !== id);
+    this.alerts = this.alerts.filter((alert) => alert.id !== id);
   }
 }
