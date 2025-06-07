@@ -10,7 +10,7 @@ MYSQL_DB_NAMES=($(grep -oP 'CREATE DATABASE \K\w+' ../init.sql))
 
 # === MongoDB configuration ===
 MONGO_CONTAINER="mongodb"
-MONGO_URI="mongodb://root:student@mongodb:27017/?authSource=admin"
+MONGO_URI="mongodb://root:student@localhost:27017/?authSource=admin"
 MONGO_DATABASE_NAME="RSWD_188597_offersquerydb"
 
 # === Common ===
@@ -27,6 +27,13 @@ mkdir -p "$DUMP_DIR"
 ### === IMPORT MODE ===
 if [ "$IMPORT_MODE" = true ]; then
     echo "=== Import mode enabled ==="
+
+    echo "🗑️ Dropping existing MySQL databases..."
+    for DB_NAME in "${MYSQL_DB_NAMES[@]}"; do
+        echo "🗑️ Dropping database: $DB_NAME..."
+        docker exec "$MYSQL_CONTAINER" mariadb -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "DROP DATABASE IF EXISTS \`$DB_NAME\`;"
+        docker exec "$MYSQL_CONTAINER" mariadb -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "CREATE DATABASE \`$DB_NAME\`;"
+    done
 
     echo "📥 Importing MySQL databases..."
     for DB_NAME in "${MYSQL_DB_NAMES[@]}"; do
@@ -47,6 +54,9 @@ if [ "$IMPORT_MODE" = true ]; then
             exit 1
         fi
     done
+
+    echo "🗑️ Dropping MongoDB database before import..."
+    docker exec "$MONGO_CONTAINER" mongosh "$MONGO_URI" --eval "db.getSiblingDB('$MONGO_DATABASE_NAME').dropDatabase()"
 
     echo "📥 Importing MongoDB database..."
     MONGO_ARCHIVE=$(ls -t "$DUMP_DIR/mongo_${MONGO_DATABASE_NAME}_"*.archive 2>/dev/null | head -n 1)
