@@ -40,7 +40,8 @@ services:
   travelmatefrontend:
     container_name: TravelMateFrontend
     build:
-      context: ./TravelMateFrontend
+      context: .
+      dockerfile: TravelMateFrontend/Dockerfile
     ports:
       - "18859:80"
     environment:

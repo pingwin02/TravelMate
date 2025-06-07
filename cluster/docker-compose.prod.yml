@@ -29,7 +29,6 @@ services:
       - travelmatebookingservice
       - travelmatepaymentservice
     networks:
-      - admin-mysql_default
       - RSWD_188597_network
 
   travelmateoffercommandservice:
@@ -41,6 +40,7 @@ services:
       - rabbitmq
     networks:
       - admin-mysql_default
+      - admin-mongodb_default
       - RSWD_188597_network
 
   travelmateofferqueryservice:
@@ -52,6 +52,7 @@ services:
       - rabbitmq
     networks:
       - admin-mysql_default
+      - admin-mongodb_default
       - RSWD_188597_network
 
   travelmateauthservice:
@@ -63,6 +64,7 @@ services:
       - rabbitmq
     networks:
       - admin-mysql_default
+      - admin-mongodb_default
       - RSWD_188597_network
 
   travelmatebookingservice:
@@ -74,6 +76,7 @@ services:
       - rabbitmq
     networks:
       - admin-mysql_default
+      - admin-mongodb_default
       - RSWD_188597_network
 
   travelmatepaymentservice:
@@ -85,6 +88,7 @@ services:
       - rabbitmq
     networks:
       - admin-mysql_default
+      - admin-mongodb_default
       - RSWD_188597_network
 
   travelmatesagaorchestrator:
@@ -99,5 +103,7 @@ services:
 
 networks:
   admin-mysql_default:
+    external: true
+  admin-mongodb_default:
     external: true
   RSWD_188597_network:

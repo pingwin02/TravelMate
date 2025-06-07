@@ -3,7 +3,10 @@ import { Offer } from '../../model/Offer';
 import { OffersService } from '../../service/offers.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
-
+interface Alert {
+  id: number;
+  message: string;
+}
 @Component({
   selector: 'app-offer-view',
   templateUrl: './offer-view.component.html',
@@ -13,7 +16,8 @@ export class OfferViewComponent implements OnInit, OnDestroy {
   offer!: Offer | null;
   private offerId!: string;
   private hubConnection!: signalR.HubConnection;
-
+  alerts: Alert[] = [];
+  private alertIdCounter = 0;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -35,9 +39,12 @@ export class OfferViewComponent implements OnInit, OnDestroy {
     this.initSignalR();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (this.hubConnection) {
-      this.hubConnection.stop();
+      this.hubConnection
+        .invoke('LeaveOfferGroup', this.offerId)
+        .then(() => console.log(`Left group for offer ${this.offerId}`))
+        .catch((err) => console.error('Error leaving group:', err));
     }
   }
 
@@ -53,7 +60,15 @@ export class OfferViewComponent implements OnInit, OnDestroy {
       .withAutomaticReconnect()
       .build();
 
-    this.hubConnection.start().catch((err) => console.error('SignalR connection error:', err));
+    this.hubConnection
+      .start()
+      .then(() => {
+        this.hubConnection
+          .invoke('JoinOfferGroup', this.offerId)
+          .then(() => console.log(`Joined group for offer ${this.offerId}`))
+          .catch((err) => console.error('Error joining group:', err));
+      })
+      .catch((err) => console.error('SignalR connection error:', err));
 
     this.hubConnection.on('OfferUpdated', (change: { oldOffer: Offer; newOffer: Offer }) => {
       if (change.newOffer.id === this.offerId) {
@@ -68,5 +83,22 @@ export class OfferViewComponent implements OnInit, OnDestroy {
         this.router.navigate(['/offers']);
       }
     });
+
+    this.hubConnection.on('OfferPurchased', () => {
+      this.showAlert('Someone just purchased this offer!');
+    });
+  }
+
+  showAlert(message: string) {
+    const id = ++this.alertIdCounter;
+    this.alerts.push({ id, message });
+
+    setTimeout(() => {
+      this.closeAlert(id);
+    }, 5000);
+  }
+
+  closeAlert(id: number) {
+    this.alerts = this.alerts.filter((alert) => alert.id !== id);
   }
 }

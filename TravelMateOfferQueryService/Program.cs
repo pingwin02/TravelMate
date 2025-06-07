@@ -1,4 +1,5 @@
 using MassTransit;
+using TravelMateOfferCommandService.Consumers;
 using TravelMateOfferQueryService.Consumers;
 using TravelMateOfferQueryService.Hubs;
 using TravelMateOfferQueryService.Repositories;
@@ -15,6 +16,7 @@ builder.Services.AddScoped<IOfferQueryService, OfferQueryService>();
 var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
 builder.Services.AddMassTransit(busConfig =>
 {
+    busConfig.AddConsumer<PurchaseNotificationEventConsumer>();
     busConfig.AddConsumer<AddOfferEventConsumer>();
     busConfig.AddConsumer<UpdateOfferEventConsumer>();
     busConfig.AddConsumer<DeleteOfferEventConsumer>();
@@ -29,6 +31,8 @@ builder.Services.AddMassTransit(busConfig =>
         cfg.ReceiveEndpoint("add-offer-queue", e => { e.ConfigureConsumer<AddOfferEventConsumer>(context); });
         cfg.ReceiveEndpoint("update-offer-queue", e => { e.ConfigureConsumer<UpdateOfferEventConsumer>(context); });
         cfg.ReceiveEndpoint("delete-offer-queue", e => { e.ConfigureConsumer<DeleteOfferEventConsumer>(context); });
+        cfg.ReceiveEndpoint("purchase-notification-queue",
+            e => { e.ConfigureConsumer<PurchaseNotificationEventConsumer>(context); });
     });
 });
 

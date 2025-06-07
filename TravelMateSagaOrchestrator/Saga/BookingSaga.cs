@@ -120,6 +120,11 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                         BookingId = context.Saga.BookingId,
                         Status = BookingStatus.Confirmed
                     }))
+                .Publish(context => new PurchaseNotificationEvent
+                {
+                    CorrelationId = context.Saga.CorrelationId,
+                    OfferId = context.Saga.OfferId
+                })
                 .TransitionTo(PaymentFinalized)
                 .Finalize()
         );
