@@ -50,6 +50,12 @@ public class OfferService : IOfferService
             .Map(dest => dest.CreatedAt, src => src.CreatedAt);
     }
 
+    public async Task<OfferDto> GetOfferDto(Guid id)
+    {
+        var offer = await offerRepository.GetOffer(id);
+        return offer.Adapt<OfferDto>(_config);
+    }
+
     public async Task<Offer> GetOffer(Guid id)
     {
         return await offerRepository.GetOffer(id);

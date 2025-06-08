@@ -51,6 +51,7 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                         {
                             Console.WriteLine($"[Saga] Seat available for offer {context.Saga.OfferId}");
                             context.Saga.Price = context.Message.DynamicPrice;
+                            context.Saga.Offer = context.Message.Offer;
                         })
                         .TransitionTo(SeatChecked)
                         .SendAsync(new Uri("queue:create-payment"), context =>
@@ -118,7 +119,8 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
                     {
                         CorrelationId = context.Saga.CorrelationId,
                         BookingId = context.Saga.BookingId,
-                        Status = BookingStatus.Confirmed
+                        Status = BookingStatus.Confirmed,
+                        Offer = context.Saga.Offer
                     }))
                 .Publish(context => new PurchaseNotificationEvent
                 {
@@ -221,7 +223,8 @@ public class BookingSaga : MassTransitStateMachine<BookingSagaState>
         await context.Send(new Uri("queue:cancel-booking-queue"), new CancelBookingCommand
         {
             CorrelationId = context.Saga.CorrelationId,
-            BookingId = context.Saga.BookingId
+            BookingId = context.Saga.BookingId,
+            OfferId = context.Saga.OfferId
         });
     }
 }

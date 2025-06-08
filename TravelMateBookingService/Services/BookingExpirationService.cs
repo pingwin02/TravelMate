@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using MassTransit;
 using TravelMate.Models.Messages;
+using TravelMate.Models.Offers;
 using TravelMateBookingService.Models.Bookings;
 using TravelMateBookingService.Repositories;
 
@@ -33,7 +34,13 @@ public class BookingExpirationService(IServiceProvider serviceProvider) : Backgr
                 return;
             }
 
-            await bookingRepository.ChangeBookingStatus(bookingId, BookingStatus.Canceled);
+            await bookingRepository.ChangeBookingStatus(
+                bookingId,
+                BookingStatus.Canceled,
+                new OfferDto
+                {
+                    Id = offerId
+                });
 
             await publishEndpoint.Publish(new BookingCancelledEvent
             {

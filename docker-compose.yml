@@ -27,7 +27,7 @@ services:
       retries: 3
   
   mongodb:
-    container_name: mongodb
+    container_name: admin-mongodb_mongo
     image: mongo
     ports:
       - "27017:27017"

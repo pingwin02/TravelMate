@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Options;
 using TravelMate.Models.Messages;
+using TravelMate.Models.Offers;
 using TravelMateBookingService.Models.Bookings;
 using TravelMateBookingService.Models.Bookings.DTO;
 using TravelMateBookingService.Models.Settings;
@@ -74,9 +75,9 @@ public class BookingService(
         return await bookingRepository.GetBookingsByUserId(userId);
     }
 
-    public async Task<bool> ChangeBookingStatus(Guid bookingId, BookingStatus status)
+    public async Task<bool> ChangeBookingStatus(Guid bookingId, BookingStatus status, OfferDto offer)
     {
-        return await bookingRepository.ChangeBookingStatus(bookingId, status);
+        return await bookingRepository.ChangeBookingStatus(bookingId, status, offer);
     }
 
     public Task<bool> CheckIfPending(Guid bookingId)

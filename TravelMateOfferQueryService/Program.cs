@@ -1,5 +1,4 @@
 using MassTransit;
-using TravelMateOfferCommandService.Consumers;
 using TravelMateOfferQueryService.Consumers;
 using TravelMateOfferQueryService.Hubs;
 using TravelMateOfferQueryService.Repositories;
@@ -56,7 +55,6 @@ app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
-    // Initialize MongoDB
     var mongoContext = scope.ServiceProvider.GetRequiredService<DataContext>();
     try
     {

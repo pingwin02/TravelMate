@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TravelMate.Models.Messages;
+using TravelMate.Models.Offers;
 using TravelMateBookingService.Data;
 using TravelMateBookingService.Models.Bookings;
 
@@ -11,10 +12,17 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
     {
         await dataContext.Bookings.AddAsync(booking);
         await dataContext.SaveChangesAsync();
+        await dataContext.BookingEvents.InsertOneAsync(new BookingEvent
+        {
+            BookingId = booking.Id,
+            Offer = new OfferDto { Id = booking.OfferId },
+            Status = booking.Status,
+            Timestamp = DateTime.UtcNow
+        });
         return booking;
     }
 
-    public async Task<bool> ChangeBookingStatus(Guid bookingId, BookingStatus status)
+    public async Task<bool> ChangeBookingStatus(Guid bookingId, BookingStatus status, OfferDto offer)
     {
         var booking = await dataContext.Bookings.FindAsync(bookingId);
 
@@ -25,6 +33,13 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
 
         dataContext.Bookings.Update(booking);
         await dataContext.SaveChangesAsync();
+        await dataContext.BookingEvents.InsertOneAsync(new BookingEvent
+        {
+            BookingId = booking.Id,
+            Offer = offer,
+            Status = booking.Status,
+            Timestamp = DateTime.UtcNow
+        });
         return true;
     }
 

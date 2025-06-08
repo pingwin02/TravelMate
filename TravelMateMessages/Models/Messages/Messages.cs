@@ -1,3 +1,5 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using TravelMate.Models.Offers;
 
 namespace TravelMate.Models.Messages;
@@ -23,6 +25,7 @@ public class CheckSeatAvailabilityRequest
 public class CheckSeatAvailabilityResponse
 {
     public Guid CorrelationId { get; set; }
+    public OfferDto Offer { get; set; }
     public bool IsAvailable { get; set; }
     public decimal DynamicPrice { get; set; }
 }
@@ -57,6 +60,7 @@ public class BookingStatusUpdateRequest
     public Guid CorrelationId { get; set; }
     public Guid BookingId { get; set; }
     public BookingStatus Status { get; set; }
+    public OfferDto Offer { get; set; }
 }
 
 public class BookingStatusUpdateResponse
@@ -81,6 +85,7 @@ public class CancelBookingCommand
 {
     public Guid CorrelationId { get; set; }
     public Guid BookingId { get; set; }
+    public Guid OfferId { get; set; }
 }
 
 public class CancelPaymentCommand
@@ -138,6 +143,19 @@ public class PurchaseNotificationEvent
 {
     public Guid CorrelationId { get; set; }
     public Guid OfferId { get; set; }
+}
+
+public class BookingEvent
+{
+    [BsonId]
+    [BsonRepresentation(BsonType.String)]
+    public Guid Id { get; set; }
+
+    [BsonRepresentation(BsonType.String)] public Guid BookingId { get; set; }
+
+    public OfferDto Offer { get; set; }
+    public BookingStatus Status { get; set; }
+    public DateTime Timestamp { get; set; }
 }
 
 public enum BookingStatus
