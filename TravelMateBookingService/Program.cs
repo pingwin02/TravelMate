@@ -128,6 +128,15 @@ using (var scope = app.Services.CreateScope())
     {
         Console.WriteLine("An error occurred while migrating the database: " + ex.Message);
     }
+
+    try
+    {
+        await MongoDbInitializer.InitializeMongoDbAsync(db);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("An error occurred while initializing MongoDB: " + ex.Message);
+    }
 }
 
 app.Run();

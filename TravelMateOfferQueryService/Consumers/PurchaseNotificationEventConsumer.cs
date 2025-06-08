@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using TravelMate.Models.Messages;
 using TravelMateOfferQueryService.Hubs;
 
-namespace TravelMateOfferCommandService.Consumers;
+namespace TravelMateOfferQueryService.Consumers;
 
 public class PurchaseNotificationEventConsumer(IServiceProvider serviceProvider)
     : IConsumer<PurchaseNotificationEvent>

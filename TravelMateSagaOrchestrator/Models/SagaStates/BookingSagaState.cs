@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using TravelMate.Models.Messages;
+using TravelMate.Models.Offers;
 
 namespace TravelMateSagaOrchestrator.Models.SagaStates;
 
@@ -13,6 +14,7 @@ public class BookingSagaState : SagaStateMachineInstance
     public DateTime Created { get; set; }
     public decimal Price { get; set; }
     public Guid OfferId { get; set; }
+    public OfferDto Offer { get; set; } = null!;
 
     public Guid? RequestId { get; set; }
     public Uri? ResponseAddress { get; set; }

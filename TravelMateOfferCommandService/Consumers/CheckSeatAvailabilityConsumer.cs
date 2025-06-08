@@ -20,7 +20,8 @@ public class CheckSeatAvailabilityConsumer(IServiceProvider serviceProvider)
         {
             CorrelationId = context.Message.CorrelationId,
             IsAvailable = seatIsAvailable,
-            DynamicPrice = seatIsAvailable ? await offerService.CalculateDynamicPrice(request) : 0
+            DynamicPrice = seatIsAvailable ? await offerService.CalculateDynamicPrice(request) : 0,
+            Offer = await offerService.GetOfferDto(request.OfferId)
         });
     }
 }

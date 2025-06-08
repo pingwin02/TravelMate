@@ -23,7 +23,9 @@ public class BookingStatusUpdateConsumer(IServiceProvider serviceProvider)
         {
             await bookingService.ChangeBookingStatus(
                 bookingId,
-                bookingStatusUpdateRequest.Status);
+                bookingStatusUpdateRequest.Status,
+                bookingStatusUpdateRequest.Offer
+            );
 
             Console.WriteLine($"Booking status updated for booking {bookingId} to {bookingStatusUpdateRequest.Status}");
         }

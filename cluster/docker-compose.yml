@@ -1,10 +1,6 @@
 services:
   rabbitmq:
-    container_name: rabbitmq
     image: rabbitmq:management
-    expose:
-      - "5672"
-      - "15672"
     environment:
       RABBITMQ_DEFAULT_USER: "admin"
       RABBITMQ_DEFAULT_PASS: "admin"
@@ -12,7 +8,6 @@ services:
       - RSWD_188597_network
 
   travelmatefrontend:
-    container_name: TravelMateFrontend
     image: pingwin02/travelmatefrontend
     ports:
       - "18859:80"
@@ -32,10 +27,7 @@ services:
       - RSWD_188597_network
 
   travelmateoffercommandservice:
-    container_name: TravelMateOfferCommandService
     image: pingwin02/travelmateoffercommandservice
-    expose:
-      - "8080"
     depends_on:
       - rabbitmq
     networks:
@@ -44,10 +36,7 @@ services:
       - RSWD_188597_network
 
   travelmateofferqueryservice:
-    container_name: TravelMateOfferQueryService
     image: pingwin02/travelmateofferqueryservice
-    expose:
-      - "8080"
     depends_on:
       - rabbitmq
     networks:
@@ -56,10 +45,7 @@ services:
       - RSWD_188597_network
 
   travelmateauthservice:
-    container_name: TravelMateAuthService
     image: pingwin02/travelmateauthservice
-    expose:
-      - "8080"
     depends_on:
       - rabbitmq
     networks:
@@ -68,10 +54,7 @@ services:
       - RSWD_188597_network
 
   travelmatebookingservice:
-    container_name: TravelMateBookingService
     image: pingwin02/travelmatebookingservice
-    expose:
-      - "8080"
     depends_on:
       - rabbitmq
     networks:
@@ -80,10 +63,7 @@ services:
       - RSWD_188597_network
 
   travelmatepaymentservice:
-    container_name: TravelMatePaymentService
     image: pingwin02/travelmatepaymentservice
-    expose:
-      - "8080"
     depends_on:
       - rabbitmq
     networks:
@@ -92,10 +72,7 @@ services:
       - RSWD_188597_network
 
   travelmatesagaorchestrator:
-    container_name: TravelMateSagaOrchestrator
     image: pingwin02/travelmatesagaorchestrator
-    expose:
-      - "8080"
     depends_on:
       - rabbitmq
     networks:
