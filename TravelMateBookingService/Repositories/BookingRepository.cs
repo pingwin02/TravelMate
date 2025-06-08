@@ -1,8 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using System.Linq;
 using TravelMate.Models.Messages;
 using TravelMate.Models.Offers;
 using TravelMateBookingService.Data;
+using TravelMateBookingService.Hubs;
 using TravelMateBookingService.Models.Bookings;
+using TravelMateBookingService.Models.Bookings.DTO;
 
 namespace TravelMateBookingService.Repositories;
 
@@ -64,5 +70,28 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
         return await dataContext.Bookings
             .Where(b => b.UserId == userId)
             .ToListAsync();
+    }
+
+    public async Task<IEnumerable<DeparturePreferenceDto>> GetDeparturePreferences()
+    {
+        var pipeline = new[]
+    {
+        new BsonDocument("$match", new BsonDocument("Status", 1)),
+        new BsonDocument("$group", new BsonDocument
+            {
+                { "_id", "$Offer.DepartureAirportCode" },
+                { "count", new BsonDocument("$sum", 1) },
+                { "city", new BsonDocument("$first", "$Offer.DepartureAirportCity") },
+                { "country", new BsonDocument("$first", "$Offer.DepartureAirportCountry") }
+            }
+        ),
+        new BsonDocument("$sort", new BsonDocument("count", -1))
+    };
+
+        var result = await dataContext.BookingEvents
+            .Aggregate<DeparturePreferenceDto>(pipeline)
+            .ToListAsync();
+
+        return result;
     }
 }

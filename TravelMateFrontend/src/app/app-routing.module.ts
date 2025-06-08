@@ -10,6 +10,7 @@ import { MyBookingsViewComponent } from './booking/view/my-bookings-view/my-book
 import { PaymentConfirmationViewComponent } from './booking/view/payment-confirmation-view/payment-confirmation-view.component';
 import { HomeComponent } from './home/home.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { PreferencesDashboardComponent } from './preferences-dashboard/preferences-dashboard.component';
 const routes: Routes = [
   {
     path: '',
@@ -50,6 +51,10 @@ const routes: Routes = [
     path: 'my-bookings',
     component: MyBookingsViewComponent,
     canActivate: [authGuard]
+  },
+  {
+    path:'departure-preferences',
+    component: PreferencesDashboardComponent
   }
 ];
 

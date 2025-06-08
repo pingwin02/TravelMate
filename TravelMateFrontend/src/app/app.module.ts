@@ -16,6 +16,7 @@ import { PaymentConfirmationViewComponent } from './booking/view/payment-confirm
 import { HomeComponent } from './home/home.component';
 import { EuropeanTimePipe } from './pipes/european-time.pipe';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { PreferencesDashboardComponent } from './preferences-dashboard/preferences-dashboard.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +29,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     PaymentConfirmationViewComponent,
     HomeComponent,
     EuropeanTimePipe,
-    DashboardComponent
+    DashboardComponent,
+    PreferencesDashboardComponent
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule, NgxPaginationModule, ReactiveFormsModule],
   providers: [
