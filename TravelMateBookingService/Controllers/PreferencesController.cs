@@ -10,7 +10,7 @@ public class PreferencesController(IBookingService bookingService) : ControllerB
     [HttpGet("departure-preferences")]
     public async Task<IActionResult> GetDeparturePreferences()
     {
-        var preferences = await bookingService.GetDeparturePreferences();
+        var preferences = await bookingService.GetDestinationPreferences();
         return Ok(preferences);
     }
 

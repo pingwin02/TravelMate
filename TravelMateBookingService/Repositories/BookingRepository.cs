@@ -73,24 +73,24 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<DeparturePreferenceDto>> GetDeparturePreferences()
+    public async Task<IEnumerable<DestinationPreferenceDto>> GetDestinationPreferences()
     {
         var pipeline = new[]
         {
             new BsonDocument("$match", new BsonDocument("Status", 1)),
             new BsonDocument("$group", new BsonDocument
                 {
-                    { "_id", "$Offer.DepartureAirportCode" },
+                    { "_id", "$Offer.ArrivalAirportCode" },
                     { "count", new BsonDocument("$sum", 1) },
-                    { "city", new BsonDocument("$first", "$Offer.DepartureAirportCity") },
-                    { "country", new BsonDocument("$first", "$Offer.DepartureAirportCountry") }
+                    { "city", new BsonDocument("$first", "$Offer.ArrivalAirportCity") },
+                    { "country", new BsonDocument("$first", "$Offer.ArrivalAirportCountry") }
                 }
             ),
             new BsonDocument("$sort", new BsonDocument("count", -1))
         };
 
         var result = await dataContext.BookingEvents
-            .Aggregate<DeparturePreferenceDto>(pipeline)
+            .Aggregate<DestinationPreferenceDto>(pipeline)
             .ToListAsync();
 
         return result;

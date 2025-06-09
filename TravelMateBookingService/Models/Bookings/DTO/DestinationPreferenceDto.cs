@@ -2,7 +2,7 @@
 
 namespace TravelMateBookingService.Models.Bookings.DTO;
 
-public class DeparturePreferenceDto
+public class DestinationPreferenceDto
 {
     [BsonId] public string Id { get; set; }
 

@@ -85,7 +85,7 @@ public class BookingService(
 
         if (result && status == BookingStatus.Confirmed)
         {
-            var preferences = bookingRepository.GetDeparturePreferences();
+            var preferences = bookingRepository.GetDestinationPreferences();
             await preferencesHub.Clients.All.SendAsync("ReceiveDeparturePreferencesUpdate", preferences);
 
             var offerPreferences = bookingRepository.GetOfferPreferences();
@@ -101,9 +101,9 @@ public class BookingService(
         return bookingRepository.CheckIfPending(bookingId);
     }
 
-    public async Task<IEnumerable<DeparturePreferenceDto>> GetDeparturePreferences()
+    public async Task<IEnumerable<DestinationPreferenceDto>> GetDestinationPreferences()
     {
-        var preferences = await bookingRepository.GetDeparturePreferences();
+        var preferences = await bookingRepository.GetDestinationPreferences();
         if (preferences == null) throw new InvalidOperationException("Departure preferences not found.");
         return preferences;
     }
