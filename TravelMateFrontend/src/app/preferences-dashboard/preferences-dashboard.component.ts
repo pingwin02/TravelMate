@@ -1,5 +1,9 @@
 import { Component, OnInit, NgZone } from '@angular/core';
-import { DestinationPreferenceService, DestinationPreference, EnumCount } from './service/destination-preferences.service';
+import {
+  DestinationPreferenceService,
+  DestinationPreference,
+  EnumCount
+} from './service/destination-preferences.service';
 import * as signalR from '@microsoft/signalr';
 
 interface CountryCount {
