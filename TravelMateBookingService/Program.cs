@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using TravelMate.Models.Messages;
 using TravelMateBookingService.Consumers;
 using TravelMateBookingService.Data;
+using TravelMateBookingService.Hubs;
 using TravelMateBookingService.Models.Settings;
 using TravelMateBookingService.Repositories;
 using TravelMateBookingService.Services;
@@ -26,7 +27,7 @@ builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<BookingStatusUpdateConsumer>();
 builder.Services.AddSingleton<BookingExpirationService>();
 builder.Services.AddHostedService(sp => sp.GetRequiredService<BookingExpirationService>());
-
+builder.Services.AddSignalR();
 var rabbitMqSettings = builder.Configuration.GetSection("RabbitMq");
 builder.Services.AddMassTransit(busConfig =>
 {
@@ -106,6 +107,7 @@ app.MapOpenApi();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseSwagger();
+app.MapHub<PreferencesHub>("api/preferencesHub");
 
 app.UseSwaggerUI(c =>
 {

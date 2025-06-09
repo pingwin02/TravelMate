@@ -1,7 +1,10 @@
 ﻿using MassTransit;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
+using TravelMate.Messages.Models.Preferences;
 using TravelMate.Models.Messages;
 using TravelMate.Models.Offers;
+using TravelMateBookingService.Hubs;
 using TravelMateBookingService.Models.Bookings;
 using TravelMateBookingService.Models.Bookings.DTO;
 using TravelMateBookingService.Models.Settings;
@@ -13,7 +16,8 @@ public class BookingService(
     IBookingRepository bookingRepository,
     IOptions<BookingsSettings> settings,
     IRequestClient<BookingStartedEvent> bookingRequestClient,
-    IBus bus)
+    IBus bus,
+    IHubContext<PreferencesHub> preferencesHub)
     : IBookingService
 {
     public async Task<BookingDto> CreateBooking(Guid userId, BookingRequestDto bookingRequestDto)
@@ -77,11 +81,37 @@ public class BookingService(
 
     public async Task<bool> ChangeBookingStatus(Guid bookingId, BookingStatus status, OfferDto offer)
     {
-        return await bookingRepository.ChangeBookingStatus(bookingId, status, offer);
+        var result = await bookingRepository.ChangeBookingStatus(bookingId, status, offer);
+
+        if (result && status == BookingStatus.Confirmed)
+        {
+            var preferences = bookingRepository.GetDeparturePreferences();
+            await preferencesHub.Clients.All.SendAsync("ReceiveDeparturePreferencesUpdate", preferences);
+
+            var offerPreferences = bookingRepository.GetOfferPreferences();
+            await preferencesHub.Clients.All
+                .SendAsync("ReceiveOfferPreferencesUpdate", offerPreferences);
+        }
+
+        return result;
     }
 
     public Task<bool> CheckIfPending(Guid bookingId)
     {
         return bookingRepository.CheckIfPending(bookingId);
+    }
+
+    public async Task<IEnumerable<DeparturePreferenceDto>> GetDeparturePreferences()
+    {
+        var preferences = await bookingRepository.GetDeparturePreferences();
+        if (preferences == null) throw new InvalidOperationException("Departure preferences not found.");
+        return preferences;
+    }
+
+    public Task<OfferPreferencesSummaryDto> GetOfferPreferences()
+    {
+        var preferences = bookingRepository.GetOfferPreferences();
+        if (preferences == null) throw new InvalidOperationException("Offer preferences not found.");
+        return preferences;
     }
 }

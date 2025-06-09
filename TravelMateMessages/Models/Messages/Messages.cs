@@ -155,6 +155,9 @@ public class BookingEvent
 
     public OfferDto Offer { get; set; }
     public BookingStatus Status { get; set; }
+    public SeatType SeatType { get; set; }
+    public PassengerType PassengerType { get; set; }
+    public decimal Price { get; set; }
     public DateTime Timestamp { get; set; }
 }
 

@@ -17,7 +17,6 @@ public class DataContext : DbContext
     }
 
     public DbSet<Booking> Bookings { get; set; }
-
     public IMongoDatabase mongoDatabase { get; }
 
     public IMongoCollection<BookingEvent> BookingEvents => mongoDatabase.GetCollection<BookingEvent>("Bookings");
