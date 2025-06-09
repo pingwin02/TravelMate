@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Linq;
+using TravelMate.Messages.Models.Preferences;
 using TravelMate.Models.Messages;
 using TravelMate.Models.Offers;
 using TravelMateBookingService.Data;
@@ -98,27 +99,62 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
         return result;
     }
 
-    public async Task<IEnumerable<OfferPreferencesDto>> GetOfferPreferences(Guid offerId)
+    public async Task<OfferPreferencesSummaryDto> GetOfferPreferences()
     {
-        var pipeline = new[]
+        var seatTypePipeline = new[]
         {
-                new BsonDocument("$match", new BsonDocument("Status", 1)), 
-                new BsonDocument("$group", new BsonDocument
-                    {
-                        { "_id", new BsonDocument {
-                            { "passengerType", "$PassengerType" }
-                        }},
-                        { "count", new BsonDocument("$sum", 1) }
-                    }
-                ),
-            };
+        new BsonDocument("$match", new BsonDocument("Status", 1)),
+        new BsonDocument("$group", new BsonDocument
+            {
+                { "_id", "$SeatType" },
+                { "count", new BsonDocument("$sum", 1) }
+            }
+        ),
+        new BsonDocument("$sort", new BsonDocument("count", -1))
+    };
 
-        //todo: finish the pipleline
-
-        var result = await dataContext.BookingEvents
-            .Aggregate<OfferPreferencesDto>(pipeline)
+        var seatTypeResult = await dataContext.BookingEvents
+            .Aggregate<BsonDocument>(seatTypePipeline)
             .ToListAsync();
 
-        return result;
+        var passengerTypePipeline = new[]
+        {
+        new BsonDocument("$match", new BsonDocument("Status", 1)),
+        new BsonDocument("$group", new BsonDocument
+            {
+                { "_id", "$PassengerType" },
+                { "count", new BsonDocument("$sum", 1) }
+            }
+        ),
+        new BsonDocument("$sort", new BsonDocument("count", -1))
+    };
+
+        var passengerTypeResult = await dataContext.BookingEvents
+            .Aggregate<BsonDocument>(passengerTypePipeline)
+            .ToListAsync();
+
+        var seatTypeCounts = seatTypeResult.Select(doc => new EnumCountDto
+        {
+            Type = doc["_id"].IsBsonNull ? "Unknown" :
+                Enum.IsDefined(typeof(SeatType), doc["_id"].AsInt32)
+                    ? ((SeatType)doc["_id"].AsInt32).ToString()
+                    : "Unknown",
+            Count = doc["count"].AsInt32
+        }).ToList();
+
+        var passengerTypeCounts = passengerTypeResult.Select(doc => new EnumCountDto
+        {
+            Type = doc["_id"].IsBsonNull ? "Unknown" :
+                Enum.IsDefined(typeof(PassengerType), doc["_id"].AsInt32)
+                    ? ((PassengerType)doc["_id"].AsInt32).ToString()
+                    : "Unknown",
+            Count = doc["count"].AsInt32
+        }).ToList();
+
+        return new OfferPreferencesSummaryDto
+        {
+            SeatTypeCounts = seatTypeCounts,
+            PassengerTypeCounts = passengerTypeCounts,
+        };
     }
 }

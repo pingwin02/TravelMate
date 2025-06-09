@@ -2,6 +2,6 @@
 
 namespace TravelMateBookingService.Hubs;
 
-public class DeparturePreferencesHub : Hub
+public class PreferencesHub : Hub
 {
 }

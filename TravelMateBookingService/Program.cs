@@ -107,8 +107,7 @@ app.MapOpenApi();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseSwagger();
-app.MapHub<DeparturePreferencesHub>("api/preferencesHub");
-app.MapHub<OfferPreferencesHub>("api/offerPreferencesHub");
+app.MapHub<PreferencesHub>("api/preferencesHub");
 
 app.UseSwaggerUI(c =>
 {

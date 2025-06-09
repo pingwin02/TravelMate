@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
+using TravelMate.Messages.Models.Preferences;
 using TravelMate.Models.Messages;
 using TravelMate.Models.Offers;
 using TravelMateBookingService.Hubs;
@@ -16,8 +17,7 @@ public class BookingService(
     IOptions<BookingsSettings> settings,
     IRequestClient<BookingStartedEvent> bookingRequestClient,
     IBus bus,
-    IHubContext<DeparturePreferencesHub> departurePreferencesHub,
-    IHubContext<OfferPreferencesHub> offerPreferencesHub)
+    IHubContext<PreferencesHub> preferencesHub)
     : IBookingService
 {
     public async Task<BookingDto> CreateBooking(Guid userId, BookingRequestDto bookingRequestDto)
@@ -86,10 +86,10 @@ public class BookingService(
         if (result && status == BookingStatus.Confirmed)
         {
             var preferences = bookingRepository.GetDeparturePreferences();
-            await departurePreferencesHub.Clients.All.SendAsync("ReceivePreferencesUpdate", preferences);
+            await preferencesHub.Clients.All.SendAsync("ReceiveDeparturePreferencesUpdate", preferences);
 
-            var offerPreferences = bookingRepository.GetOfferPreferences(offer.Id);
-            await offerPreferencesHub.Clients.Group(offer.Id.ToString())
+            var offerPreferences = bookingRepository.GetOfferPreferences();
+            await preferencesHub.Clients.All
                 .SendAsync("ReceiveOfferPreferencesUpdate", offerPreferences);
         }
         return result;
@@ -110,9 +110,9 @@ public class BookingService(
         return preferences;
     }
 
-    public Task<IEnumerable<OfferPreferencesDto>> GetOfferPreferences(Guid offerId)
+    public Task<OfferPreferencesSummaryDto> GetOfferPreferences()
     {
-        var preferences = bookingRepository.GetOfferPreferences(offerId);
+        var preferences = bookingRepository.GetOfferPreferences();
         if (preferences == null)
         {
             throw new InvalidOperationException("Offer preferences not found.");

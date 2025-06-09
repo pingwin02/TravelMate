@@ -1,4 +1,5 @@
-﻿using TravelMate.Models.Messages;
+﻿using TravelMate.Messages.Models.Preferences;
+using TravelMate.Models.Messages;
 using TravelMate.Models.Offers;
 using TravelMateBookingService.Models.Bookings;
 using TravelMateBookingService.Models.Bookings.DTO;
@@ -13,5 +14,5 @@ public interface IBookingRepository
     Task<Booking> GetBookingById(Guid userId, Guid bookingId);
     Task<List<Booking>> GetBookingsByUserId(Guid userId);
     Task<IEnumerable<DeparturePreferenceDto>> GetDeparturePreferences();
-    Task<IEnumerable<OfferPreferencesDto>> GetOfferPreferences(Guid offerId);
+    Task<OfferPreferencesSummaryDto> GetOfferPreferences();
 }

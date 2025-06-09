@@ -44,6 +44,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseSwagger();
 app.MapHub<OfferHub>("/api/offerHub");
+app.MapHub<OfferChangesHub>("api/offerChangesHub");
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "TravelMateOfferQueryService API v1");

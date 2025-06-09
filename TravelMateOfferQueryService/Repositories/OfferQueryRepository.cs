@@ -5,14 +5,16 @@ using TravelMateOfferQueryService.Hubs;
 
 namespace TravelMateOfferQueryService.Repositories;
 
-public class OfferQueryRepository(DataContext context, IHubContext<OfferHub> hubContext) : IOfferQueryRepository
+public class OfferQueryRepository(DataContext context, IHubContext<OfferHub> offerHubContext, IHubContext<OfferChangesHub> offerChangesHubContext) : IOfferQueryRepository
 {
     public async Task AddOffer(OfferDto offer)
     {
         if (offer == null) throw new ArgumentNullException(nameof(offer), "Offer cannot be null");
 
         await context.Offers.InsertOneAsync(offer);
-        await hubContext.Clients.Group(offer.Id.ToString())
+        await offerHubContext.Clients.Group(offer.Id.ToString())
+            .SendAsync("OfferAdded", offer);
+        await offerChangesHubContext.Clients.All
             .SendAsync("OfferAdded", offer);
     }
 
@@ -22,8 +24,11 @@ public class OfferQueryRepository(DataContext context, IHubContext<OfferHub> hub
         var result = await context.Offers.DeleteOneAsync(filter);
 
         if (result.DeletedCount > 0)
-            await hubContext.Clients.Group(id.ToString())
+        {
+            await offerHubContext.Clients.Group(id.ToString())
                 .SendAsync("OfferDeleted", id);
+            await offerChangesHubContext.Clients.All.SendAsync("OfferDeleted", id);
+        }
         else
             throw new Exception($"Offer with ID {id} was not found.");
     }
@@ -67,12 +72,16 @@ public class OfferQueryRepository(DataContext context, IHubContext<OfferHub> hub
         if (result.ModifiedCount == 0)
             throw new InvalidOperationException($"Failed to update offer with id {offerDto.Id}");
 
-        await hubContext.Clients.Group(offerDto.Id.ToString())
-            .SendAsync("OfferUpdated", new OfferChangeDto
-            {
-                OldOffer = oldOffer,
-                NewOffer = offerDto
-            });
+        var offerChange = new OfferChangeDto
+        {
+            OldOffer = oldOffer,
+            NewOffer = offerDto
+        };
+        await offerHubContext.Clients.Group(offerDto.Id.ToString())
+            .SendAsync("OfferUpdated", offerChange);
+
+        await offerChangesHubContext.Clients.All
+            .SendAsync("OfferUpdated", offerChange);
         return true;
     }
 }

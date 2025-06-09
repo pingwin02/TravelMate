@@ -4,7 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
-namespace TravelMateBookingService.Hubs;
-public class OfferPreferencesHub : Hub
+namespace TravelMateOfferQueryService.Hubs
 {
+    public class OfferChangesHub : Hub
+    {
+        
+    }
 }
