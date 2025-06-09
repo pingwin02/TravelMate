@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TravelMateBookingService.Services;
 
 namespace TravelMateBookingService.Controllers;
@@ -8,7 +7,6 @@ namespace TravelMateBookingService.Controllers;
 [ApiController]
 public class PreferencesController(IBookingService bookingService) : ControllerBase
 {
-
     [HttpGet("departure-preferences")]
     public async Task<IActionResult> GetDeparturePreferences()
     {
@@ -23,4 +21,3 @@ public class PreferencesController(IBookingService bookingService) : ControllerB
         return Ok(preferences);
     }
 }
-

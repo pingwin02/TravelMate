@@ -53,7 +53,7 @@ const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-    path:'departure-preferences',
+    path: 'departure-preferences',
     component: PreferencesDashboardComponent
   }
 ];

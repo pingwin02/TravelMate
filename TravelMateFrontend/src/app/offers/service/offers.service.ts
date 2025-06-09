@@ -20,5 +20,4 @@ export class OffersService {
   getOfferById(id: string): Observable<Offer> {
     return this.http.get<Offer>('/ofertyqueries/OfferQuery/' + id);
   }
-
 }

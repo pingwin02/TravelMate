@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MongoDB.Bson.Serialization.Attributes;
-using TravelMate.Models.Messages;
-
 namespace TravelMateBookingService.Models.Bookings.DTO;
 
 public class OfferPreferencesDto

@@ -92,6 +92,7 @@ public class BookingService(
             await preferencesHub.Clients.All
                 .SendAsync("ReceiveOfferPreferencesUpdate", offerPreferences);
         }
+
         return result;
     }
 
@@ -103,20 +104,14 @@ public class BookingService(
     public async Task<IEnumerable<DeparturePreferenceDto>> GetDeparturePreferences()
     {
         var preferences = await bookingRepository.GetDeparturePreferences();
-        if (preferences == null)
-        {
-            throw new InvalidOperationException("Departure preferences not found.");
-        }
+        if (preferences == null) throw new InvalidOperationException("Departure preferences not found.");
         return preferences;
     }
 
     public Task<OfferPreferencesSummaryDto> GetOfferPreferences()
     {
         var preferences = bookingRepository.GetOfferPreferences();
-        if (preferences == null)
-        {
-            throw new InvalidOperationException("Offer preferences not found.");
-        }
+        if (preferences == null) throw new InvalidOperationException("Offer preferences not found.");
         return preferences;
     }
 }

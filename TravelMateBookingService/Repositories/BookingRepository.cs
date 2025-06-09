@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Linq;
 using TravelMate.Messages.Models.Preferences;
 using TravelMate.Models.Messages;
 using TravelMate.Models.Offers;
 using TravelMateBookingService.Data;
-using TravelMateBookingService.Hubs;
 using TravelMateBookingService.Models.Bookings;
 using TravelMateBookingService.Models.Bookings.DTO;
 
@@ -79,18 +76,18 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
     public async Task<IEnumerable<DeparturePreferenceDto>> GetDeparturePreferences()
     {
         var pipeline = new[]
-    {
-        new BsonDocument("$match", new BsonDocument("Status", 1)),
-        new BsonDocument("$group", new BsonDocument
-            {
-                { "_id", "$Offer.DepartureAirportCode" },
-                { "count", new BsonDocument("$sum", 1) },
-                { "city", new BsonDocument("$first", "$Offer.DepartureAirportCity") },
-                { "country", new BsonDocument("$first", "$Offer.DepartureAirportCountry") }
-            }
-        ),
-        new BsonDocument("$sort", new BsonDocument("count", -1))
-    };
+        {
+            new BsonDocument("$match", new BsonDocument("Status", 1)),
+            new BsonDocument("$group", new BsonDocument
+                {
+                    { "_id", "$Offer.DepartureAirportCode" },
+                    { "count", new BsonDocument("$sum", 1) },
+                    { "city", new BsonDocument("$first", "$Offer.DepartureAirportCity") },
+                    { "country", new BsonDocument("$first", "$Offer.DepartureAirportCountry") }
+                }
+            ),
+            new BsonDocument("$sort", new BsonDocument("count", -1))
+        };
 
         var result = await dataContext.BookingEvents
             .Aggregate<DeparturePreferenceDto>(pipeline)
@@ -103,15 +100,15 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
     {
         var seatTypePipeline = new[]
         {
-        new BsonDocument("$match", new BsonDocument("Status", 1)),
-        new BsonDocument("$group", new BsonDocument
-            {
-                { "_id", "$SeatType" },
-                { "count", new BsonDocument("$sum", 1) }
-            }
-        ),
-        new BsonDocument("$sort", new BsonDocument("count", -1))
-    };
+            new BsonDocument("$match", new BsonDocument("Status", 1)),
+            new BsonDocument("$group", new BsonDocument
+                {
+                    { "_id", "$SeatType" },
+                    { "count", new BsonDocument("$sum", 1) }
+                }
+            ),
+            new BsonDocument("$sort", new BsonDocument("count", -1))
+        };
 
         var seatTypeResult = await dataContext.BookingEvents
             .Aggregate<BsonDocument>(seatTypePipeline)
@@ -119,15 +116,15 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
 
         var passengerTypePipeline = new[]
         {
-        new BsonDocument("$match", new BsonDocument("Status", 1)),
-        new BsonDocument("$group", new BsonDocument
-            {
-                { "_id", "$PassengerType" },
-                { "count", new BsonDocument("$sum", 1) }
-            }
-        ),
-        new BsonDocument("$sort", new BsonDocument("count", -1))
-    };
+            new BsonDocument("$match", new BsonDocument("Status", 1)),
+            new BsonDocument("$group", new BsonDocument
+                {
+                    { "_id", "$PassengerType" },
+                    { "count", new BsonDocument("$sum", 1) }
+                }
+            ),
+            new BsonDocument("$sort", new BsonDocument("count", -1))
+        };
 
         var passengerTypeResult = await dataContext.BookingEvents
             .Aggregate<BsonDocument>(passengerTypePipeline)
@@ -135,8 +132,9 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
 
         var seatTypeCounts = seatTypeResult.Select(doc => new EnumCountDto
         {
-            Type = doc["_id"].IsBsonNull ? "Unknown" :
-                Enum.IsDefined(typeof(SeatType), doc["_id"].AsInt32)
+            Type = doc["_id"].IsBsonNull
+                ? "Unknown"
+                : Enum.IsDefined(typeof(SeatType), doc["_id"].AsInt32)
                     ? ((SeatType)doc["_id"].AsInt32).ToString()
                     : "Unknown",
             Count = doc["count"].AsInt32
@@ -144,8 +142,9 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
 
         var passengerTypeCounts = passengerTypeResult.Select(doc => new EnumCountDto
         {
-            Type = doc["_id"].IsBsonNull ? "Unknown" :
-                Enum.IsDefined(typeof(PassengerType), doc["_id"].AsInt32)
+            Type = doc["_id"].IsBsonNull
+                ? "Unknown"
+                : Enum.IsDefined(typeof(PassengerType), doc["_id"].AsInt32)
                     ? ((PassengerType)doc["_id"].AsInt32).ToString()
                     : "Unknown",
             Count = doc["count"].AsInt32
@@ -154,7 +153,7 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
         return new OfferPreferencesSummaryDto
         {
             SeatTypeCounts = seatTypeCounts,
-            PassengerTypeCounts = passengerTypeCounts,
+            PassengerTypeCounts = passengerTypeCounts
         };
     }
 }

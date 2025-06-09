@@ -5,7 +5,10 @@ using TravelMateOfferQueryService.Hubs;
 
 namespace TravelMateOfferQueryService.Repositories;
 
-public class OfferQueryRepository(DataContext context, IHubContext<OfferHub> offerHubContext, IHubContext<OfferChangesHub> offerChangesHubContext) : IOfferQueryRepository
+public class OfferQueryRepository(
+    DataContext context,
+    IHubContext<OfferHub> offerHubContext,
+    IHubContext<OfferChangesHub> offerChangesHubContext) : IOfferQueryRepository
 {
     public async Task AddOffer(OfferDto offer)
     {
@@ -30,7 +33,9 @@ public class OfferQueryRepository(DataContext context, IHubContext<OfferHub> off
             await offerChangesHubContext.Clients.All.SendAsync("OfferDeleted", id);
         }
         else
+        {
             throw new Exception($"Offer with ID {id} was not found.");
+        }
     }
 
     public async Task<OfferDto> GetOffer(Guid id)

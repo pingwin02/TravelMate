@@ -1,5 +1,5 @@
-import {Component, OnInit, NgZone} from '@angular/core';
-import {DeparturePreferencesService, DeparturePreference, EnumCount} from './service/departure-preferences.service';
+import { Component, OnInit, NgZone } from '@angular/core';
+import { DeparturePreferencesService, DeparturePreference, EnumCount } from './service/departure-preferences.service';
 import * as signalR from '@microsoft/signalr';
 
 interface CountryCount {
@@ -54,28 +54,20 @@ export class PreferencesDashboardComponent implements OnInit {
       .withAutomaticReconnect()
       .build();
 
-    this.hubConnection.start().catch((err) =>
-      console.error('SignalR error:', err)
-    );
+    this.hubConnection.start().catch((err) => console.error('SignalR error:', err));
 
-    this.hubConnection.on(
-      'ReceiveDeparturePreferencesUpdate',
-      (data) => {
-        this.ngZone.run(() => {
-          this.preferences = Array.isArray(data.result) ? data.result : [];
-        });
-      }
-    );
+    this.hubConnection.on('ReceiveDeparturePreferencesUpdate', (data) => {
+      this.ngZone.run(() => {
+        this.preferences = Array.isArray(data.result) ? data.result : [];
+      });
+    });
 
-    this.hubConnection.on(
-      'ReceiveOfferPreferencesUpdate',
-      (data) => {
-        this.ngZone.run(() => {
-          this.seatTypeCounts = data.result.seatTypeCounts;
-          this.passengerTypeCounts = data.result.passengerTypeCounts;
-        });
-      }
-    );
+    this.hubConnection.on('ReceiveOfferPreferencesUpdate', (data) => {
+      this.ngZone.run(() => {
+        this.seatTypeCounts = data.result.seatTypeCounts;
+        this.passengerTypeCounts = data.result.passengerTypeCounts;
+      });
+    });
   }
 
   getPercentage(count: number): number {
@@ -104,10 +96,13 @@ export class PreferencesDashboardComponent implements OnInit {
   }
 
   getCountryData(): CountryCount[] {
-    const countryMap = this.preferences.reduce((acc, curr) => {
-      acc[curr.country] = (acc[curr.country] || 0) + curr.count;
-      return acc;
-    }, {} as Record<string, number>);
+    const countryMap = this.preferences.reduce(
+      (acc, curr) => {
+        acc[curr.country] = (acc[curr.country] || 0) + curr.count;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     return Object.entries(countryMap).map(([name, count]) => ({
       name,

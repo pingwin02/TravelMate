@@ -30,40 +30,39 @@
     </div>
   </div>
   <div class="panel panel-2">
-  <h2>Booking Preferences</h2>
-  <div *ngIf="loading" class="loader">Loading...</div>
-  <div *ngIf="error" class="error-message">{{ error }}</div>
-  <div *ngIf="!loading && !error" class="stats-container">
-    <div class="stat-block">
-      <h3>Seat Type Popularity</h3>
-      <div class="stat-bars">
-        <div class="stat-bar-row" *ngFor="let seat of seatTypeCounts">
-          <div class="stat-label">{{ seat.type }}</div>
-          <div class="stat-bar-track">
-            <div class="stat-bar-fill seat"
-                 [style.width.%]="100 * seat.count / getMaxCount(seatTypeCounts)">
+    <h2>Booking Preferences</h2>
+    <div *ngIf="loading" class="loader">Loading...</div>
+    <div *ngIf="error" class="error-message">{{ error }}</div>
+    <div *ngIf="!loading && !error" class="stats-container">
+      <div class="stat-block">
+        <h3>Seat Type Popularity</h3>
+        <div class="stat-bars">
+          <div class="stat-bar-row" *ngFor="let seat of seatTypeCounts">
+            <div class="stat-label">{{ seat.type }}</div>
+            <div class="stat-bar-track">
+              <div class="stat-bar-fill seat" [style.width.%]="(100 * seat.count) / getMaxCount(seatTypeCounts)"></div>
             </div>
+            <div class="stat-value">{{ seat.count }}</div>
           </div>
-          <div class="stat-value">{{ seat.count }}</div>
         </div>
       </div>
-    </div>
-    <div class="stat-block">
-      <h3>Passenger Type Popularity</h3>
-      <div class="stat-bars">
-        <div class="stat-bar-row" *ngFor="let passenger of passengerTypeCounts">
-          <div class="stat-label">{{ passenger.type }}</div>
-          <div class="stat-bar-track">
-            <div class="stat-bar-fill passenger"
-                 [style.width.%]="100 * passenger.count / getMaxCount(passengerTypeCounts)">
+      <div class="stat-block">
+        <h3>Passenger Type Popularity</h3>
+        <div class="stat-bars">
+          <div class="stat-bar-row" *ngFor="let passenger of passengerTypeCounts">
+            <div class="stat-label">{{ passenger.type }}</div>
+            <div class="stat-bar-track">
+              <div
+                class="stat-bar-fill passenger"
+                [style.width.%]="(100 * passenger.count) / getMaxCount(passengerTypeCounts)"
+              ></div>
             </div>
+            <div class="stat-value">{{ passenger.count }}</div>
           </div>
-          <div class="stat-value">{{ passenger.count }}</div>
         </div>
       </div>
     </div>
   </div>
-</div>
   <div class="panel panel-3">
     <h2>Booking Insights</h2>
     <div class="insights-container">
@@ -91,12 +90,12 @@
       <div class="metric-card">
         <div class="metric-icon">🔝</div>
         <div class="metric-content">
-          <div class="metric-value">{{ getTopCountry().country || 'N/A' }}</div>
+          <div class="metric-value">{{ getTopCountry().country || "N/A" }}</div>
           <div class="metric-label">Top Country</div>
         </div>
       </div>
     </div>
-    
+
     <div class="trend-section">
       <h3>Country Popularity</h3>
       <div class="trend-bars">
