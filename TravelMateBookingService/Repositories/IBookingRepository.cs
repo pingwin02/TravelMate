@@ -13,6 +13,6 @@ public interface IBookingRepository
     Task<bool> CheckIfPending(Guid bookingId);
     Task<Booking> GetBookingById(Guid userId, Guid bookingId);
     Task<List<Booking>> GetBookingsByUserId(Guid userId);
-    Task<IEnumerable<DeparturePreferenceDto>> GetDeparturePreferences();
+    Task<IEnumerable<DestinationPreferenceDto>> GetDestinationPreferences();
     Task<OfferPreferencesSummaryDto> GetOfferPreferences();
 }
