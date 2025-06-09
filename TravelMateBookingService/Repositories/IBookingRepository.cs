@@ -13,4 +13,5 @@ public interface IBookingRepository
     Task<Booking> GetBookingById(Guid userId, Guid bookingId);
     Task<List<Booking>> GetBookingsByUserId(Guid userId);
     Task<IEnumerable<DeparturePreferenceDto>> GetDeparturePreferences();
+    Task<IEnumerable<OfferPreferencesDto>> GetOfferPreferences(Guid offerId);
 }

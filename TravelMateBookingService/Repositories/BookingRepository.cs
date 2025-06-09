@@ -44,6 +44,9 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
             BookingId = booking.Id,
             Offer = offer,
             Status = booking.Status,
+            SeatType = booking.SeatType,
+            PassengerType = booking.PassengerType,
+            Price = booking.Status == BookingStatus.Confirmed ? offer.BasePrice : 0,
             Timestamp = DateTime.UtcNow
         });
         return true;
@@ -90,6 +93,30 @@ public class BookingRepository(DataContext dataContext) : IBookingRepository
 
         var result = await dataContext.BookingEvents
             .Aggregate<DeparturePreferenceDto>(pipeline)
+            .ToListAsync();
+
+        return result;
+    }
+
+    public async Task<IEnumerable<OfferPreferencesDto>> GetOfferPreferences(Guid offerId)
+    {
+        var pipeline = new[]
+        {
+                new BsonDocument("$match", new BsonDocument("Status", 1)), 
+                new BsonDocument("$group", new BsonDocument
+                    {
+                        { "_id", new BsonDocument {
+                            { "passengerType", "$PassengerType" }
+                        }},
+                        { "count", new BsonDocument("$sum", 1) }
+                    }
+                ),
+            };
+
+        //todo: finish the pipleline
+
+        var result = await dataContext.BookingEvents
+            .Aggregate<OfferPreferencesDto>(pipeline)
             .ToListAsync();
 
         return result;

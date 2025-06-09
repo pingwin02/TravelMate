@@ -3,6 +3,7 @@ import { Offer } from '../model/Offer';
 import { OfferList } from '../model/OfferList';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { OfferPreferences } from '../model/OfferPreferences';
 
 @Injectable({
   providedIn: 'root'
@@ -19,4 +20,5 @@ export class OffersService {
   getOfferById(id: string): Observable<Offer> {
     return this.http.get<Offer>('/ofertyqueries/OfferQuery/' + id);
   }
+
 }

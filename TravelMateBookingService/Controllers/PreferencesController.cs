@@ -15,5 +15,12 @@ public class PreferencesController(IBookingService bookingService) : ControllerB
         var preferences = await bookingService.GetDeparturePreferences();
         return Ok(preferences);
     }
+
+    [HttpGet("offer-preferences")]
+    public async Task<IActionResult> GetOfferPreferences()
+    {
+        var preferences = await bookingService.GetOfferPreferences();
+        return Ok(preferences);
+    }
 }
 

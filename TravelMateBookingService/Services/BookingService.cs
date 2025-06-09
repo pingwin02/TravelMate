@@ -16,7 +16,8 @@ public class BookingService(
     IOptions<BookingsSettings> settings,
     IRequestClient<BookingStartedEvent> bookingRequestClient,
     IBus bus,
-    IHubContext<PreferencesHub> hubContext)
+    IHubContext<DeparturePreferencesHub> departurePreferencesHub,
+    IHubContext<OfferPreferencesHub> offerPreferencesHub)
     : IBookingService
 {
     public async Task<BookingDto> CreateBooking(Guid userId, BookingRequestDto bookingRequestDto)
@@ -82,10 +83,14 @@ public class BookingService(
     {
         var result = await bookingRepository.ChangeBookingStatus(bookingId, status, offer);
 
-        if(result && status == BookingStatus.Confirmed)
+        if (result && status == BookingStatus.Confirmed)
         {
-           var preferences = bookingRepository.GetDeparturePreferences();
-           await hubContext.Clients.All.SendAsync("ReceivePreferencesUpdate",preferences);
+            var preferences = bookingRepository.GetDeparturePreferences();
+            await departurePreferencesHub.Clients.All.SendAsync("ReceivePreferencesUpdate", preferences);
+
+            var offerPreferences = bookingRepository.GetOfferPreferences(offer.Id);
+            await offerPreferencesHub.Clients.Group(offer.Id.ToString())
+                .SendAsync("ReceiveOfferPreferencesUpdate", offerPreferences);
         }
         return result;
     }
@@ -101,6 +106,16 @@ public class BookingService(
         if (preferences == null)
         {
             throw new InvalidOperationException("Departure preferences not found.");
+        }
+        return preferences;
+    }
+
+    public Task<IEnumerable<OfferPreferencesDto>> GetOfferPreferences(Guid offerId)
+    {
+        var preferences = bookingRepository.GetOfferPreferences(offerId);
+        if (preferences == null)
+        {
+            throw new InvalidOperationException("Offer preferences not found.");
         }
         return preferences;
     }

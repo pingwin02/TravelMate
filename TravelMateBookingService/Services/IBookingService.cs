@@ -13,4 +13,5 @@ public interface IBookingService
     Task<bool> ChangeBookingStatus(Guid bookingId, BookingStatus status, OfferDto offer);
     Task<bool> CheckIfPending(Guid bookingId);
     Task<IEnumerable<DeparturePreferenceDto>> GetDeparturePreferences();
+    Task<IEnumerable<OfferPreferencesDto>> GetOfferPreferences(Guid offerId);
 }
