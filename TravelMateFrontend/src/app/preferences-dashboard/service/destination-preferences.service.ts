@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export interface DeparturePreference {
+export interface DestinationPreference {
   id: string;
   count: number;
   city: string;
@@ -20,13 +20,13 @@ export interface OfferPreferencesSummary {
 @Injectable({
   providedIn: 'root'
 })
-export class DeparturePreferencesService {
+export class DestinationPreferenceService {
   private apiUrl = '/rezerwacje/Preferences';
 
   constructor(private http: HttpClient) {}
 
-  getDeparturePreferences(): Observable<DeparturePreference[]> {
-    return this.http.get<DeparturePreference[]>(this.apiUrl + '/departure-preferences');
+  getDestinationPreferences(): Observable<DestinationPreference[]> {
+    return this.http.get<DestinationPreference[]>(this.apiUrl + '/destination-preferences');
   }
 
   getOfferPreferences(): Observable<OfferPreferencesSummary> {

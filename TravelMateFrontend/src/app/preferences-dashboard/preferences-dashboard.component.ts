@@ -1,5 +1,5 @@
 import { Component, OnInit, NgZone } from '@angular/core';
-import { DeparturePreferencesService, DeparturePreference, EnumCount } from './service/departure-preferences.service';
+import { DestinationPreferenceService, DestinationPreference, EnumCount } from './service/destination-preferences.service';
 import * as signalR from '@microsoft/signalr';
 
 interface CountryCount {
@@ -13,7 +13,7 @@ interface CountryCount {
   styleUrls: ['./preferences-dashboard.component.css']
 })
 export class PreferencesDashboardComponent implements OnInit {
-  preferences: DeparturePreference[] = [];
+  preferences: DestinationPreference[] = [];
   seatTypeCounts: EnumCount[] = [];
   passengerTypeCounts: EnumCount[] = [];
   loading = true;
@@ -21,12 +21,12 @@ export class PreferencesDashboardComponent implements OnInit {
   hubConnection!: signalR.HubConnection;
 
   constructor(
-    private preferencesService: DeparturePreferencesService,
+    private preferencesService: DestinationPreferenceService,
     private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
-    this.preferencesService.getDeparturePreferences().subscribe({
+    this.preferencesService.getDestinationPreferences().subscribe({
       next: (data) => {
         this.preferences = data;
         this.loading = false;
@@ -56,7 +56,7 @@ export class PreferencesDashboardComponent implements OnInit {
 
     this.hubConnection.start().catch((err) => console.error('SignalR error:', err));
 
-    this.hubConnection.on('ReceiveDeparturePreferencesUpdate', (data) => {
+    this.hubConnection.on('ReceiveDestinationPreferencesUpdate', (data) => {
       this.ngZone.run(() => {
         this.preferences = Array.isArray(data.result) ? data.result : [];
       });
@@ -75,7 +75,7 @@ export class PreferencesDashboardComponent implements OnInit {
     return max > 0 ? (count / max) * 100 : 0;
   }
 
-  trackById(index: number, item: DeparturePreference): string {
+  trackById(index: number, item: DestinationPreference): string {
     return item.id;
   }
 

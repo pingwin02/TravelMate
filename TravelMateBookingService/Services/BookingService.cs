@@ -86,7 +86,7 @@ public class BookingService(
         if (result && status == BookingStatus.Confirmed)
         {
             var preferences = bookingRepository.GetDestinationPreferences();
-            await preferencesHub.Clients.All.SendAsync("ReceiveDeparturePreferencesUpdate", preferences);
+            await preferencesHub.Clients.All.SendAsync("ReceiveDestinationPreferencesUpdate", preferences);
 
             var offerPreferences = bookingRepository.GetOfferPreferences();
             await preferencesHub.Clients.All

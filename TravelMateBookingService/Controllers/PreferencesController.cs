@@ -7,8 +7,8 @@ namespace TravelMateBookingService.Controllers;
 [ApiController]
 public class PreferencesController(IBookingService bookingService) : ControllerBase
 {
-    [HttpGet("departure-preferences")]
-    public async Task<IActionResult> GetDeparturePreferences()
+    [HttpGet("destination-preferences")]
+    public async Task<IActionResult> GetDestinationPreferences()
     {
         var preferences = await bookingService.GetDestinationPreferences();
         return Ok(preferences);
