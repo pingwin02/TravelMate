@@ -83,7 +83,7 @@ export class OffersViewComponent implements OnInit, OnDestroy {
 
   private initSignalR(): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('/ofertyqueries/offerHub')
+      .withUrl('/ofertyqueries/offerChangesHub')
       .withAutomaticReconnect()
       .build();
 
@@ -98,6 +98,8 @@ export class OffersViewComponent implements OnInit, OnDestroy {
     });
 
     this.hubConnection.on('OfferUpdated', (change: { oldOffer: any; newOffer: any }) => {
+      console.log(change.oldOffer);
+      console.log(change.newOffer);
       const updated = mapFullOfferToOfferList(change.newOffer);
       const index = this.offers.findIndex((o) => o.id === updated.id);
       if (index !== -1) {
@@ -123,12 +125,12 @@ export class OffersViewComponent implements OnInit, OnDestroy {
 function mapFullOfferToOfferList(full: any): OfferList {
   return {
     id: full.id,
-    airlineName: full.airline?.name || '',
+    airlineName: full.airlineName || '',
     flightNumber: full.flightNumber || '',
-    departureAirport: full.departureAirport?.code || '',
-    arrivalAirport: full.arrivalAirport?.code || '',
-    departureCity: full.departureAirport?.city || '',
-    arrivalCity: full.arrivalAirport?.city || '',
+    departureAirport: full.departureAirportCode || '',
+    arrivalAirport: full.arrivalAirportCode || '',
+    departureCity: full.departureAirportCity || '',
+    arrivalCity: full.arrivalAirportCity || '',
     departureTime: full.departureTime,
     arrivalTime: full.arrivalTime,
     basePrice: full.basePrice
