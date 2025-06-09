@@ -98,8 +98,6 @@ export class OffersViewComponent implements OnInit, OnDestroy {
     });
 
     this.hubConnection.on('OfferUpdated', (change: { oldOffer: any; newOffer: any }) => {
-      console.log(change.oldOffer);
-      console.log(change.newOffer);
       const updated = mapFullOfferToOfferList(change.newOffer);
       const index = this.offers.findIndex((o) => o.id === updated.id);
       if (index !== -1) {
