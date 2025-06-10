@@ -9,12 +9,14 @@ import time
 import random
 import re
 
+
 def init():
     driver = webdriver.Chrome()
     driver.maximize_window()
     driver.get(WEB_URL)
 
     return driver
+
 
 def login_user(driver):
     wait = WebDriverWait(driver, TIMEOUT)
@@ -33,34 +35,34 @@ def login_user(driver):
 
 def get_random_offer_from_random_page(driver, wait):
     wait.until(EC.presence_of_element_located((By.CLASS_NAME, "card")))
-    
-    try:        
+
+    try:
         page_links = driver.find_elements(By.CSS_SELECTOR, "pagination-controls .ngx-pagination a")
-        
+
         if page_links:
             numeric_pages = []
             for link in page_links:
                 try:
                     page_text = link.text.strip()
                     innerHTML = link.get_attribute("innerHTML") or ""
-                    
+
                     is_numeric = False
                     if page_text.isdigit():
                         is_numeric = True
                     elif any(char.isdigit() for char in innerHTML):
-                        numbers = re.findall(r'\d+', innerHTML)
+                        numbers = re.findall(r"\d+", innerHTML)
                         if numbers:
                             is_numeric = True
-                    
+
                     if is_numeric and link.is_displayed() and link.is_enabled():
                         numeric_pages.append(link)
-                        
+
                 except Exception:
                     continue
 
             if len(numeric_pages) > 1:
                 other_page_links = []
-                
+
                 for link in numeric_pages:
                     try:
                         classes = link.get_attribute("class") or ""
@@ -70,15 +72,19 @@ def get_random_offer_from_random_page(driver, wait):
                             parent_classes = parent.get_attribute("class") or ""
                         except:
                             pass
-                        
-                        if not ("active" in classes.lower() or "current" in classes.lower() or 
-                               "active" in parent_classes.lower() or "current" in parent_classes.lower()):
+
+                        if not (
+                            "active" in classes.lower()
+                            or "current" in classes.lower()
+                            or "active" in parent_classes.lower()
+                            or "current" in parent_classes.lower()
+                        ):
                             other_page_links.append(link)
                     except:
                         other_page_links.append(link)
-                
+
                 pages_to_choose_from = other_page_links if other_page_links else numeric_pages
-                
+
                 if pages_to_choose_from:
                     random_page_link = random.choice(pages_to_choose_from)
                     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", random_page_link)
@@ -86,36 +92,37 @@ def get_random_offer_from_random_page(driver, wait):
                     random_page_link.click()
                     time.sleep(2)
                     wait.until(EC.presence_of_element_located((By.CLASS_NAME, "card")))
-            
+
     except (NoSuchElementException, Exception):
         pass
-    
+
     cards = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "card")))
-    
+
     if not cards:
         raise Exception("No offer cards found on the page")
-    
+
     random_card = random.choice(cards)
     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", random_card)
     time.sleep(1)
-    
+
     return random_card
+
 
 def make_reservation(driver, wait):
     offers_link = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Offers")))
     offers_link.click()
-    
+
     try:
         wait.until(EC.invisibility_of_element_located((By.CLASS_NAME, "spinner-border")))
     except TimeoutException:
         pass
-    
+
     try:
         random_card = get_random_offer_from_random_page(driver, wait)
     except Exception as e:
         print(f"Error selecting random offer: {e}")
         return False
-    
+
     try:
         more_info_button = random_card.find_element(By.CSS_SELECTOR, "button.btn.btn-primary")
         time.sleep(0.5)
@@ -123,7 +130,7 @@ def make_reservation(driver, wait):
     except NoSuchElementException:
         print("More Info button not found on selected card")
         return False
-    
+
     try:
         faker = Faker("pl_PL")
 
@@ -164,14 +171,15 @@ def make_reservation(driver, wait):
             next_button.click()
 
             return True
-            
+
     except Exception as e:
         print(f"Error during booking process: {e}")
         return False
 
+
 def book_offers(driver, num_of_bookings):
     wait = WebDriverWait(driver, TIMEOUT)
-    
+
     for i in range(num_of_bookings):
         try:
             reservation_completed = make_reservation(driver, wait)
@@ -183,10 +191,10 @@ def book_offers(driver, num_of_bookings):
 
                 wait.until(EC.presence_of_element_located((By.CLASS_NAME, "container")))
                 time.sleep(2)
-        
+
             else:
                 print(f"Booking failed - no seats available or other issue")
-                
+
         except Exception as e:
             print(f"Booking failed with error: {e}")
             try:
@@ -194,6 +202,7 @@ def book_offers(driver, num_of_bookings):
                 time.sleep(2)
             except:
                 pass
+
 
 def book_offer_timeout(driver):
     wait = WebDriverWait(driver, TIMEOUT)
